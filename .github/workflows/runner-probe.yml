@@ -2,7 +2,7 @@ name: runner-probe
 on: workflow_dispatch
 jobs:
   probe:
-    runs-on: [self-hosted, amd-desktop]
+    runs-on: self-hosted
     steps:
       - name: environment inventory
         run: |
