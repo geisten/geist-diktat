@@ -14,27 +14,22 @@ on:
 
 jobs:
   e2e:
-    runs-on: ubuntu-24.04
+    # org runner (amd box): the 3.7 GB fixtures live on its NVMe — no
+    # actions-cache dance, warm runs start immediately.
+    runs-on: [self-hosted, amd-desktop]
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: deps
-        run: sudo apt-get update -q && sudo apt-get install -y -q gcc-14
-      - name: cache model + tower
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/share/geist-diktat
-          key: geist-diktat-model-740185b2-d6c45a6c
-      - name: fetch model + tower (cache miss only)
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: fetch model + tower (idempotent, SHA-gated)
         run: |
           DATA="$HOME/.local/share/geist-diktat"
           mkdir -p "$DATA"
-          curl -fL --retry 3 -C - -o "$DATA/gemma4-e2b-Q4_K_M.gguf" \
-            "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
-          echo "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8  $DATA/gemma4-e2b-Q4_K_M.gguf" | sha256sum -c -
+          if ! echo "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8  $DATA/gemma4-e2b-Q4_K_M.gguf" | sha256sum -c - 2>/dev/null; then
+            curl -fL --retry 3 -C - -o "$DATA/gemma4-e2b-Q4_K_M.gguf" \
+              "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
+            echo "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8  $DATA/gemma4-e2b-Q4_K_M.gguf" | sha256sum -c -
+          fi
           python3 geistlib/tools/fetch_audio_tower.py -o "$DATA/audio_tower.safetensors" \
             --sha256 d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77
       - name: build
