@@ -67,6 +67,7 @@ jobs:
           # inherits our IBUS_COMPONENT_PATH while keeping the same session
           # socket (apps reconnect, same as ibus restart)
           export IBUS_COMPONENT_PATH="$HOME/.local/share/ibus/component:/usr/share/ibus/component"
+          rm -f "$HOME/.cache/ibus/bus/registry"*   # stale cache wins over a fresh scan
           ibus-daemon --replace --daemonize --panel disable && sleep 3
           for i in $(seq 20); do ibus list-engine 2>/dev/null | grep -q geist-diktat && break; sleep 1; done
           ibus list-engine | grep -q geist-diktat || {
@@ -74,6 +75,9 @@ jobs:
             echo "--- engines seen:"; ibus list-engine 2>&1 | head -5
             echo "--- component dirs:"; ls -la "$HOME/.local/share/ibus/component" "$HOME/.config/ibus/component" 2>&1
             echo "--- registry cache:"; ls -la "$HOME/.cache/ibus/bus/" 2>&1 | head -4
+            echo "--- ibus version:"; ibus version 2>&1
+            echo "--- daemon env support:"; strings /usr/bin/ibus-daemon 2>/dev/null | grep -i component | head -4
+            echo "--- daemon procs:"; pgrep -af ibus-daemon | head -3
             exit 1
           }
           OUT=$(timeout 120 ./ibus-test-client) || { echo "FAIL: no commit received"; exit 1; }
