@@ -47,7 +47,7 @@ int main(void) {
     ibus_input_context_focus_in(ctx);
     ibus_input_context_set_engine(ctx, "geist-diktat");
 
-    g_timeout_add_seconds(15, on_timeout, NULL);
+    g_timeout_add_seconds(110, on_timeout, NULL);
     ibus_main();
     return got_commit ? 0 : 1;
 }

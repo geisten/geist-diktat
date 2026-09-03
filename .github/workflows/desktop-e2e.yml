@@ -1,0 +1,58 @@
+name: desktop-e2e
+
+# The IBus proof in the REAL session (#3's manual checklist, automated):
+# user-local component (~/.local/share/ibus/component — no root), the
+# engine's pipeline plays a real WAV through the real diktat binary and
+# the real model, and the test client receives the committed transcript
+# through the session's own ibus-daemon. No sudo, no uinput.
+#
+# Note: `ibus restart` briefly (~1 s) restarts the session's input
+# method — same action a real user performs when adding the source.
+
+on:
+  schedule:
+    - cron: "10 4 * * *"
+  workflow_dispatch:
+
+jobs:
+  ibus-session:
+    runs-on: [self-hosted, amd-desktop]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: build diktat + ibus engine and test client
+        run: |
+          make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
+          sudo -n true 2>/dev/null || true
+          make CC=gcc-14 GEMM_PROVIDER=native ibus
+      - name: guard — model + session present
+        run: |
+          test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" || { echo "model missing (nightly fetches it)"; exit 1; }
+          test -S "/run/user/$(id -u)/bus" || { echo "no session bus — is a desktop session running?"; exit 1; }
+      - name: install user-local ibus component
+        run: |
+          mkdir -p "$HOME/.local/share/ibus/component"
+          sed "s|/usr/libexec/ibus-engine-geist-diktat|$PWD/ibus-engine-geist-diktat|" \
+            ibus/geist-diktat.xml > "$HOME/.local/share/ibus/component/geist-diktat.xml"
+      - name: e2e — real session, real model, real audio
+        run: |
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+          export GEIST_AUDIO_MODEL_PATH="$HOME/.local/share/geist-diktat/audio_tower.safetensors"
+          export GEIST_MEL_CONSTANTS_PATH="$PWD/geistlib/audio_test_data/mel_constants.bin"
+          # The engine pipeline: fixture WAV -> real diktat -> transcript line.
+          export GEIST_DIKTAT_CMD="( python3 -c 'import sys, wave; w = wave.open(\"$PWD/tests/fixtures/librispeech-1089-134691-0016.wav\"); sys.stdout.buffer.write(w.readframes(w.getnframes()))'; dd if=/dev/zero bs=32000 count=1 2>/dev/null ) | $PWD/diktat $HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
+          ibus restart && sleep 3
+          for i in $(seq 20); do ibus list-engine 2>/dev/null | grep -q geist-diktat && break; sleep 1; done
+          ibus list-engine | grep -q geist-diktat || { echo "FAIL: component not registered in the session"; exit 1; }
+          OUT=$(timeout 120 ./ibus-test-client) || { echo "FAIL: no commit received"; exit 1; }
+          echo "committed: $OUT"
+          echo "$OUT" | grep -qi "voyaging across the deserts" || { echo "FAIL: transcript mismatch"; exit 1; }
+          echo "PASS: real-session IBus dictation delivered the real transcript"
+      - name: cleanup — remove test component, restore session ibus
+        if: always()
+        run: |
+          rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml"
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+          ibus restart || true
