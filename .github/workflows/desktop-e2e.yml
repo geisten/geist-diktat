@@ -35,7 +35,7 @@ jobs:
             make CC=gcc GEMM_PROVIDER=native ibus
             chown '"$(id -u):$(id -g)"' ibus-engine-geist-diktat ibus-test-client
           '
-          ./ibus-test-client --help 2>/dev/null; test -x ./ibus-engine-geist-diktat
+          test -x ./ibus-engine-geist-diktat && test -x ./ibus-test-client
       - name: guard — model + session present
         run: |
           test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" || { echo "model missing (nightly fetches it)"; exit 1; }
