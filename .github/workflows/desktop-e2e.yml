@@ -63,7 +63,11 @@ jobs:
           export GEIST_MEL_CONSTANTS_PATH="$PWD/geistlib/audio_test_data/mel_constants.bin"
           # The engine pipeline: fixture WAV -> real diktat -> transcript line.
           export GEIST_DIKTAT_CMD="( python3 -c 'import sys, wave; w = wave.open(\"$PWD/tests/fixtures/librispeech-1089-134691-0016.wav\"); sys.stdout.buffer.write(w.readframes(w.getnframes()))'; dd if=/dev/zero bs=32000 count=1 2>/dev/null ) | $PWD/diktat $HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
-          ibus restart && sleep 3
+          # the session daemon only scans system component dirs; --replace
+          # inherits our IBUS_COMPONENT_PATH while keeping the same session
+          # socket (apps reconnect, same as ibus restart)
+          export IBUS_COMPONENT_PATH="$HOME/.local/share/ibus/component:/usr/share/ibus/component"
+          ibus-daemon --replace --daemonize --panel disable && sleep 3
           for i in $(seq 20); do ibus list-engine 2>/dev/null | grep -q geist-diktat && break; sleep 1; done
           ibus list-engine | grep -q geist-diktat || {
             echo "FAIL: component not registered in the session"
@@ -90,4 +94,4 @@ jobs:
           done
           export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
           export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
-          ibus restart || true
+          ibus-daemon --replace --daemonize || true
