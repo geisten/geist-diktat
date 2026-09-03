@@ -47,8 +47,16 @@ jobs:
             ibus/geist-diktat.xml > "$HOME/.local/share/ibus/component/geist-diktat.xml"
       - name: e2e — real session, real model, real audio
         run: |
-          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
-          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+          # adopt the live session's environment (the runner unit has none):
+          # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves.
+          SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
+          test -n "$SPID" || { echo "FAIL: no desktop session process found"; exit 1; }
+          for v in DISPLAY WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR; do
+            val=$(tr '\0' '\n' < "/proc/$SPID/environ" | sed -n "s/^$v=//p")
+            [ -n "$val" ] && export "$v=$val" && echo "$v=$val"
+          done
+          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+          export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
           export GEIST_AUDIO_MODEL_PATH="$HOME/.local/share/geist-diktat/audio_tower.safetensors"
           export GEIST_MEL_CONSTANTS_PATH="$PWD/geistlib/audio_test_data/mel_constants.bin"
           # The engine pipeline: fixture WAV -> real diktat -> transcript line.
@@ -64,6 +72,14 @@ jobs:
         if: always()
         run: |
           rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml"
-          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
-          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+          # adopt the live session's environment (the runner unit has none):
+          # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves.
+          SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
+          test -n "$SPID" || { echo "FAIL: no desktop session process found"; exit 1; }
+          for v in DISPLAY WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR; do
+            val=$(tr '\0' '\n' < "/proc/$SPID/environ" | sed -n "s/^$v=//p")
+            [ -n "$val" ] && export "$v=$val" && echo "$v=$val"
+          done
+          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+          export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
           ibus restart || true
