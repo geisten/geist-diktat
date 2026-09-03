@@ -40,11 +40,13 @@ jobs:
         run: |
           test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" || { echo "model missing (nightly fetches it)"; exit 1; }
           test -S "/run/user/$(id -u)/bus" || { echo "no session bus — is a desktop session running?"; exit 1; }
-      - name: install user-local ibus component
+      - name: install user-local ibus component (both registry paths — version-dependent)
         run: |
-          mkdir -p "$HOME/.local/share/ibus/component"
-          sed "s|/usr/libexec/ibus-engine-geist-diktat|$PWD/ibus-engine-geist-diktat|" \
-            ibus/geist-diktat.xml > "$HOME/.local/share/ibus/component/geist-diktat.xml"
+          for d in "$HOME/.local/share/ibus/component" "$HOME/.config/ibus/component"; do
+            mkdir -p "$d"
+            sed "s|/usr/libexec/ibus-engine-geist-diktat|$PWD/ibus-engine-geist-diktat|" \
+              ibus/geist-diktat.xml > "$d/geist-diktat.xml"
+          done
       - name: e2e — real session, real model, real audio
         run: |
           # adopt the live session's environment (the runner unit has none):
@@ -63,7 +65,13 @@ jobs:
           export GEIST_DIKTAT_CMD="( python3 -c 'import sys, wave; w = wave.open(\"$PWD/tests/fixtures/librispeech-1089-134691-0016.wav\"); sys.stdout.buffer.write(w.readframes(w.getnframes()))'; dd if=/dev/zero bs=32000 count=1 2>/dev/null ) | $PWD/diktat $HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
           ibus restart && sleep 3
           for i in $(seq 20); do ibus list-engine 2>/dev/null | grep -q geist-diktat && break; sleep 1; done
-          ibus list-engine | grep -q geist-diktat || { echo "FAIL: component not registered in the session"; exit 1; }
+          ibus list-engine | grep -q geist-diktat || {
+            echo "FAIL: component not registered in the session"
+            echo "--- engines seen:"; ibus list-engine 2>&1 | head -5
+            echo "--- component dirs:"; ls -la "$HOME/.local/share/ibus/component" "$HOME/.config/ibus/component" 2>&1
+            echo "--- registry cache:"; ls -la "$HOME/.cache/ibus/bus/" 2>&1 | head -4
+            exit 1
+          }
           OUT=$(timeout 120 ./ibus-test-client) || { echo "FAIL: no commit received"; exit 1; }
           echo "committed: $OUT"
           echo "$OUT" | grep -qi "voyaging across the deserts" || { echo "FAIL: transcript mismatch"; exit 1; }
@@ -71,7 +79,7 @@ jobs:
       - name: cleanup — remove test component, restore session ibus
         if: always()
         run: |
-          rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml"
+          rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml" "$HOME/.config/ibus/component/geist-diktat.xml"
           # adopt the live session's environment (the runner unit has none):
           # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves.
           SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
