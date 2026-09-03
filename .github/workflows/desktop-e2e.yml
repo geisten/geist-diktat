@@ -32,7 +32,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -q >/dev/null
             apt-get install -y -q gcc make pkg-config libibus-1.0-dev >/dev/null
-            make CC=gcc ibus
+            make CC=gcc GEMM_PROVIDER=native ibus
             chown '"$(id -u):$(id -g)"' ibus-engine-geist-diktat ibus-test-client
           '
           ./ibus-test-client --help 2>/dev/null; test -x ./ibus-engine-geist-diktat
@@ -47,6 +47,7 @@ jobs:
             ibus/geist-diktat.xml > "$HOME/.local/share/ibus/component/geist-diktat.xml"
       - name: e2e — real session, real model, real audio
         run: |
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
           export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
           export GEIST_AUDIO_MODEL_PATH="$HOME/.local/share/geist-diktat/audio_tower.safetensors"
           export GEIST_MEL_CONSTANTS_PATH="$PWD/geistlib/audio_test_data/mel_constants.bin"
@@ -63,5 +64,6 @@ jobs:
         if: always()
         run: |
           rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml"
+          export XDG_RUNTIME_DIR="/run/user/$(id -u)"
           export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
           ibus restart || true
