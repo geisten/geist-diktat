@@ -80,7 +80,19 @@ jobs:
             echo "--- daemon procs:"; pgrep -af ibus-daemon | head -3
             exit 1
           }
-          OUT=$(timeout 120 ./ibus-test-client) || { echo "FAIL: no commit received"; exit 1; }
+          # select the engine globally too (what Super+Space does) — in a real
+          # session gnome-shell owns engine selection and may override the
+          # client's per-context choice
+          ibus engine geist-diktat || true
+          sleep 2
+          echo "--- global engine now: $(ibus engine 2>/dev/null)"
+          OUT=$(timeout 120 ./ibus-test-client) || {
+            echo "FAIL: no commit received"
+            echo "--- engine proc:"; pgrep -af ibus-engine-geist-diktat || echo "(engine never spawned)"
+            echo "--- pipeline proc:"; pgrep -af "diktat .*gguf" || echo "(pipeline not running)"
+            echo "--- global engine after: $(ibus engine 2>/dev/null)"
+            exit 1
+          }
           echo "committed: $OUT"
           echo "$OUT" | grep -qi "voyaging across the deserts" || { echo "FAIL: transcript mismatch"; exit 1; }
           echo "PASS: real-session IBus dictation delivered the real transcript"
