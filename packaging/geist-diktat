@@ -4,9 +4,14 @@
 #   geist-diktat setup    fetch model + tower into ~/.local/share
 #   geist-diktat run      mic -> transcript lines on stdout
 #
-# Typing into the focused window is the IBus input source
+# Linux: typing into the focused window is the IBus input source
 # "geist-diktat (Diktat)" (Settings -> Keyboard -> Input Sources); this
 # wrapper only provisions the model and offers the raw stdout pipeline.
+# macOS: the tarball ships the same core, but there is no IBus — `run`
+# gives you transcript lines to pipe wherever you want.
+#
+# The data dir stays ~/.local/share on both: one path, and the model is
+# not something macOS wants in ~/Library either way.
 set -e
 
 # Prefix from our own location: /usr when installed (/usr/bin/geist-diktat),
@@ -25,6 +30,36 @@ TOWER_SHA=d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77
 export GEIST_AUDIO_MODEL_PATH="${GEIST_AUDIO_MODEL_PATH:-$TOWER}"
 export GEIST_MEL_CONSTANTS_PATH="${GEIST_MEL_CONSTANTS_PATH:-$MEL}"
 
+# Mic capture is the one genuinely platform-specific piece. Neither sox
+# nor ffmpeg ships with macOS, so probe for whichever is installed;
+# GEIST_DIKTAT_CAPTURE overrides the whole command, because the right mic
+# device is machine-specific (an avfoundation index cannot be guessed).
+capture() {
+    if [ -n "${GEIST_DIKTAT_CAPTURE:-}" ]; then
+        eval "exec $GEIST_DIKTAT_CAPTURE"
+    fi
+    case "$(uname -s)" in
+    Darwin)
+        # sox -d is the default input device — no index to guess.
+        if command -v sox >/dev/null; then
+            exec sox -q -d -t raw -r 16000 -e signed -b 16 -c 1 -
+        elif command -v ffmpeg >/dev/null; then
+            exec ffmpeg -loglevel quiet -f avfoundation -i :default \
+                -ar 16000 -ac 1 -f s16le -
+        fi
+        echo "no capture tool — brew install sox (or ffmpeg)" >&2
+        exit 1
+        ;;
+    *)
+        command -v arecord >/dev/null || {
+            echo "arecord not found (apt install alsa-utils)" >&2
+            exit 1
+        }
+        exec arecord -q -f S16_LE -r 16000 -c 1 -t raw
+        ;;
+    esac
+}
+
 sha_ok() { [ "$( (sha256sum "$1" 2>/dev/null || shasum -a 256 "$1") | cut -d' ' -f1)" = "$2" ]; }
 
 setup() {
@@ -42,9 +77,15 @@ setup() {
         echo "downloading audio tower (~590 MB, Range extraction) ..."
         python3 "$PREFIX/share/geist-diktat/fetch_audio_tower.py" -o "$TOWER" --sha256 "$TOWER_SHA"
     fi
-    command -v arecord >/dev/null || echo "NOTE: arecord missing (apt install alsa-utils)"
-    echo "setup complete — run 'ibus restart', then add the input source"
-    echo "'geist-diktat (Diktat)' under Settings -> Keyboard."
+    if [ "$(uname -s)" = Darwin ]; then
+        command -v sox >/dev/null || command -v ffmpeg >/dev/null ||
+            echo "NOTE: no capture tool (brew install sox)"
+        echo "setup complete — 'geist-diktat run' prints transcript lines."
+    else
+        command -v arecord >/dev/null || echo "NOTE: arecord missing (apt install alsa-utils)"
+        echo "setup complete — run 'ibus restart', then add the input source"
+        echo "'geist-diktat (Diktat)' under Settings -> Keyboard."
+    fi
 }
 
 case "$1" in
@@ -52,7 +93,7 @@ setup) setup ;;
 run)
     shift
     [ -f "$MODEL" ] || { echo "model missing — run: geist-diktat setup" >&2; exit 1; }
-    arecord -q -f S16_LE -r 16000 -c 1 -t raw | exec "$PREFIX/bin/diktat" "$MODEL" "$@"
+    capture | exec "$PREFIX/bin/diktat" "$MODEL" "$@"
     ;;
 *)
     echo "usage: geist-diktat setup | run [rms-threshold]" >&2

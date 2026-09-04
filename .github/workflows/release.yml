@@ -79,8 +79,45 @@ jobs:
             geist-diktat_*.deb
             geist-diktat_*_linux-*.tar.gz
 
+  macos-tarball:
+    # Apple Silicon only: geistlib's mac targets build the cpu_neon
+    # backend, so there is no Intel Mac build to ship.
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: version from tag
+        id: v
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: deps
+        run: brew install libomp
+      # GEIST_STATIC_OMP=1 is not optional here: without it the binary
+      # hard-links Homebrew's libomp.dylib and the tarball is broken on
+      # any Mac without it. build-tarball.sh fails the build if that
+      # regresses.
+      - name: build (static libomp)
+        run: make GEIST_STATIC_OMP=1
+      - name: smoke test (fixture-gated half skips without the model)
+        run: sh tests/smoke.sh
+      - name: package
+        run: VERSION=${{ steps.v.outputs.version }} sh packaging/build-tarball.sh
+      - name: tarball sanity (wrapper resolves its unpacked prefix)
+        run: |
+          mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_macos-*.tar.gz
+          /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-macos-arm64
+          path: geist-diktat_*_macos-*.tar.gz
+
   publish:
-    needs: artifacts
+    needs: [artifacts, macos-tarball]
     runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -92,11 +129,13 @@ jobs:
           for a in amd64 arm64; do
             cp geist-diktat_*_"$a".deb "geist-diktat_$a.deb"
           done
-          for m in x86_64 aarch64; do
-            cp geist-diktat_*_linux-"$m".tar.gz "geist-diktat_linux-$m.tar.gz"
+          # geist-diktat_0.1.3_macos-arm64.tar.gz -> geist-diktat_macos-arm64.tar.gz
+          for f in geist-diktat_*_linux-*.tar.gz geist-diktat_*_macos-*.tar.gz; do
+            [ -e "$f" ] || continue
+            cp "$f" "geist-diktat_${f#geist-diktat_*_}"
           done
       - name: SHA256SUMS (install.sh verifies every asset against it)
-        run: sha256sum geist-diktat_*.deb geist-diktat_*linux-*.tar.gz > SHA256SUMS
+        run: sha256sum geist-diktat_*.deb geist-diktat_*.tar.gz > SHA256SUMS
       - name: create release with all artifacts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -105,4 +144,4 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes \
-            geist-diktat_*.deb geist-diktat_*linux-*.tar.gz SHA256SUMS
+            geist-diktat_*.deb geist-diktat_*.tar.gz SHA256SUMS

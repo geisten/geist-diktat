@@ -29,6 +29,25 @@ jobs:
       - name: smoke test (fixture-gated half skips without the 3.7 GB model)
         run: make CC=gcc-14 TARGET=linux test
 
+  macos-build:
+    # Apple Silicon only — geistlib's mac targets are cpu_neon.
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: deps
+        run: brew install libomp
+      - name: build (static libomp, as the release tarball does)
+        run: make GEIST_STATIC_OMP=1
+      - name: smoke test (fixture-gated half skips without the 3.7 GB model)
+        run: sh tests/smoke.sh
+      - name: tarball builds and the wrapper resolves its prefix
+        run: |
+          sh packaging/build-tarball.sh
+          mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_macos-*.tar.gz
+          /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
+
   nvim-plugin:
     runs-on: ubuntu-24.04
     steps:

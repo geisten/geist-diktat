@@ -27,6 +27,23 @@ geist-diktat setup                 # per-user model download (~3.7 GB, SHA-pinne
 Non-Debian distros: grab the `linux-{x86_64,aarch64}.tar.gz` from the
 same release — unpack anywhere, `bin/geist-diktat` works in place.
 
+## macOS (Apple Silicon)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/geisten/geist-diktat/main/install.sh | sh
+brew install sox        # mic capture; ffmpeg works too
+geist-diktat setup      # model (~3.7 GB, SHA-pinned)
+geist-diktat run        # transcript lines on stdout
+```
+
+The core is the same engine and the same model. What macOS does **not**
+get is the typing path: there is no IBus, so `run` gives you the
+transcript stream to pipe wherever you want. `GEIST_DIKTAT_CAPTURE`
+overrides the capture command when the default mic is not the right one.
+
+Intel Macs are not built — geistlib's mac target compiles the `cpu_neon`
+backend. Build from source with a scalar backend if you need one.
+
 Then dictate: run `ibus restart`, add the input source *geist-diktat
 (Diktat)* (GNOME Settings → Keyboard → Input Sources, listed under
 German), and switch to it with `Super+Space`. Selecting the source starts
