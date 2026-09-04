@@ -1,9 +1,0 @@
-[Unit]
-Description=geist-diktat — local dictation into the focused window
-
-[Service]
-ExecStart=/usr/bin/geist-diktat _pipeline
-Restart=no
-
-[Install]
-WantedBy=default.target

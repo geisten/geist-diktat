@@ -71,8 +71,7 @@ fi
 cat <<'EOF'
 
 Next steps:
-  geist-diktat setup                 # model download (~3.7 GB, SHA-pinned)
-  sudo usermod -aG input $USER       # once, for ydotool typing; re-login after
-Then either add the IBus input source "geist-diktat (Diktat)" (recommended,
-run `ibus restart` first) or bind `geist-diktat toggle` to a hotkey.
+  geist-diktat setup    # model download (~3.7 GB, SHA-pinned)
+  ibus restart          # then add the input source "geist-diktat (Diktat)"
+                        # under Settings -> Keyboard (listed under German)
 EOF

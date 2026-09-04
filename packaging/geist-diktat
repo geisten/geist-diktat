@@ -1,13 +1,12 @@
 #!/bin/sh
 # geist-diktat — installed launcher (.deb layout).
 #
-#   geist-diktat setup    fetch model + tower into ~/.local/share, check mic/uinput
-#   geist-diktat toggle   start/stop dictation (bind this to a GNOME shortcut)
-#   geist-diktat start|stop|status
-#   geist-diktat run      mic -> transcript lines on stdout (no typing)
+#   geist-diktat setup    fetch model + tower into ~/.local/share
+#   geist-diktat run      mic -> transcript lines on stdout
 #
-# Dictation types into the focused window via ydotool (uinput — works on
-# GNOME Wayland, where the virtual-keyboard protocol is unavailable).
+# Typing into the focused window is the IBus input source
+# "geist-diktat (Diktat)" (Settings -> Keyboard -> Input Sources); this
+# wrapper only provisions the model and offers the raw stdout pipeline.
 set -e
 
 # Prefix from our own location: /usr when installed (/usr/bin/geist-diktat),
@@ -18,7 +17,6 @@ DATA="${XDG_DATA_HOME:-$HOME/.local/share}/geist-diktat"
 MODEL="$DATA/gemma4-e2b-Q4_K_M.gguf"
 TOWER="$DATA/audio_tower.safetensors"
 MEL="$PREFIX/share/geist-diktat/mel_constants.bin"
-UNIT=geist-diktat.service
 
 MODEL_URL="https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
 MODEL_SHA=740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8
@@ -44,23 +42,9 @@ setup() {
         echo "downloading audio tower (~590 MB, Range extraction) ..."
         python3 "$PREFIX/share/geist-diktat/fetch_audio_tower.py" -o "$TOWER" --sha256 "$TOWER_SHA"
     fi
-    # Typing path checks — advisory, dictation to stdout works regardless.
-    if ! id -nG | tr ' ' '\n' | grep -qx input; then
-        echo "NOTE: add yourself to the 'input' group for ydotool typing, then re-login:"
-        echo "  sudo usermod -aG input $USER"
-    fi
     command -v arecord >/dev/null || echo "NOTE: arecord missing (apt install alsa-utils)"
-    echo "setup complete — bind 'geist-diktat toggle' to a keyboard shortcut."
-}
-
-pipeline() {
-    [ -f "$MODEL" ] || { echo "model missing — run: geist-diktat setup" >&2; exit 1; }
-    systemctl --user start ydotoold.service 2>/dev/null || true
-    arecord -q -f S16_LE -r 16000 -c 1 -t raw |
-        "$PREFIX/bin/diktat" "$MODEL" "${GEIST_DIKTAT_RMS:-300}" |
-        while IFS= read -r line; do
-            ydotool type -- "$line " || echo "$line"
-        done
+    echo "setup complete — run 'ibus restart', then add the input source"
+    echo "'geist-diktat (Diktat)' under Settings -> Keyboard."
 }
 
 case "$1" in
@@ -70,21 +54,8 @@ run)
     [ -f "$MODEL" ] || { echo "model missing — run: geist-diktat setup" >&2; exit 1; }
     arecord -q -f S16_LE -r 16000 -c 1 -t raw | exec "$PREFIX/bin/diktat" "$MODEL" "$@"
     ;;
-_pipeline) pipeline ;;
-start) systemctl --user start "$UNIT" ;;
-stop) systemctl --user stop "$UNIT" ;;
-status) systemctl --user status "$UNIT" ;;
-toggle)
-    if systemctl --user is-active --quiet "$UNIT"; then
-        systemctl --user stop "$UNIT"
-        notify-send -i microphone-sensitivity-muted-symbolic "geist-diktat" "aus" 2>/dev/null || true
-    else
-        systemctl --user start "$UNIT"
-        notify-send -i audio-input-microphone-symbolic "geist-diktat" "hört zu" 2>/dev/null || true
-    fi
-    ;;
 *)
-    echo "usage: geist-diktat setup | toggle | start | stop | status | run [rms-threshold]" >&2
+    echo "usage: geist-diktat setup | run [rms-threshold]" >&2
     exit 2
     ;;
 esac

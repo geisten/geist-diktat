@@ -119,7 +119,6 @@ jobs:
             diktat /nonexistent.gguf </dev/null 2>&1 | grep -q "model_load failed"
             ls /usr/share/ibus/component/geist-diktat.xml /usr/libexec/ibus-engine-geist-diktat >/dev/null
             # runtime deps must arrive via Depends — a fresh container has none preinstalled
-            command -v ydotool >/dev/null || { echo "FAIL: ydotool not pulled in"; exit 1; }
             command -v arecord >/dev/null || { echo "FAIL: alsa-utils not pulled in"; exit 1; }
             command -v curl >/dev/null || { echo "FAIL: curl not pulled in"; exit 1; }
             echo "container install ok"
