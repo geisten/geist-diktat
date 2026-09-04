@@ -5,7 +5,7 @@
 #
 # Debian/Ubuntu: downloads the latest release .deb for this architecture
 # and installs it via apt (the only sudo step, announced first).
-# Other distros: unpacks the static tarball to ~/.local/geist-diktat.
+# Other distros and macOS: unpacks the tarball to ~/.local/geist-diktat.
 set -eu
 
 REPO="geisten/geist-diktat"
@@ -21,10 +21,20 @@ aarch64 | arm64) DEB_ARCH=arm64 ;;
     ;;
 esac
 
-[ "$(uname -s)" = Linux ] || {
-    echo "geist-diktat: Linux only (got $(uname -s)) — build from source on other systems" >&2
+case "$(uname -s)" in
+Linux)  OS=linux ;;
+Darwin) OS=macos ;;
+*)
+    echo "geist-diktat: Linux and macOS only (got $(uname -s)) — build from source" >&2
     exit 1
-}
+    ;;
+esac
+
+if [ "$OS" = macos ] && [ "$(uname -m)" != arm64 ]; then
+    echo "geist-diktat: macOS builds are Apple Silicon only (got $(uname -m))" >&2
+    echo "(the engine's mac target builds the cpu_neon backend)" >&2
+    exit 1
+fi
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -68,9 +78,9 @@ if command -v apt-get >/dev/null 2>&1; then
         sudo apt-get install -y "$TMP/$DEB"
     fi
 else
-    TAR="geist-diktat_linux-$(uname -m).tar.gz"
+    TAR="geist-diktat_${OS}-$(uname -m).tar.gz"
     DEST="$HOME/.local/geist-diktat"
-    echo "no apt found — unpacking the static tarball to $DEST ..."
+    echo "no apt found — unpacking the $OS tarball to $DEST ..."
     curl -fL --retry 3 -o "$TMP/$TAR" "$BASE/$TAR"
     verify "$TMP/$TAR" "$TAR"
     rm -rf "$DEST"
@@ -79,10 +89,16 @@ else
     echo "add to PATH: export PATH=\"$DEST/bin:\$PATH\""
 fi
 
-cat <<'EOF'
-
-Next steps:
-  geist-diktat setup    # model download (~3.7 GB, SHA-pinned)
-  ibus restart          # then add the input source "geist-diktat (Diktat)"
-                        # under Settings -> Keyboard (listed under German)
-EOF
+echo
+echo "Next steps:"
+echo "  geist-diktat setup    # model download (~3.7 GB, SHA-pinned)"
+if [ "$OS" = macos ]; then
+    echo "  brew install sox      # mic capture (ffmpeg also works)"
+    echo "  geist-diktat run      # transcript lines on stdout"
+    echo
+    echo "No IBus on macOS: 'run' gives you the transcript stream to pipe;"
+    echo "there is no typing-into-the-focused-app path here."
+else
+    echo "  ibus restart          # then add the input source \"geist-diktat (Diktat)\""
+    echo "                        # under Settings -> Keyboard (listed under German)"
+fi

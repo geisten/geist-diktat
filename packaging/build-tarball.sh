@@ -1,8 +1,15 @@
 #!/bin/sh
-# build-tarball.sh — static tarball for non-Debian distros.
+# build-tarball.sh — tarball for non-Debian distros and for macOS.
 #
-#   make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
-#   sh packaging/build-tarball.sh    # -> geist-diktat_<v>_linux-<arch>.tar.gz
+#   make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native   # linux
+#   make GEIST_STATIC_OMP=1                            # macOS (arm64 only)
+#
+# macOS needs GEIST_STATIC_OMP=1: without it the binary hard-links
+# /opt/homebrew/opt/libomp/lib/libomp.dylib and the tarball is broken on
+# any Mac that has no Homebrew libomp at that path. Checked below.
+# Apple Silicon only — geistlib's mac targets build cpu_neon, so there
+# is no Intel Mac build.
+#   sh packaging/build-tarball.sh    # -> geist-diktat_<v>_<os>-<arch>.tar.gz
 #
 # The layout mirrors the installed /usr prefix (bin/, share/geist-diktat/),
 # and the wrapper derives its prefix from its own location — the same
@@ -13,7 +20,11 @@ cd "$(dirname "$0")/.."
 
 VERSION="${VERSION:-0.1.0}"
 ARCH="$(uname -m)"
-NAME="geist-diktat_${VERSION}_linux-${ARCH}"
+case "$(uname -s)" in
+Darwin) OS=macos ;;
+*)      OS=linux ;;
+esac
+NAME="geist-diktat_${VERSION}_${OS}-${ARCH}"
 STAGE="build/$NAME"
 
 test -x ./diktat || { echo "build ./diktat first (make)" >&2; exit 1; }
@@ -21,11 +32,20 @@ test -x ./diktat || { echo "build ./diktat first (make)" >&2; exit 1; }
 rm -rf "$STAGE"
 mkdir -p "$STAGE/bin" "$STAGE/share/geist-diktat"
 install -m755 diktat "$STAGE/bin/diktat"
-strip "$STAGE/bin/diktat" 2>/dev/null || true
+strip "$STAGE/bin/diktat" 2>/dev/null || true   # advisory: BSD strip is pickier
 install -m755 packaging/geist-diktat "$STAGE/bin/geist-diktat"
 install -m644 geistlib/audio_test_data/mel_constants.bin "$STAGE/share/geist-diktat/"
 install -m755 geistlib/tools/fetch_audio_tower.py "$STAGE/share/geist-diktat/"
 install -m644 README.md LICENSE "$STAGE/"
+
+# A shipped macOS binary must reach no further than the system
+# frameworks, which are present on every Mac.
+if [ "$OS" = macos ] &&
+    otool -L "$STAGE/bin/diktat" | tail -n +2 | grep -qvE '/usr/lib/|/System/Library/'; then
+    echo "diktat links a non-system library — rebuild with GEIST_STATIC_OMP=1" >&2
+    otool -L "$STAGE/bin/diktat" | tail -n +2 >&2
+    exit 1
+fi
 
 tar -C build -czf "$NAME.tar.gz" "$NAME"
 echo "built: $NAME.tar.gz"
