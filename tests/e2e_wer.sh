@@ -18,6 +18,8 @@ MODEL="$DATA/gemma4-e2b-Q4_K_M.gguf"
 TOWER="$DATA/audio_tower.safetensors"
 WAV=tests/fixtures/librispeech-1089-134691-0016.wav
 REF=tests/fixtures/librispeech-1089-134691-0016.txt
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
 
 test -x ./diktat || { echo "FAIL: ./diktat not built"; exit 1; }
 [ -f "$MODEL" ] || { echo "SKIP: model not present ($MODEL)"; exit 0; }
@@ -32,17 +34,17 @@ export GEIST_MEL_CONSTANTS_PATH=geistlib/audio_test_data/mel_constants.bin
 (
     python3 -c "import sys, wave; w = wave.open(sys.argv[1]); sys.stdout.buffer.write(w.readframes(w.getnframes()))" "$WAV"
     dd if=/dev/zero bs=32000 count=1 2>/dev/null
-) | ./diktat "$MODEL" >/tmp/e2e_transcript.txt 2>/tmp/e2e_err.txt || {
+) | ./diktat "$MODEL" >"$TMP/transcript.txt" 2>"$TMP/err.txt" || {
     echo "FAIL: diktat pipeline errored:"
-    tail -5 /tmp/e2e_err.txt
+    tail -5 "$TMP/err.txt"
     exit 1
 }
 
-HYP=$(cat /tmp/e2e_transcript.txt)
+HYP=$(cat "$TMP/transcript.txt")
 echo "transcript: $HYP"
 [ -n "$HYP" ] || { echo "FAIL: empty transcript"; exit 1; }
 
-python3 - "$REF" <<'EOF'
+python3 - "$REF" "$TMP/transcript.txt" <<'EOF'
 import re
 import sys
 
@@ -50,7 +52,7 @@ def norm(text):
     return re.sub(r"[^\w' ]+", " ", text.lower()).split()
 
 ref = norm(open(sys.argv[1]).read())
-hyp = norm(open("/tmp/e2e_transcript.txt").read())
+hyp = norm(open(sys.argv[2]).read())
 
 prev = list(range(len(hyp) + 1))
 for i, r in enumerate(ref, 1):

@@ -9,17 +9,19 @@ set -e
 cd "$(dirname "$0")/.."
 
 MODEL=geistlib/gguf_artifacts/gemma4-e2b-Q4_K_M.gguf
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
 
 test -x ./diktat || { echo "FAIL: ./diktat not built"; exit 1; }
 
 # 1. Missing model → clean error, no crash.
-if ./diktat /nonexistent/model.gguf </dev/null 2>/tmp/geist_diktat_err.txt; then
+if ./diktat /nonexistent/model.gguf </dev/null 2>"$TMP/err.txt"; then
     echo "FAIL: missing model not refused"
     exit 1
 fi
-grep -q "model_load failed" /tmp/geist_diktat_err.txt || {
+grep -q "model_load failed" "$TMP/err.txt" || {
     echo "FAIL: unexpected error output:"
-    cat /tmp/geist_diktat_err.txt
+    cat "$TMP/err.txt"
     exit 1
 }
 echo "ok: missing model refused cleanly"
@@ -29,12 +31,14 @@ if [ ! -f "$MODEL" ]; then
     echo "SKIP: model not fetched (make setup) — full-path smoke skipped"
     exit 0
 fi
-python3 geistlib/tools/gen_test_wav.py /tmp/geist_diktat_smoke.wav 2
+python3 geistlib/tools/gen_test_wav.py "$TMP/smoke.wav" 2
 export GEIST_AUDIO_MODEL_PATH=geistlib/audio_bench/audio_tower.safetensors
 export GEIST_MEL_CONSTANTS_PATH=geistlib/audio_test_data/mel_constants.bin
+# python's wave module walks the RIFF chunks — no fixed-offset assumption
+# (the #269 bug class), same reader as e2e_wer.sh.
 (
-    tail -c +45 /tmp/geist_diktat_smoke.wav
+    python3 -c "import sys, wave; w = wave.open(sys.argv[1]); sys.stdout.buffer.write(w.readframes(w.getnframes()))" "$TMP/smoke.wav"
     dd if=/dev/zero bs=32000 count=1 2>/dev/null
-) | ./diktat "$MODEL" >/tmp/geist_diktat_out.txt 2>/dev/null
-echo "ok: full audio path ran (output: $(head -c 80 /tmp/geist_diktat_out.txt))"
+) | ./diktat "$MODEL" >"$TMP/out.txt" 2>/dev/null
+echo "ok: full audio path ran (output: $(head -c 80 "$TMP/out.txt"))"
 echo "PASS"

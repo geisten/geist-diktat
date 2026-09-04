@@ -32,16 +32,23 @@ diktat: src/diktat.c $(LIB)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(LDFLAGS) $(LDLIBS)
 
 # IBus engine + headless test client (Linux with libibus-1.0-dev only).
-IBUS_CFLAGS := $(shell pkg-config --cflags ibus-1.0 2>/dev/null)
+IBUS_CFLAGS := -std=c23 -O2 -Wall -Wextra $(shell pkg-config --cflags ibus-1.0 2>/dev/null)
 IBUS_LIBS   := $(shell pkg-config --libs ibus-1.0 2>/dev/null)
 
-ibus: ibus-engine-geist-diktat ibus-test-client
+ibus: ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client
 
 ibus-engine-geist-diktat: ibus/engine.c
-	$(CC) -std=c23 -O2 -Wall -Wextra $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
+	$(CC) $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
+
+# Same engine with the GEIST_DIKTAT_CMD pipeline override compiled in.
+# Separate binary, not a flag on the one above: the packaged engine must
+# never take its command line from the environment, and one output per
+# set of flags keeps a stale object from leaking the hook into a release.
+ibus-engine-geist-diktat-test: ibus/engine.c
+	$(CC) $(IBUS_CFLAGS) -DGEIST_DIKTAT_TEST_HOOKS -o $@ $< $(IBUS_LIBS)
 
 ibus-test-client: ibus/test_client.c
-	$(CC) -std=c23 -O2 -Wall -Wextra $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
+	$(CC) $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
 
 # Always delegate: the submodule's own make is incremental and cheap,
 # and a plain file target went stale on submodule bumps (the lib exists
@@ -61,4 +68,4 @@ test: diktat
 	sh tests/smoke.sh
 
 clean:
-	rm -f diktat
+	rm -f diktat ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client

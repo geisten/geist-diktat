@@ -1,3 +1,8 @@
 /diktat
 /ibus-engine-geist-diktat
+/ibus-engine-geist-diktat-test
 /ibus-test-client
+/dictate
+/build/
+*.deb
+*.tar.gz

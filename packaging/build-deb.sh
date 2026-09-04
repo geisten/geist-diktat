@@ -18,9 +18,6 @@ rm -rf "$STAGE"
 mkdir -p \
     "$STAGE/DEBIAN" \
     "$STAGE/usr/bin" \
-    "$STAGE/usr/lib/systemd/user" \
-    "$STAGE/usr/lib/udev/rules.d" \
-    "$STAGE/usr/share/applications" \
     "$STAGE/usr/share/geist-diktat" \
     "$STAGE/usr/share/doc/geist-diktat"
 
@@ -33,9 +30,6 @@ install -m755 ibus-engine-geist-diktat "$STAGE/usr/libexec/"
 strip "$STAGE/usr/libexec/ibus-engine-geist-diktat"
 install -m644 ibus/geist-diktat.xml "$STAGE/usr/share/ibus/component/"
 install -m755 packaging/geist-diktat "$STAGE/usr/bin/geist-diktat"
-install -m644 packaging/geist-diktat.service "$STAGE/usr/lib/systemd/user/"
-install -m644 packaging/70-geist-diktat-uinput.rules "$STAGE/usr/lib/udev/rules.d/"
-install -m644 packaging/geist-diktat.desktop "$STAGE/usr/share/applications/"
 # Runtime data the wrapper needs: mel constants (checked into the engine)
 # and the SHA-verifying tower fetcher.
 install -m644 geistlib/audio_test_data/mel_constants.bin "$STAGE/usr/share/geist-diktat/"
@@ -44,14 +38,13 @@ install -m644 README.md "$STAGE/usr/share/doc/geist-diktat/"
 
 # Debian changelog (lintian: required). One generated entry — release
 # history lives in git.
-cat > /tmp/geist_diktat_changelog <<EOF
+gzip -9n > "$STAGE/usr/share/doc/geist-diktat/changelog.gz" <<EOF
 geist-diktat ($VERSION) unstable; urgency=low
 
   * See https://github.com/geisten/geist-diktat/releases
 
  -- germar <g.schlegel@geisten.net>  $(date -R)
 EOF
-gzip -9n -c /tmp/geist_diktat_changelog > "$STAGE/usr/share/doc/geist-diktat/changelog.gz"
 
 # Debian copyright file (lintian: required).
 cat > "$STAGE/usr/share/doc/geist-diktat/copyright" <<EOF
@@ -80,40 +73,32 @@ Version: $VERSION
 Architecture: $ARCH
 Maintainer: germar <g.schlegel@geisten.net>
 Installed-Size: $INSTALLED_SIZE
-Depends: libc6, $OMP_DEP, alsa-utils, ydotool, curl, python3, libibus-1.0-5
-Recommends: libnotify-bin, ibus
+Depends: libc6, $OMP_DEP, alsa-utils, curl, python3, libibus-1.0-5
+Recommends: ibus
 Section: sound
 Priority: optional
 Homepage: https://github.com/geisten/geist-diktat
 Description: system-wide local dictation (Gemma 4 audio, geist engine)
  Speech-to-text into the focused window, fully offline: a streaming
  energy VAD segments utterances, Gemma 4 E2B transcribes them (measured
- 4.2% WER English / 7.1% German), ydotool types the result. One static
- binary on the geist inference engine; the model (~3.7 GB) is fetched
- per-user by 'geist-diktat setup'.
+ 4.2% WER English / 7.1% German) and an IBus input source commits the
+ text through the standard input-method protocol — no root, no uinput.
+ One static binary on the geist inference engine; the model (~3.7 GB) is
+ fetched per-user by 'geist-diktat setup'.
 EOF
 
+# Models under ~/.local/share/geist-diktat are user data; nothing to undo
+# on purge, so the package ships no postrm.
 cat > "$STAGE/DEBIAN/postinst" <<'EOF'
 #!/bin/sh
 set -e
 if [ "$1" = configure ]; then
-    udevadm control --reload-rules 2>/dev/null || true
-    udevadm trigger /dev/uinput 2>/dev/null || true
     echo "geist-diktat: per user, run 'geist-diktat setup' (downloads ~3.7 GB)."
-    echo "Recommended input path: run 'ibus restart', then add the input source"
-    echo "'geist-diktat (Diktat)' under Settings -> Keyboard (listed under German)."
-    echo "Fallback typing path (ydotool): sudo usermod -aG input \$USER"
+    echo "Then run 'ibus restart' and add the input source 'geist-diktat"
+    echo "(Diktat)' under Settings -> Keyboard (listed under German)."
 fi
 EOF
 chmod 755 "$STAGE/DEBIAN/postinst"
-
-cat > "$STAGE/DEBIAN/postrm" <<'EOF'
-#!/bin/sh
-set -e
-# Models under ~/.local/share/geist-diktat are user data — kept on purge.
-udevadm control --reload-rules 2>/dev/null || true
-EOF
-chmod 755 "$STAGE/DEBIAN/postrm"
 
 dpkg-deb --root-owner-group --build "$STAGE" "geist-diktat_${VERSION}_${ARCH}.deb"
 echo "built: geist-diktat_${VERSION}_${ARCH}.deb"

@@ -17,22 +17,24 @@ local defaults = {
     suffix = " ",
 }
 
-local opts = vim.deepcopy(defaults)
+-- Effective configuration; :checkhealth reads it instead of re-deriving
+-- the defaults.
+M.opts = vim.deepcopy(defaults)
 local job = nil
 local queued = {}
 
 function M.setup(user_opts)
-    opts = vim.tbl_deep_extend("force", vim.deepcopy(defaults), user_opts or {})
+    M.opts = vim.tbl_deep_extend("force", vim.deepcopy(defaults), user_opts or {})
 end
 
 local function pipeline_cmd()
-    if opts.cmd then
-        return opts.cmd
+    if M.opts.cmd then
+        return M.opts.cmd
     end
     return ("arecord -q -f S16_LE -r 16000 -c 1 -t raw | %s %s %d"):format(
-        opts.binary,
-        vim.fn.shellescape(opts.model),
-        opts.rms
+        M.opts.binary,
+        vim.fn.shellescape(M.opts.model),
+        M.opts.rms
     )
 end
 
@@ -45,10 +47,10 @@ local function put_line(text)
         return
     end
     for _, t in ipairs(queued) do
-        pcall(vim.api.nvim_put, { t .. opts.suffix }, "c", true, true)
+        pcall(vim.api.nvim_put, { t .. M.opts.suffix }, "c", true, true)
     end
     queued = {}
-    pcall(vim.api.nvim_put, { text .. opts.suffix }, "c", true, true)
+    pcall(vim.api.nvim_put, { text .. M.opts.suffix }, "c", true, true)
 end
 
 function M.start()

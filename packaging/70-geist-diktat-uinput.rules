@@ -1,4 +1,0 @@
-# geist-diktat: let members of group 'input' reach uinput, so ydotool
-# can type as an unprivileged user (GNOME Wayland has no virtual-keyboard
-# protocol; uinput is the portable injection path).
-KERNEL=="uinput", SUBSYSTEM=="misc", OPTIONS+="static_node=uinput", GROUP="input", MODE="0660"

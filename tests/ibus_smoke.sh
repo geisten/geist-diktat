@@ -15,18 +15,34 @@ cd "$(dirname "$0")/.."
 
 command -v ibus-daemon >/dev/null || { echo "SKIP: ibus-daemon not installed"; exit 0; }
 command -v dbus-run-session >/dev/null || { echo "SKIP: dbus-run-session not installed"; exit 0; }
-test -x ./ibus-engine-geist-diktat || { echo "SKIP: engine not built (make ibus)"; exit 0; }
+test -x ./ibus-engine-geist-diktat-test || { echo "SKIP: engine not built (make ibus)"; exit 0; }
 
 COMP_DIR=/usr/share/ibus/component
+TMP=$(mktemp -d)
 SUDO=""
 [ -w "$COMP_DIR" ] || SUDO="sudo"
 $SUDO mkdir -p "$COMP_DIR" || { echo "SKIP: cannot write $COMP_DIR"; exit 0; }
 
+# The model/tower environment belongs to diktat (the right-hand side of the
+# pipe), and hostile RMS text must collapse to the numeric default. The quoted
+# data path also exercises an apostrophe, which used to break the sh command.
+DEFAULT_CMD=$(env -u GEIST_DIKTAT_CMD \
+    XDG_DATA_HOME="$TMP/data with ' quote" \
+    GEIST_DIKTAT_RMS='300; false' \
+    ./ibus-engine-geist-diktat-test --print-pipeline 2>/dev/null)
+sh -n -c "$DEFAULT_CMD"
+case "$DEFAULT_CMD" in
+    "arecord "*" | GEIST_AUDIO_MODEL_PATH="*" /usr/bin/diktat "*" 300") ;;
+    *) echo "FAIL: unsafe or mis-scoped default pipeline: $DEFAULT_CMD"; exit 1 ;;
+esac
+echo "ok: default pipeline is quoted and diktat receives its environment"
+
 # Component XML pointing at the just-built engine, in daemon-spawn mode.
-sed "s|/usr/libexec/ibus-engine-geist-diktat|$(pwd)/ibus-engine-geist-diktat|" \
-    ibus/geist-diktat.xml >/tmp/geist-diktat-test.xml
-$SUDO cp /tmp/geist-diktat-test.xml "$COMP_DIR/geist-diktat.xml"
-trap '$SUDO rm -f "$COMP_DIR/geist-diktat.xml"' EXIT
+# GEIST_DIKTAT_CMD only exists in the -test build (see Makefile).
+sed "s|/usr/libexec/ibus-engine-geist-diktat|$(pwd)/ibus-engine-geist-diktat-test|" \
+    ibus/geist-diktat.xml >"$TMP/geist-diktat.xml"
+$SUDO cp "$TMP/geist-diktat.xml" "$COMP_DIR/geist-diktat.xml"
+trap '$SUDO rm -f "$COMP_DIR/geist-diktat.xml"; rm -rf "$TMP"' EXIT
 
 # The daemon spawns the engine and passes its environment down — the
 # stub reaches the engine through it.
