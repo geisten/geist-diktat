@@ -33,32 +33,36 @@ jobs:
             apt-get update -q >/dev/null
             apt-get install -y -q gcc make pkg-config libibus-1.0-dev >/dev/null
             make CC=gcc GEMM_PROVIDER=native ibus
-            chown '"$(id -u):$(id -g)"' ibus-engine-geist-diktat ibus-test-client
+            chown '"$(id -u):$(id -g)"' ibus-engine-geist-diktat-test ibus-test-client
           '
-          test -x ./ibus-engine-geist-diktat && test -x ./ibus-test-client
+          test -x ./ibus-engine-geist-diktat-test && test -x ./ibus-test-client
       - name: guard — model + session present
         run: |
           test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" || { echo "model missing (nightly fetches it)"; exit 1; }
           test -S "/run/user/$(id -u)/bus" || { echo "no session bus — is a desktop session running?"; exit 1; }
+      - name: adopt the live session's environment (the runner unit has none)
+        run: |
+          # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves;
+          # session values override the /run/user defaults written first.
+          SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
+          test -n "$SPID" || { echo "FAIL: no desktop session process found"; exit 1; }
+          {
+            echo "XDG_RUNTIME_DIR=/run/user/$(id -u)"
+            echo "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus"
+            for v in DISPLAY WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR; do
+              val=$(tr '\0' '\n' < "/proc/$SPID/environ" | sed -n "s/^$v=//p")
+              [ -n "$val" ] && echo "$v=$val"
+            done
+          } | tee -a "$GITHUB_ENV"
       - name: install user-local ibus component (both registry paths — version-dependent)
         run: |
           for d in "$HOME/.local/share/ibus/component" "$HOME/.config/ibus/component"; do
             mkdir -p "$d"
-            sed "s|/usr/libexec/ibus-engine-geist-diktat|$PWD/ibus-engine-geist-diktat|" \
+            sed "s|/usr/libexec/ibus-engine-geist-diktat|$PWD/ibus-engine-geist-diktat-test|" \
               ibus/geist-diktat.xml > "$d/geist-diktat.xml"
           done
       - name: e2e — real session, real model, real audio
         run: |
-          # adopt the live session's environment (the runner unit has none):
-          # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves.
-          SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
-          test -n "$SPID" || { echo "FAIL: no desktop session process found"; exit 1; }
-          for v in DISPLAY WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR; do
-            val=$(tr '\0' '\n' < "/proc/$SPID/environ" | sed -n "s/^$v=//p")
-            [ -n "$val" ] && export "$v=$val" && echo "$v=$val"
-          done
-          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-          export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
           export GEIST_AUDIO_MODEL_PATH="$HOME/.local/share/geist-diktat/audio_tower.safetensors"
           export GEIST_MEL_CONSTANTS_PATH="$PWD/geistlib/audio_test_data/mel_constants.bin"
           # The engine pipeline: fixture WAV -> real diktat -> transcript line.
@@ -100,14 +104,4 @@ jobs:
         if: always()
         run: |
           rm -f "$HOME/.local/share/ibus/component/geist-diktat.xml" "$HOME/.config/ibus/component/geist-diktat.xml"
-          # adopt the live session's environment (the runner unit has none):
-          # DISPLAY/WAYLAND_DISPLAY decide which ibus socket the CLI resolves.
-          SPID=$(pgrep -u "$USER" -n gnome-shell || pgrep -u "$USER" -n gnome-session || true)
-          test -n "$SPID" || { echo "FAIL: no desktop session process found"; exit 1; }
-          for v in DISPLAY WAYLAND_DISPLAY DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR; do
-            val=$(tr '\0' '\n' < "/proc/$SPID/environ" | sed -n "s/^$v=//p")
-            [ -n "$val" ] && export "$v=$val" && echo "$v=$val"
-          done
-          export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-          export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}"
           ibus-daemon --replace --daemonize || true

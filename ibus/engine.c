@@ -14,9 +14,12 @@
  *   (standalone) registers its component programmatically — the test
  *                and development mode
  *
- * GEIST_DIKTAT_CMD overrides the pipeline (tests stub it with printf);
- * default: arecord | /usr/bin/diktat <model> with the per-user model
- * from ~/.local/share/geist-diktat.
+ * The pipeline is arecord | /usr/bin/diktat <model>, with the per-user
+ * model from ~/.local/share/geist-diktat and GEIST_DIKTAT_RMS as the VAD
+ * threshold. GEIST_DIKTAT_CMD replaces the whole pipeline but exists only
+ * in the test build (-DGEIST_DIKTAT_TEST_HOOKS, target
+ * ibus-engine-geist-diktat-test) — the shipped engine must not take its
+ * command line from the environment.
  *
  * ponytail: the pipeline (and its model load, seconds) starts per
  * enable. A resident daemon with a warm model is the upgrade path if
@@ -27,7 +30,6 @@
 #include <glib-unix.h>
 
 #include <signal.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -67,22 +69,48 @@ G_DEFINE_TYPE(GeistEngine, geist_engine, IBUS_TYPE_ENGINE)
  * with the engine. */
 static struct _GeistEngine *g_active_engine = NULL;
 
+/* The VAD threshold reaches /bin/sh, so accept it only as a plain
+ * positive number — never interpolate the raw env value. */
+static double pipeline_rms(void) {
+    const char *s = g_getenv("GEIST_DIKTAT_RMS");
+    if (s == NULL || s[0] == '\0') {
+        return 300.0;
+    }
+    char  *end = NULL;
+    double v   = g_ascii_strtod(s, &end);
+    if (end == s || *end != '\0' || !(v > 0.0 && v < 1e6)) {
+        g_warning("geist-diktat: ignoring non-numeric GEIST_DIKTAT_RMS=%s", s);
+        return 300.0;
+    }
+    return v;
+}
+
 static gchar *pipeline_cmd(void) {
+#ifdef GEIST_DIKTAT_TEST_HOOKS
+    /* Test-only pipeline override. Deliberately NOT compiled into the
+     * packaged engine: an env var must not choose what the IME runs. */
     const char *override = g_getenv("GEIST_DIKTAT_CMD");
     if (override != NULL && override[0] != '\0') {
         return g_strdup(override);
     }
-    const char *xdg  = g_getenv("XDG_DATA_HOME");
-    gchar      *data = xdg != NULL && xdg[0] != '\0'
-                               ? g_build_filename(xdg, "geist-diktat", NULL)
-                               : g_build_filename(g_get_home_dir(), ".local", "share",
-                                                  "geist-diktat", NULL);
-    gchar *cmd = g_strdup_printf(
-            "GEIST_AUDIO_MODEL_PATH='%s/audio_tower.safetensors' "
-            "GEIST_MEL_CONSTANTS_PATH='/usr/share/geist-diktat/mel_constants.bin' "
+#endif
+    /* g_get_user_data_dir() is XDG_DATA_HOME with the ~/.local/share
+     * fallback; paths are shell-quoted because the string goes to sh -c. */
+    gchar *data    = g_build_filename(g_get_user_data_dir(), "geist-diktat", NULL);
+    gchar *model   = g_build_filename(data, "gemma4-e2b-Q4_K_M.gguf", NULL);
+    gchar *tower   = g_build_filename(data, "audio_tower.safetensors", NULL);
+    gchar *q_model = g_shell_quote(model);
+    gchar *q_tower = g_shell_quote(tower);
+    gchar *cmd     = g_strdup_printf(
+            "GEIST_AUDIO_MODEL_PATH=%s "
+            "GEIST_MEL_CONSTANTS_PATH=/usr/share/geist-diktat/mel_constants.bin "
             "arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
-            "/usr/bin/diktat '%s/gemma4-e2b-Q4_K_M.gguf' %s",
-            data, data, g_getenv("GEIST_DIKTAT_RMS") != NULL ? g_getenv("GEIST_DIKTAT_RMS") : "300");
+            "/usr/bin/diktat %s %.0f",
+            q_tower, q_model, pipeline_rms());
+    g_free(q_tower);
+    g_free(q_model);
+    g_free(tower);
+    g_free(model);
     g_free(data);
     return cmd;
 }
@@ -176,16 +204,12 @@ static void pipeline_stop(GeistEngine *e) {
 
 static void geist_engine_enable(IBusEngine *engine) {
     pipeline_start(GEIST_ENGINE(engine));
-    if (IBUS_ENGINE_CLASS(geist_engine_parent_class)->enable != NULL) {
-        IBUS_ENGINE_CLASS(geist_engine_parent_class)->enable(engine);
-    }
+    IBUS_ENGINE_CLASS(geist_engine_parent_class)->enable(engine);
 }
 
 static void geist_engine_disable(IBusEngine *engine) {
     pipeline_stop(GEIST_ENGINE(engine));
-    if (IBUS_ENGINE_CLASS(geist_engine_parent_class)->disable != NULL) {
-        IBUS_ENGINE_CLASS(geist_engine_parent_class)->disable(engine);
-    }
+    IBUS_ENGINE_CLASS(geist_engine_parent_class)->disable(engine);
 }
 
 static void geist_engine_focus_in(IBusEngine *engine) {
@@ -193,9 +217,7 @@ static void geist_engine_focus_in(IBusEngine *engine) {
     if (e->props != NULL) {
         ibus_engine_register_properties(engine, e->props);
     }
-    if (IBUS_ENGINE_CLASS(geist_engine_parent_class)->focus_in != NULL) {
-        IBUS_ENGINE_CLASS(geist_engine_parent_class)->focus_in(engine);
-    }
+    IBUS_ENGINE_CLASS(geist_engine_parent_class)->focus_in(engine);
 }
 
 static void geist_engine_destroy(IBusObject *object) {
@@ -266,7 +288,10 @@ int main(int argc, char **argv) {
     ibus_factory_add_engine(factory, ENGINE_NAME, GEIST_TYPE_ENGINE);
 
     if (from_daemon) {
-        ibus_bus_request_name(bus, BUS_NAME, 0);
+        if (ibus_bus_request_name(bus, BUS_NAME, 0) == 0) {
+            g_printerr("geist-diktat: bus name %s is already owned\n", BUS_NAME);
+            return 1;
+        }
     } else {
         IBusComponent *component = ibus_component_new(
                 BUS_NAME, "geist dictation engine", "0.1.0", "Apache-2.0",

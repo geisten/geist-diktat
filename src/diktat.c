@@ -49,16 +49,11 @@ static double frame_rms(const int16_t *f) {
     return sqrt(acc / FRAME);
 }
 
-static geist_token_t g_bos = -1;
-
-static bool feed_text(struct geist_session *s, const char *text, bool drop_bos) {
-    geist_token_t toks[PROMPT_CAP];
-    size_t        n = 0;
-    if (geist_session_tokenize(s, text, PROMPT_CAP, toks, &n) != GEIST_OK)
-        return false;
-    size_t start = (drop_bos && n > 0 && toks[0] == g_bos) ? 1 : 0;
-    return geist_session_prefill_tokens(s, n - start, toks + start) == GEIST_OK;
-}
+/* Process-constant decode setup, filled once in main(). */
+static struct {
+    geist_token_t bos, eos, end_of_turn, channel;
+    const char   *instr;
+} cfg;
 
 /* Append one decoded piece to line[], SentencePiece-normalized: U+2581 and
  * newlines become spaces, control bytes are dropped. */
@@ -78,15 +73,16 @@ static void append_piece(const char *t, char *line, size_t *len) {
 }
 
 /* Audio already streamed into the session; finish the turn and emit the
- * transcript line. Returns false only on session errors. */
-static void transcribe_utterance(struct geist_session *sess,
-                                 geist_token_t         eos,
-                                 geist_token_t         end_of_turn,
-                                 geist_token_t         channel_tok,
-                                 const char           *instr) {
-    char suffix[PROMPT_CAP];
-    snprintf(suffix, sizeof suffix, "<audio|>\n%s<turn|>\n<|turn>model\n", instr);
-    if (!feed_text(sess, suffix, true)) {
+ * transcript line. */
+static void transcribe_utterance(struct geist_session *sess) {
+    char          suffix[PROMPT_CAP];
+    geist_token_t toks[PROMPT_CAP];
+    size_t        n = 0;
+    snprintf(suffix, sizeof suffix, "<audio|>\n%s<turn|>\n<|turn>model\n", cfg.instr);
+    /* Skip the tokenizer's BOS — the pinned prefix already carries one. */
+    const bool   ok   = geist_session_tokenize(sess, suffix, PROMPT_CAP, toks, &n) == GEIST_OK;
+    const size_t skip = (ok && n > 0 && toks[0] == cfg.bos) ? 1 : 0;
+    if (!ok || geist_session_prefill_tokens(sess, n - skip, toks + skip) != GEIST_OK) {
         fprintf(stderr, "diktat: audio turn failed: %s\n", geist_session_errmsg(sess));
         return;
     }
@@ -99,11 +95,11 @@ static void transcribe_utterance(struct geist_session *sess,
         geist_token_t tok;
         if (geist_session_decode_step(sess, &tok) != GEIST_OK)
             break;
-        if (tok == eos || tok == end_of_turn)
+        if (tok == cfg.eos || tok == cfg.end_of_turn)
             break;
         /* A thought-channel reply is meta text, not dictation — drop the
          * whole utterance rather than typing it. */
-        if (i == 0 && channel_tok >= 0 && tok == channel_tok) {
+        if (i == 0 && cfg.channel >= 0 && tok == cfg.channel) {
             fprintf(stderr, "diktat: model produced meta output, utterance dropped\n");
             return;
         }
@@ -138,9 +134,9 @@ int main(int argc, char **argv) {
         return 2;
     }
     const double rms_thr = argc > 2 ? atof(argv[2]) : 300.0;
-    const char  *instr   = getenv("GEIST_DIKTAT_PROMPT");
-    if (instr == nullptr)
-        instr = "Transcribe this audio.";
+    cfg.instr = getenv("GEIST_DIKTAT_PROMPT");
+    if (cfg.instr == nullptr)
+        cfg.instr = "Transcribe this audio.";
 
     struct geist_backend *be = nullptr;
     if (geist_backend_create("cpu_neon", nullptr, nullptr, &be) != GEIST_OK &&
@@ -169,10 +165,10 @@ int main(int argc, char **argv) {
         geist_backend_destroy(be);
         return 1;
     }
-    g_bos                           = geist_model_bos_token(model);
-    const geist_token_t eos         = geist_model_eos_token(model);
-    const geist_token_t end_of_turn = geist_model_token_by_text(model, "<turn|>");
-    const geist_token_t channel_tok = geist_model_token_by_text(model, "<|channel>");
+    cfg.bos         = geist_model_bos_token(model);
+    cfg.eos         = geist_model_eos_token(model);
+    cfg.end_of_turn = geist_model_token_by_text(model, "<turn|>");
+    cfg.channel     = geist_model_token_by_text(model, "<|channel>");
 
     {
         geist_token_t prefix[PROMPT_CAP];
@@ -233,7 +229,7 @@ int main(int argc, char **argv) {
             }
             if (speech_len >= MIN_UTT) {
                 fprintf(stderr, "diktat: [%.1f s]\n", (double) pushed / SR);
-                transcribe_utterance(sess, eos, end_of_turn, channel_tok, instr);
+                transcribe_utterance(sess);
             } else {
                 geist_session_reset(sess);
             }

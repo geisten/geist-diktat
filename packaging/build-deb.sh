@@ -44,14 +44,13 @@ install -m644 README.md "$STAGE/usr/share/doc/geist-diktat/"
 
 # Debian changelog (lintian: required). One generated entry — release
 # history lives in git.
-cat > /tmp/geist_diktat_changelog <<EOF
+gzip -9n > "$STAGE/usr/share/doc/geist-diktat/changelog.gz" <<EOF
 geist-diktat ($VERSION) unstable; urgency=low
 
   * See https://github.com/geisten/geist-diktat/releases
 
  -- germar <g.schlegel@geisten.net>  $(date -R)
 EOF
-gzip -9n -c /tmp/geist_diktat_changelog > "$STAGE/usr/share/doc/geist-diktat/changelog.gz"
 
 # Debian copyright file (lintian: required).
 cat > "$STAGE/usr/share/doc/geist-diktat/copyright" <<EOF

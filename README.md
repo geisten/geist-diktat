@@ -48,7 +48,8 @@ git clone --recurse-submodules https://github.com/geisten/geist-diktat
 cd geist-diktat
 make                    # builds diktat against the pinned geistlib
 make setup              # model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
-bin/geist-diktat run   # mic → transcript lines on stdout
+arecord -q -f S16_LE -r 16000 -c 1 -t raw | \
+  ./diktat geistlib/gguf_artifacts/gemma4-e2b-Q4_K_M.gguf   # transcript lines on stdout
 sh packaging/build-deb.sh   # roll your own .deb (Linux)
 ```
 

@@ -95,6 +95,8 @@ jobs:
           for m in x86_64 aarch64; do
             cp geist-diktat_*_linux-"$m".tar.gz "geist-diktat_linux-$m.tar.gz"
           done
+      - name: SHA256SUMS (install.sh verifies every asset against it)
+        run: sha256sum geist-diktat_*.deb geist-diktat_*linux-*.tar.gz > SHA256SUMS
       - name: create release with all artifacts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -103,4 +105,4 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes \
-            geist-diktat_*.deb geist-diktat_*linux-*.tar.gz
+            geist-diktat_*.deb geist-diktat_*linux-*.tar.gz SHA256SUMS
