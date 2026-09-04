@@ -31,9 +31,20 @@ trap 'rm -rf "$TMP"' EXIT
 
 # Every asset is checked against the release's own SHA256SUMS before it is
 # installed — this catches a truncated download or a swapped asset, not a
-# compromised release. ponytail: signature verification (gh attestation /
-# minisign) is the upgrade path once releases are signed.
-curl -fL --retry 3 -o "$TMP/SHA256SUMS" "$BASE/SHA256SUMS"
+# compromised release. v0.1.2 predates that manifest, so keep its independently
+# verified hashes as a narrow migration path. Any other manifest-less release
+# still fails closed because its assets cannot match these pins.
+# ponytail: signature verification (gh attestation / minisign) is the upgrade
+# path once releases are signed.
+if ! curl -fL --retry 3 -o "$TMP/SHA256SUMS" "$BASE/SHA256SUMS"; then
+    echo "geist-diktat: release manifest unavailable; trying pinned v0.1.2 hashes" >&2
+    cat > "$TMP/SHA256SUMS" <<'EOF'
+3b6dfb85983f47346858f4a5a7cfd0f31366b30ce74b5e6118595f9b0cbf55f0  geist-diktat_amd64.deb
+28083701f8ee1afce25e04ecd0aa2e4f2f33b85af9bde0bf19a4dc8a2ad26486  geist-diktat_arm64.deb
+9d9054bf7695dbbed9d795da11f07fdd4427b704bc4f12b169db78746f01f678  geist-diktat_linux-x86_64.tar.gz
+250f05ad8a510aaf16733e52dfed307557e6e88a2294ee201151576099a8c058  geist-diktat_linux-aarch64.tar.gz
+EOF
+fi
 
 sha256_of() { (sha256sum "$1" 2>/dev/null || shasum -a 256 "$1") | cut -d' ' -f1; }
 

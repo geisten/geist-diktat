@@ -102,9 +102,9 @@ static gchar *pipeline_cmd(void) {
     gchar *q_model = g_shell_quote(model);
     gchar *q_tower = g_shell_quote(tower);
     gchar *cmd     = g_strdup_printf(
+            "arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
             "GEIST_AUDIO_MODEL_PATH=%s "
             "GEIST_MEL_CONSTANTS_PATH=/usr/share/geist-diktat/mel_constants.bin "
-            "arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
             "/usr/bin/diktat %s %.0f",
             q_tower, q_model, pipeline_rms());
     g_free(q_tower);
@@ -274,6 +274,14 @@ static void on_disconnected(IBusBus *bus, gpointer data) {
 }
 
 int main(int argc, char **argv) {
+#ifdef GEIST_DIKTAT_TEST_HOOKS
+    if (argc > 1 && strcmp(argv[1], "--print-pipeline") == 0) {
+        gchar *cmd = pipeline_cmd();
+        g_print("%s\n", cmd);
+        g_free(cmd);
+        return 0;
+    }
+#endif
     const gboolean from_daemon = argc > 1 && strcmp(argv[1], "--ibus") == 0;
 
     ibus_init();
