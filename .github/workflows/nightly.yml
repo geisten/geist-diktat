@@ -19,8 +19,6 @@ jobs:
     runs-on: [self-hosted, amd-desktop]
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: fetch model + tower (idempotent, SHA-gated)
         run: |
           DATA="$HOME/.local/share/geist-diktat"

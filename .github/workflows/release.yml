@@ -24,8 +24,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: version from tag
         id: v
         run: |
@@ -85,8 +83,6 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: version from tag
         id: v
         run: |
