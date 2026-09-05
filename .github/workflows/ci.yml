@@ -36,3 +36,47 @@ jobs:
           name: quality-audit-${{ matrix.runner }}
           path: tests/results/
           retention-days: 30
+
+  speech-cpu:
+    # Uses the existing Ubuntu/Linux agent and its pinned model cache. No IBus
+    # restart, microphone capture or modification of its live desktop session.
+    runs-on: [self-hosted, amd-desktop]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pinned CPU engine
+        run: make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
+      - name: Check cached model and audio conversion tool
+        run: |
+          command -v ffmpeg
+          test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
+          test -f "$HOME/.local/share/geist-diktat/audio_tower.safetensors"
+      - name: Prepare public German read-speech pilot
+        run: python3 benchmarks/prepare_quality.py
+      - name: Measure real-model German WER and CPU performance
+        run: |
+          python3 benchmarks/quality.py \
+            --manifest build/speech-corpus/manifest.json --binary ./diktat \
+            --model "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" \
+            --tower "$HOME/.local/share/geist-diktat/audio_tower.safetensors" \
+            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean \
+            --output build/speech-results/ubuntu-agent-quality.json
+      - name: Export metrics without corpus audio or transcripts
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('build/speech-results/ubuntu-agent-quality.json')
+          if p.exists():
+              d=json.loads(p.read_text())
+              for r in d['runs']:
+                  r.pop('transcript',None);r.pop('stderr',None)
+              Path('quality-summary.json').write_text(json.dumps(d,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ubuntu-agent-speech-metrics
+          path: quality-summary.json
+          retention-days: 30
