@@ -57,10 +57,11 @@ jobs:
             make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
             make CC=gcc-14 GEMM_PROVIDER=native ibus-engine-geist-diktat
           fi
-      - name: package
-        run: |
-          VERSION=${{ steps.v.outputs.version }} sh packaging/build-deb.sh
-          VERSION=${{ steps.v.outputs.version }} sh packaging/build-tarball.sh
+      # .deb only. The tarball is built musl-static in linux-tarball below:
+      # the .deb may depend on the distro's libs (it needs libibus anyway), the
+      # tarball is the "any distro" artifact and must not.
+      - name: package (.deb)
+        run: VERSION=${{ steps.v.outputs.version }} sh packaging/build-deb.sh
       - name: lintian
         run: lintian --fail-on error geist-diktat_*.deb
       - name: install sanity against the release artifact
@@ -69,16 +70,55 @@ jobs:
           geist-diktat 2>&1 | grep -q usage
           diktat /nonexistent.gguf </dev/null 2>&1 | grep -q "model_load failed"
           ls /usr/share/ibus/component/geist-diktat.xml /usr/libexec/ibus-engine-geist-diktat
-      - name: tarball sanity (wrapper resolves its unpacked prefix)
-        run: |
-          mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_linux-*.tar.gz
-          /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
       - uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.arch }}
-          path: |
-            geist-diktat_*.deb
-            geist-diktat_*_linux-*.tar.gz
+          path: geist-diktat_*.deb
+
+  linux-tarball:
+    # Its own job with a fresh checkout, not a step in `artifacts`: geistlib
+    # builds into build/linux/release for glibc and musl alike, so a second
+    # build in the same tree would silently relink glibc objects.
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: version from tag
+        id: v
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          fi
+      # Fully static against musl, not glibc: no libc dependency at all, so the
+      # tarball stops caring which distro it lands on — that is what the .deb's
+      # debian:12-vs-ubuntu build split exists to work around. Alpine 3.21 is
+      # the version geistlib itself uses for this: gcc 14 for -std=c23, plus a
+      # musl-built libgomp for OpenMP. GEMM_PROVIDER=native keeps OpenBLAS out.
+      # -static belongs here, not in geistlib: link flags are the linker's.
+      - name: build + package (alpine 3.21, musl-static)
+        run: |
+          docker run --rm -v "$PWD:/w" -w /w \
+            -e VERSION=${{ steps.v.outputs.version }} alpine:3.21 sh -ec '
+            apk add --no-cache build-base linux-headers git >/dev/null
+            git config --global --add safe.directory /w
+            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
+            sh packaging/build-tarball.sh
+          '
+      # Unpacked on the glibc host, deliberately: a musl-static binary has to
+      # run somewhere it was not built.
+      - name: tarball sanity on glibc (wrapper + binary both run)
+        run: |
+          mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_linux-*.tar.gz
+          /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
+          /tmp/tb/geist-diktat_*/bin/diktat /nonexistent.gguf </dev/null 2>&1 | grep -q "model_load failed"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-tarball-${{ matrix.runner }}
+          path: geist-diktat_*_linux-*.tar.gz
 
   macos-tarball:
     # Apple Silicon only: geistlib's mac targets build the cpu_neon
@@ -121,7 +161,7 @@ jobs:
           path: geist-diktat_*_macos-*.tar.gz
 
   publish:
-    needs: [artifacts, macos-tarball]
+    needs: [artifacts, linux-tarball, macos-tarball]
     runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/')
     steps:

@@ -44,12 +44,16 @@ endif
 
 LIB := $(GEISTLIB)/lib/$(TARGET)/$(MODE)/libgeist.a
 
-CFLAGS  := -std=c23 -O2 -Wall -Wextra -I$(GEISTLIB)/include $(CFLAGS_TARGET) $(GEMM_CFLAGS)
-LDFLAGS := $(LDFLAGS_TARGET)
-LDLIBS  := $(LDLIBS_TARGET) $(GEMM_LDLIBS)
+# EXTRA_* are geistlib's own escape hatches (mk/common.mk); same names here so
+# one convention covers both. The Linux release tarball links with
+# EXTRA_LDFLAGS=-static against musl — geistlib deliberately keeps -static out
+# of its archive build, because link flags belong to whoever links.
+CFLAGS  := -std=c23 -O2 -Wall -Wextra -I$(GEISTLIB)/include $(CFLAGS_TARGET) $(GEMM_CFLAGS) $(EXTRA_CFLAGS)
+LDFLAGS := $(LDFLAGS_TARGET) $(EXTRA_LDFLAGS)
+LDLIBS  := $(LDLIBS_TARGET) $(GEMM_LDLIBS) $(EXTRA_LDLIBS)
 
 
-.PHONY: all setup test ibus clean distclean
+.PHONY: all setup test test-audit ibus clean distclean
 
 all: diktat
 
@@ -91,6 +95,10 @@ setup:
 
 test: diktat
 	sh tests/smoke.sh
+
+# Detailed model-free contracts; exposes the findings in doc/AUDIT-2026-09-05.md.
+test-audit:
+	CC="$(CC)" python3 -m unittest discover -s tests -p 'test_*.py' -v
 
 clean:
 	rm -f diktat ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client
