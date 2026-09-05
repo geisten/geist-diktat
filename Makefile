@@ -21,8 +21,12 @@ MODE       ?= release
 
 # Parse-time, not a target: the include directives and detect-target.sh below
 # are evaluated while make is still reading this file. Skipped for goals that
-# do not need an engine, so a fresh `make clean` does not clone 14 MB.
-ifneq (,$(filter-out clean distclean help,$(or $(MAKECMDGOALS),all)))
+# do not need an engine, so a fresh `make clean` does not clone 14 MB and an
+# ibus-only build needs no git in its container.
+# The ibus binaries compile against libibus only — no libgeist, no engine.
+NO_ENGINE := clean distclean help ibus ibus-engine-geist-diktat \
+             ibus-engine-geist-diktat-test ibus-test-client
+ifneq (,$(filter-out $(NO_ENGINE),$(or $(MAKECMDGOALS),all)))
 
 ENGINE := $(shell GEIST_REPO='$(GEIST_REPO)' GEIST_REF='$(GEIST_REF)' \
                   GEISTLIB='$(GEISTLIB)' sh scripts/sync-engine.sh >&2 && echo ok)
