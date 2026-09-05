@@ -9,10 +9,27 @@
 # and its mk/ fragments supply the flags, so diktat links with exactly what the
 # engine was built with.
 #
-#   make               # build ./diktat (syncs + builds libgeist.a on demand)
-#   make setup         # fetch model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
-#   make test          # smoke test (full transcript check when fixtures exist)
-#   make GEIST_REF=... # build against another engine revision, one-off
+# `#>` lines below are what `make help` prints — the one place that lists
+# every entry point, so CI calls these targets instead of the scripts.
+#
+#> make               build ./diktat (syncs + builds libgeist.a on demand)
+#> make ibus          IBus engine + test client (Linux, libibus-1.0-dev)
+#> make setup         fetch model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
+#>
+#> make test          smoke test (full transcript check when fixtures exist)
+#> make test-audit    model-free contract suite (tests/test_*.py)
+#> make test-nvim     headless Neovim plugin test (diktat stubbed)
+#> make test-ibus     headless IBus daemon+engine+client integration
+#> make test-e2e      real model + real audio, WER-gated (needs fixtures)
+#> make test-ubuntu   container suite: real GTK3/Qt5/IBus under Xvfb
+#> make coverage      LLVM source coverage of src/diktat.c
+#>
+#> make deb           .deb via packaging/build-deb.sh      (VERSION=x.y.z)
+#> make tarball       tar.gz via packaging/build-tarball.sh (VERSION=x.y.z)
+#> make format        clang-format, shared style file with the engine
+#> make clean         drop the binaries; distclean also drops the engine
+#>
+#> make GEIST_REF=... build against another engine revision, one-off
 
 GEIST_REPO ?= https://github.com/geisten/geistlib.git
 GEIST_REF  ?= bb751c596f7d6ed3f73fa2d4c4e29e617cada57f
@@ -24,7 +41,8 @@ MODE       ?= release
 # do not need an engine, so a fresh `make clean` does not clone 14 MB and an
 # ibus-only build needs no git in its container.
 # The ibus binaries compile against libibus only — no libgeist, no engine.
-NO_ENGINE := clean distclean help ibus ibus-engine-geist-diktat \
+NO_ENGINE := clean distclean help format test-nvim test-ibus \
+             ibus ibus-engine-geist-diktat \
              ibus-engine-geist-diktat-test ibus-test-client
 ifneq (,$(filter-out $(NO_ENGINE),$(or $(MAKECMDGOALS),all)))
 
@@ -53,9 +71,16 @@ LDFLAGS := $(LDFLAGS_TARGET) $(EXTRA_LDFLAGS)
 LDLIBS  := $(LDLIBS_TARGET) $(GEMM_LDLIBS) $(EXTRA_LDLIBS)
 
 
-.PHONY: all setup test test-audit ibus clean distclean
+.PHONY: all help setup test test-audit test-nvim test-ibus test-e2e \
+        test-ubuntu coverage \
+        deb tarball format ibus clean distclean
 
 all: diktat
+
+# `make help` was already engine-free (NO_ENGINE) but had no recipe.
+# This file only: $(MAKEFILE_LIST) also holds the engine's mk/ fragments.
+help:
+	@grep "^#>" Makefile | cut -c4-
 
 diktat: src/diktat.c $(LIB)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(LDFLAGS) $(LDLIBS)
@@ -99,6 +124,40 @@ test: diktat
 # Detailed model-free contracts; exposes the findings in doc/AUDIT-2026-09-05.md.
 test-audit:
 	CC="$(CC)" python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+test-nvim:
+	sh tests/nvim_smoke.sh
+
+test-ibus: ibus
+	sh tests/ibus_smoke.sh
+
+# The one test that hears: real model + real audio, scored against a
+# reference transcript. Fixtures are 3.7 GB, so this is nightly-only.
+test-e2e: diktat
+	sh tests/e2e_wer.sh
+
+# The disposable-container suite: contracts + real GTK3/Qt5/IBus under Xvfb.
+# Needs tests/ubuntu.Dockerfile's toolchain, so it is CI/container-only.
+test-ubuntu:
+	sh tests/ubuntu.sh
+
+# LLVM source coverage of src/diktat.c through tests/core_stub.c.
+coverage:
+	sh tests/coverage.sh
+
+# Packaging. Both scripts assert their inputs exist, so the prerequisites
+# here are convenience, not the safety net; VERSION passes through.
+deb: diktat ibus-engine-geist-diktat
+	sh packaging/build-deb.sh
+
+tarball: diktat
+	sh packaging/build-tarball.sh
+
+# Same style file as the engine, so a function moved between repos does not
+# reformat. ibus/engine.c is GLib-shaped C and reformats too — that is fine,
+# the style file is the tie-breaker, not the GLib house style.
+format:
+	clang-format -i src/*.c ibus/*.c tests/*.c tests/*.cpp
 
 clean:
 	rm -f diktat ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client

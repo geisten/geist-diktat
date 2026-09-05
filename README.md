@@ -63,8 +63,12 @@ make                    # clones + builds the pinned geistlib, then diktat
 make setup              # model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
 arecord -q -f S16_LE -r 16000 -c 1 -t raw | \
   ./diktat geistlib/gguf_artifacts/gemma4-e2b-Q4_K_M.gguf   # transcript lines on stdout
-sh packaging/build-deb.sh   # roll your own .deb (Linux)
+make deb                # roll your own .deb (Linux); `make tarball` elsewhere
 ```
+
+`make help` lists every entry point — build, the five test suites,
+packaging and formatting all run through it, and CI calls the same
+targets.
 
 Needs ~4 GB RAM (Gemma 4 E2B Q4_K_M); runs on any x86-64 desktop and on
 a Raspberry Pi 5. `GEIST_DIKTAT_PROMPT` overrides the transcription

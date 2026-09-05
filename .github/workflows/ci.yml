@@ -44,8 +44,7 @@ jobs:
           docker run --rm -v "$PWD:/w" -w /w alpine:3.21 sh -ec '
             apk add --no-cache build-base linux-headers git >/dev/null
             git config --global --add safe.directory /w
-            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
-            sh packaging/build-tarball.sh
+            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static tarball
           '
       # On the glibc host: a static binary that only runs where it was built
       # would defeat the point. build-tarball.sh already asserted no dynamic
@@ -84,10 +83,10 @@ jobs:
       - name: build (static libomp, as the release tarball does)
         run: make GEIST_STATIC_OMP=1
       - name: smoke test (fixture-gated half skips without the 3.7 GB model)
-        run: sh tests/smoke.sh
+        run: make test
       - name: tarball builds and the wrapper resolves its prefix
         run: |
-          sh packaging/build-tarball.sh
+          make tarball
           mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_macos-*.tar.gz
           /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
 
@@ -98,7 +97,7 @@ jobs:
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q neovim
       - name: headless plugin test (diktat stubbed)
-        run: sh tests/nvim_smoke.sh
+        run: make test-nvim
 
   ibus-engine:
     runs-on: ubuntu-24.04
@@ -109,7 +108,7 @@ jobs:
       - name: build engine + test client
         run: make CC=gcc-14 GEMM_PROVIDER=native ibus
       - name: headless integration test (daemon + engine + client)
-        run: sh tests/ibus_smoke.sh
+        run: make test-ibus
 
   install-sh:
     strategy:
@@ -139,31 +138,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q lintian
-      # arm64 builds in debian:12 with clang-19: the Pi world runs RasPiOS
-      # bookworm (glibc 2.36); ubuntu-24.04 binaries link libmvec +
-      # GLIBC_2.38+ symbols and die there (measured on a Pi 5). amd64
-      # stays on the runner's gcc-14 (clang-19 backend-crashes on the
-      # x86 VNNI kernels; x86 desktops run ubuntu 24.04+ / debian 13+).
-      - name: build (arm64 -> debian:12 + clang-19; amd64 -> gcc-14)
+      - name: build (packaging/build-linux.sh — shared with release.yml)
         run: |
-          if [ "$(uname -m)" = aarch64 ]; then
-            docker run --rm -v "$PWD:/w" -w /w debian:12 bash -ec '
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -q >/dev/null
-              # git + ca-certificates: the engine is cloned by the build itself
-              # now (GEIST_REF), and this build runs inside the container.
-              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config \
-                                    git ca-certificates >/dev/null
-              make CC=clang-19 TARGET=linux GEMM_PROVIDER=native
-              make CC=clang-19 GEMM_PROVIDER=native ibus-engine-geist-diktat
-            '
-          else
-            sudo apt-get install -y -q gcc-14 libibus-1.0-dev
-            make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
-            make CC=gcc-14 GEMM_PROVIDER=native ibus-engine-geist-diktat
-          fi
+          [ "$(uname -m)" = aarch64 ] || sudo apt-get install -y -q gcc-14 libibus-1.0-dev
+          sh packaging/build-linux.sh
       - name: package
-        run: sh packaging/build-deb.sh
+        run: make deb
       - name: lintian (errors fail; style warnings tolerated)
         run: lintian --fail-on error geist-diktat_*.deb
       - name: install test in clean containers (catches missing Depends; bookworm = RasPiOS glibc)

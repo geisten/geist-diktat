@@ -35,4 +35,4 @@ jobs:
           python3 geistlib/tools/fetch_audio_tower.py -o "$DATA/audio_tower.safetensors" \
             --sha256 d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77
       - name: e2e — transcribe the LibriSpeech fixture, gate on WER
-        run: sh tests/e2e_wer.sh
+        run: make test-e2e
