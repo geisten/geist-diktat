@@ -48,11 +48,10 @@ jobs:
         run: make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
       - name: Check cached model and audio conversion tool
         run: |
-          command -v ffmpeg
           test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
           test -f "$HOME/.local/share/geist-diktat/audio_tower.safetensors"
       - name: Prepare public German read-speech pilot
-        run: python3 benchmarks/prepare_quality.py
+        run: python3 benchmarks/prepare_quality.py --fleurs-only
       - name: Measure real-model German WER and CPU performance
         run: |
           python3 benchmarks/quality.py \

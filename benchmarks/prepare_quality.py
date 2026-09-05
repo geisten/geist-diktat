@@ -39,6 +39,20 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def convert(source,target):
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(source),'-vn','-ar','16000','-ac','1','-c:a','pcm_s16le',str(target)],check=True)
 
+def convert_fleurs(source,target):
+    # The pinned FLEURS archive is already 16 kHz mono float32 WAV. Decode
+    # exactly this documented format, so CI needs no host-level ffmpeg install.
+    data=source.read_bytes(); chunks={};offset=12
+    if data[:4]!=b'RIFF' or data[8:12]!=b'WAVE':raise ValueError('not RIFF WAV')
+    while offset+8<=len(data):
+        name=data[offset:offset+4];size=struct.unpack_from('<I',data,offset+4)[0]
+        if offset+8+size>len(data):raise ValueError('truncated WAV chunk')
+        chunks[name]=data[offset+8:offset+8+size];offset+=8+size+(size%2)
+    fmt=struct.unpack_from('<HHIIHH',chunks[b'fmt '])
+    if (fmt[0],fmt[1],fmt[2],fmt[5])!=(3,1,16000,32):raise ValueError('unexpected FLEURS WAV format')
+    samples=[max(-32768,min(32767,math.floor(x[0]*32768+0.5))) for x in struct.iter_unpack('<f',chunks[b'data'])]
+    save_wav(target,samples)
+
 def save_wav(path,samples):
     with wave.open(str(path),'wb') as w:
         w.setparams((1,2,16000,0,'NONE','not compressed'))
@@ -49,6 +63,7 @@ def main():
     ap.add_argument('--root',type=Path,default=Path('build/speech-corpus'))
     ap.add_argument('--cache',type=Path,default=Path('build/speech-research'))
     ap.add_argument('--oocc',action='store_true',help='include OOCC for noncommercial local research under its terms')
+    ap.add_argument('--fleurs-only',action='store_true',help='prepare only FLEURS and noise; no ffmpeg dependency')
     a=ap.parse_args();p=a.root;r=a.cache;p.mkdir(parents=True,exist_ok=True);r.mkdir(parents=True,exist_ok=True)
     rows=list(csv.reader(io.StringIO(fetch(HF+'test.tsv',r/'fleurs_tsv').decode()),delimiter='\t'))
     refs={row[1]:row for row in rows}; manifest=[]
@@ -61,10 +76,10 @@ def main():
                     (p/('source-'+name)).write_bytes(archive.extractfile(m).read());count+=1
                     if count==12:break
     for raw in sorted(p.glob('source-*.wav'))[:12]:
-        name=raw.name.removeprefix('source-');dst=p/('fleurs-'+name);convert(raw,dst)
+        name=raw.name.removeprefix('source-');dst=p/('fleurs-'+name);convert_fleurs(raw,dst)
         manifest.append(dict(id=dst.stem,wav=dst.name,reference=refs[name][2],group='de-read-clean',source=HF+'audio/test.tar.gz',source_file=name,revision=REV,license='CC-BY-4.0',source_sha256=sha(raw)))
-    page=fetch(SWISS,r/'swiss_page').decode()
-    for sample in (1,2):
+    page=fetch(SWISS,r/'swiss_page').decode() if not a.fleurs_only else ''
+    for sample in (() if a.fleurs_only else (1,2)):
         block=page.split('id="user-content-sample-'+str(sample)+'"')[1].split('<h3')[0]
         plain=html.unescape(re.sub('<[^>]+>',' ',block))
         standard=re.search(r'High German Sentence:\s*(.*?)\s*Thema:',plain,re.S).group(1).strip()
