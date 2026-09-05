@@ -19,6 +19,10 @@ jobs:
     runs-on: [self-hosted, amd-desktop]
     steps:
       - uses: actions/checkout@v4
+      # Build first: the tower fetcher below lives in geistlib/tools/, and the
+      # engine checkout is created by make (GEIST_REF), no longer by a submodule.
+      - name: build (also clones the pinned engine)
+        run: make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
       - name: fetch model + tower (idempotent, SHA-gated)
         run: |
           DATA="$HOME/.local/share/geist-diktat"
@@ -30,7 +34,5 @@ jobs:
           fi
           python3 geistlib/tools/fetch_audio_tower.py -o "$DATA/audio_tower.safetensors" \
             --sha256 d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77
-      - name: build
-        run: make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
       - name: e2e — transcribe the LibriSpeech fixture, gate on WER
         run: sh tests/e2e_wer.sh
