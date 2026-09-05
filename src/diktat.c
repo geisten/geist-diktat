@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
         return 2;
     }
     const double rms_thr = argc > 2 ? atof(argv[2]) : 300.0;
-    cfg.instr = getenv("GEIST_DIKTAT_PROMPT");
+    cfg.instr            = getenv("GEIST_DIKTAT_PROMPT");
     if (cfg.instr == nullptr)
         cfg.instr = "Transcribe this audio.";
 
@@ -174,7 +174,8 @@ int main(int argc, char **argv) {
         geist_token_t prefix[PROMPT_CAP];
         size_t        n_prefix = 0;
         if (geist_session_tokenize(
-                    sess, "<bos><|turn>user\n<|audio>", PROMPT_CAP, prefix, &n_prefix) != GEIST_OK ||
+                    sess, "<bos><|turn>user\n<|audio>", PROMPT_CAP, prefix, &n_prefix) !=
+                    GEIST_OK ||
             geist_session_pin_prefix(sess, n_prefix, prefix) != GEIST_OK) {
             fprintf(stderr, "pin_prefix failed\n");
             geist_session_destroy(sess);
