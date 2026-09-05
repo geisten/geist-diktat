@@ -28,6 +28,8 @@ test -x ./diktat || { echo "FAIL: ./diktat not built"; exit 1; }
 export GEIST_AUDIO_MODEL_PATH="$TOWER"
 export GEIST_MEL_CONSTANTS_PATH=geistlib/audio_test_data/mel_constants.bin
 
+T0=$(date +%s)
+
 # WAV data + a second of silence so the VAD closes the utterance.
 # python's wave module walks the RIFF chunks — no fixed-offset assumption
 # (the #269 bug class).
@@ -44,24 +46,33 @@ HYP=$(cat "$TMP/transcript.txt")
 echo "transcript: $HYP"
 [ -n "$HYP" ] || { echo "FAIL: empty transcript"; exit 1; }
 
-python3 - "$REF" "$TMP/transcript.txt" <<'EOF'
-import re
-import sys
+# Scoring belongs to the engine: geistlib/tools/eval_audio_wer.py owns the
+# normalization and the word-level Levenshtein, including a fix this repo's
+# own copy never had — an ASCII-only character class split "schön" into
+# "sch n" and wrecked non-English WER.
+#
+# Its input is bench_audio_wer's TSV, so one clip's worth is built here.
+# diktat reports neither an attach/decode split nor a token count, so those
+# columns carry the wall clock and zeros: the tok/s line it prints is
+# therefore meaningless, and only the aggregate WER gates this test.
+SCORER=geistlib/tools/eval_audio_wer.py
+[ -f "$SCORER" ] || { echo "FAIL: $SCORER missing (it ships with the pinned engine)"; exit 1; }
 
-def norm(text):
-    return re.sub(r"[^\w' ]+", " ", text.lower()).split()
+ELAPSED_MS=$(( ($(date +%s) - T0) * 1000 ))
+[ "$ELAPSED_MS" -gt 0 ] || ELAPSED_MS=1   # the scorer divides by this
 
-ref = norm(open(sys.argv[1]).read())
-hyp = norm(open(sys.argv[2]).read())
+printf '%s\t%s\n' "$WAV" "$(tr '\n' ' ' < "$REF")" > "$TMP/refs.tsv"
+printf 'WER\t%s\t0\t%s\t0\t%s\n' "$WAV" "$ELAPSED_MS" "$HYP" > "$TMP/hyps.tsv"
 
-prev = list(range(len(hyp) + 1))
-for i, r in enumerate(ref, 1):
-    cur = [i]
-    for j, h in enumerate(hyp, 1):
-        cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (r != h)))
-    prev = cur
-wer = prev[-1] / len(ref)
-print(f"WER: {wer:.1%} ({prev[-1]} errors / {len(ref)} words)")
-sys.exit(0 if wer <= 0.15 else 1)
-EOF
+# Not piped into tee: /bin/sh has no pipefail, so set -e would only see tee
+# and a crashed scorer would slip through as an empty WER.
+python3 "$SCORER" "$TMP/hyps.tsv" "$TMP/refs.tsv" > "$TMP/score.txt"
+cat "$TMP/score.txt"
+
+WER=$(sed -n 's/.*aggregate WER: \([0-9.]*\)%.*/\1/p' "$TMP/score.txt")
+[ -n "$WER" ] || { echo "FAIL: no aggregate WER in the scorer output"; exit 1; }
+awk -v w="$WER" 'BEGIN { exit (w <= 15.0) ? 0 : 1 }' || {
+    echo "FAIL: WER ${WER}% is over the 15% threshold"
+    exit 1
+}
 echo "PASS"
