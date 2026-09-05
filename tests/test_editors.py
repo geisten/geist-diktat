@@ -49,3 +49,30 @@ if text~='hello ' then print('Actual: '..vim.inspect(text)); vim.cmd('cquit') el
             self.assertIn('Grüße Welt',out.read_text())
 
 if __name__=='__main__': unittest.main(verbosity=2)
+
+class VimAsync(unittest.TestCase):
+    def test_real_terminal_fragmented_unicode_and_literal_commands(self):
+        import pty
+        import select
+        import time
+        binary=os.getenv('VIM_BINARY',shutil.which('vim') or '')
+        if not binary or not subprocess.check_output([binary,'--version']).startswith(b'VIM -'):self.skipTest('real Vim unavailable')
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'async.vim';out=Path(d)/'out'
+            path.write_text("set encoding=utf-8\nset rtp+="+str(ROOT)+"\nruntime plugin/geist-diktat.vim\n"
+                +"let g:geist_diktat_command=['sh','-c',\"printf 'Gr'; sleep 0.1; printf 'üße :q! $(false)\\\\n'\"]\n"
+                +"call geist_diktat#start()\nfunction! Finish(timer)\ncall writefile([getline(1)],'"+str(out)+"')\nqa!\nendfunction\ncall timer_start(700,'Finish')\n")
+            master,slave=pty.openpty()
+            p=subprocess.Popen([binary,'-Nu','NONE','-n','-i','NONE','-S',str(path)],stdin=slave,stdout=slave,stderr=slave,env=dict(os.environ,TERM='xterm'))
+            os.close(slave)
+            try:
+                deadline=time.monotonic()+5
+                while p.poll() is None and time.monotonic()<deadline:
+                    if select.select([master],[],[],.1)[0]:
+                        try:os.read(master,65536)
+                        except OSError:break
+                self.assertEqual(p.wait(timeout=1),0)
+                self.assertEqual(out.read_text(),'Grüße :q! $(false) \n')
+            finally:
+                if p.poll() is None:p.kill();p.wait()
+                os.close(master)

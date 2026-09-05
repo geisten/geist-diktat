@@ -1,9 +1,6 @@
--- :Diktat — toggle dictation at the cursor.
-if vim.g.loaded_geist_diktat then
-    return
-end
+if vim.g.loaded_geist_diktat then return end
 vim.g.loaded_geist_diktat = true
-
-vim.api.nvim_create_user_command("Diktat", function()
-    require("geist-diktat").toggle()
-end, { desc = "Toggle geist-diktat speech input" })
+for name, method in pairs({Diktat='toggle', DiktatToggle='toggle', DiktatStart='start', DiktatStop='stop'}) do
+    vim.api.nvim_create_user_command(name, function() require('geist-diktat')[method]() end, {})
+end
+vim.keymap.set({'n','i'}, '<Plug>(DiktatToggle)', function() require('geist-diktat').toggle() end)

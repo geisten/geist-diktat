@@ -46,5 +46,13 @@ int main(void) {
     result("natural exit clears pid for restart",e.pid==0);
     pipeline_stop(&e);
     waitpid(pid,&status,0);
+    gboolean cycles_ok=TRUE;
+    g_setenv("GEIST_DIKTAT_CMD","sleep 30",TRUE);
+    for (int i=0;i<100;i++) {
+        pipeline_start(&e); GPid previous=e.pid; pipeline_stop(&e);
+        cycles_ok &= e.pid==0 && e.out==NULL && e.watch==0 && e.child_watch==0;
+        cycles_ok &= waitpid(previous,&status,WNOHANG)==-1 && errno==ECHILD;
+    }
+    result("100 start/stop cycles reaped",cycles_ok);
     return failures ? 1 : 0;
 }

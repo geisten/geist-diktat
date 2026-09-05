@@ -30,6 +30,9 @@ install -m755 ibus-engine-geist-diktat "$STAGE/usr/libexec/"
 strip "$STAGE/usr/libexec/ibus-engine-geist-diktat"
 install -m644 ibus/geist-diktat.xml "$STAGE/usr/share/ibus/component/"
 install -m755 packaging/geist-diktat "$STAGE/usr/bin/geist-diktat"
+install -m755 runtime/*.py "$STAGE/usr/share/geist-diktat/"
+mkdir -p "$STAGE/usr/share/geist-diktat/editor"
+cp -R lua plugin autoload "$STAGE/usr/share/geist-diktat/editor/"
 # Runtime data the wrapper needs: mel constants (checked into the engine)
 # and the SHA-verifying tower fetcher.
 install -m644 geistlib/audio_test_data/mel_constants.bin "$STAGE/usr/share/geist-diktat/"
@@ -80,8 +83,8 @@ Priority: optional
 Homepage: https://github.com/geisten/geist-diktat
 Description: system-wide local dictation (Gemma 4 audio, geist engine)
  Speech-to-text into the focused window, fully offline: a streaming
- energy VAD segments utterances, Gemma 4 E2B transcribes them (measured
- 4.2% WER English / 7.1% German) and an IBus input source commits the
+ energy VAD segments utterances, Gemma 4 E2B transcribes them,
+ and an IBus input source commits the
  text through the standard input-method protocol — no root, no uinput.
  One static binary on the geist inference engine; the model (~3.7 GB) is
  fetched per-user by 'geist-diktat setup'.

@@ -63,6 +63,7 @@ enum geist_status geist_session_audio_end(struct geist_session *s) { (void)s; en
 enum geist_status geist_session_decode_step(struct geist_session *s, geist_token_t *out) {
     (void)s; decoded++;
     if (fail("meta")) *out=4;
+    else if (fail("split-utf8")) *out=decoded<=2 ? 5 : 2;
     else if (fail("loop")) *out=5;
     else if (fail("cycle2")) *out=5 + decoded%2;
     else if (fail("cap")) *out=5 + decoded%3;
@@ -71,6 +72,7 @@ enum geist_status geist_session_decode_step(struct geist_session *s, geist_token
 }
 const char *geist_session_token_to_str(struct geist_session *s, geist_token_t t) {
     (void)s; (void)t;
+    if (fail("split-utf8")) return decoded==1 ? "\xc3" : "\xbc";
     const char *piece=getenv("STUB_PIECE");
     return piece ? piece : "▁Hallo\nWelt\tGrüße\001!";
 }

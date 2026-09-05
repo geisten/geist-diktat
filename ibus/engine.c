@@ -3,9 +3,8 @@
  *
  * The engine owns the capture lifecycle: selecting the input source
  * (enable) spawns the dictation pipeline; switching away (disable)
- * kills it. Focus changes within the enabled source do NOT stop the
- * mic — you dictate across windows; the privacy boundary is the input
- * source itself. Each transcript line is committed through the standard
+ * kills it. Focus loss also stops capture, and protected input fields
+ * never start it. Each transcript line is committed through the standard
  * IME protocol, so every IBus-aware app (GTK, Qt, Electron, VTE
  * terminals) receives it — no uinput, no root.
  *
@@ -14,7 +13,7 @@
  *   (standalone) registers its component programmatically — the test
  *                and development mode
  *
- * The pipeline is arecord | /usr/bin/diktat <model>, with the per-user
+ * The pipeline is /usr/bin/geist-diktat run, with the per-user
  * model from ~/.local/share/geist-diktat and GEIST_DIKTAT_RMS as the VAD
  * threshold. GEIST_DIKTAT_CMD replaces the whole pipeline but exists only
  * in the test build (-DGEIST_DIKTAT_TEST_HOOKS, target
@@ -29,6 +28,8 @@
 
 #include <glib-unix.h>
 
+#include <errno.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
@@ -56,6 +57,8 @@ struct _GeistEngineClass {
 struct _GeistEngine {
     IBusEngine parent;
     GPid       pid;   /* pipeline process group leader; 0 = not running */
+    guint      child_watch;
+    gboolean enabled, focused, protected_input;
     guint      watch; /* GIOChannel source id */
     GIOChannel *out;
     IBusPropList *props;
@@ -94,25 +97,7 @@ static gchar *pipeline_cmd(void) {
         return g_strdup(override);
     }
 #endif
-    /* g_get_user_data_dir() is XDG_DATA_HOME with the ~/.local/share
-     * fallback; paths are shell-quoted because the string goes to sh -c. */
-    gchar *data    = g_build_filename(g_get_user_data_dir(), "geist-diktat", NULL);
-    gchar *model   = g_build_filename(data, "gemma4-e2b-Q4_K_M.gguf", NULL);
-    gchar *tower   = g_build_filename(data, "audio_tower.safetensors", NULL);
-    gchar *q_model = g_shell_quote(model);
-    gchar *q_tower = g_shell_quote(tower);
-    gchar *cmd     = g_strdup_printf(
-            "arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
-            "GEIST_AUDIO_MODEL_PATH=%s "
-            "GEIST_MEL_CONSTANTS_PATH=/usr/share/geist-diktat/mel_constants.bin "
-            "/usr/bin/diktat %s %.0f",
-            q_tower, q_model, pipeline_rms());
-    g_free(q_tower);
-    g_free(q_model);
-    g_free(tower);
-    g_free(model);
-    g_free(data);
-    return cmd;
+    return g_strdup_printf("exec /usr/bin/geist-diktat run %.6g", pipeline_rms());
 }
 
 static void update_state(GeistEngine *e, const char *label) {
@@ -125,31 +110,42 @@ static void update_state(GeistEngine *e, const char *label) {
 
 /* One transcript line arrived — commit it followed by a space, so
  * consecutive utterances flow like typed text. */
+static void close_output(GeistEngine *e) {
+    if (e->watch) { g_source_remove(e->watch); e->watch = 0; }
+    if (e->out) { g_io_channel_unref(e->out); e->out = NULL; }
+}
+
 static gboolean on_pipeline_line(GIOChannel *ch, GIOCondition cond, gpointer data) {
     GeistEngine *e = data;
-    if (cond & G_IO_IN) {
-        gchar    *line = NULL;
-        gsize     len  = 0;
-        GIOStatus st   = g_io_channel_read_line(ch, &line, &len, NULL, NULL);
-        if (st == G_IO_STATUS_NORMAL && line != NULL) {
+    for (;;) {
+        gchar *line = NULL;
+        GError *error = NULL;
+        GIOStatus status = g_io_channel_read_line(ch, &line, NULL, NULL, &error);
+        if (status == G_IO_STATUS_NORMAL && line) {
             g_strchomp(line);
-            if (line[0] != '\0') {
-                gchar *with_space = g_strconcat(line, " ", NULL);
-                ibus_engine_commit_text(IBUS_ENGINE(e),
-                                        ibus_text_new_from_string(with_space));
-                g_free(with_space);
+            if (line[0] && !e->protected_input) {
+                gchar *text = g_strconcat(line, " ", NULL);
+                ibus_engine_commit_text(IBUS_ENGINE(e), ibus_text_new_from_string(text));
+                g_free(text);
             }
-            g_free(line);
-            return TRUE;
+            g_free(line); continue;
         }
         g_free(line);
-    }
-    if (cond & (G_IO_HUP | G_IO_ERR)) {
+        if (error) { g_warning("diktat: output failed: %s", error->message); g_clear_error(&error); }
+        if (status == G_IO_STATUS_AGAIN && !(cond & (G_IO_HUP | G_IO_ERR))) return TRUE;
         e->watch = 0;
-        update_state(e, "diktat: pipeline ended");
+        if (e->out) { g_io_channel_unref(e->out); e->out = NULL; }
         return FALSE;
     }
-    return TRUE;
+}
+
+static void on_child_exit(GPid pid, gint status, gpointer data) {
+    GeistEngine *e = data;
+    if (e->pid != pid) return;
+    e->pid = 0; e->child_watch = 0;
+    g_spawn_close_pid(pid); /* GLib's child watch has already reaped it. */
+    update_state(e, status == 0 ? "diktat: beendet" : "diktat: Aufnahme/Erkennung fehlgeschlagen");
+    /* The output watch drains any final lines before releasing its channel. */
 }
 
 /* Child setup: own process group, so stopping kills arecord AND diktat. */
@@ -162,6 +158,7 @@ static void pipeline_start(GeistEngine *e) {
     if (e->pid != 0) {
         return;
     }
+    close_output(e);
     gchar *cmd    = pipeline_cmd();
     gchar *argv[] = {"/bin/sh", "-c", cmd, NULL};
     gint   out_fd = -1;
@@ -178,24 +175,30 @@ static void pipeline_start(GeistEngine *e) {
     g_free(cmd);
     e->out = g_io_channel_unix_new(out_fd);
     g_io_channel_set_close_on_unref(e->out, TRUE);
+    g_io_channel_set_flags(e->out, g_io_channel_get_flags(e->out) | G_IO_FLAG_NONBLOCK, NULL);
+    e->child_watch = g_child_watch_add(e->pid, on_child_exit, e);
     e->watch = g_io_add_watch(e->out, G_IO_IN | G_IO_HUP | G_IO_ERR, on_pipeline_line, e);
-    update_state(e, "diktat: hört zu");
+    update_state(e, "diktat: Aufnahme gestartet");
 }
 
 static void pipeline_stop(GeistEngine *e) {
-    if (e->pid == 0) {
-        return;
-    }
-    kill(-e->pid, SIGTERM); /* whole process group */
-    g_spawn_close_pid(e->pid);
-    e->pid = 0;
-    if (e->watch != 0) {
-        g_source_remove(e->watch);
-        e->watch = 0;
-    }
-    if (e->out != NULL) {
-        g_io_channel_unref(e->out);
-        e->out = NULL;
+    close_output(e);
+    if (e->child_watch) { g_source_remove(e->child_watch); e->child_watch = 0; }
+    GPid pid = e->pid; e->pid = 0;
+    if (pid) {
+        if (kill(-pid, SIGTERM) != 0 && errno == ESRCH) kill(pid, SIGTERM);
+        int status = 0;
+        gboolean reaped = FALSE;
+        for (int i = 0; i < 150; i++) {
+            pid_t r = waitpid(pid, &status, WNOHANG);
+            if (r == pid || (r < 0 && errno == ECHILD)) { reaped = TRUE; break; }
+            g_usleep(10000);
+        }
+        if (!reaped) {
+            kill(-pid, SIGKILL); kill(pid, SIGKILL);
+            while (waitpid(pid, &status, 0) < 0 && errno == EINTR) {}
+        }
+        g_spawn_close_pid(pid);
     }
     update_state(e, "diktat: aus");
 }
@@ -203,21 +206,39 @@ static void pipeline_stop(GeistEngine *e) {
 /* ---- IBusEngine vfuncs ------------------------------------------------ */
 
 static void geist_engine_enable(IBusEngine *engine) {
-    pipeline_start(GEIST_ENGINE(engine));
+    GeistEngine *e = GEIST_ENGINE(engine); e->enabled = TRUE;
+    if (e->focused && !e->protected_input) pipeline_start(e);
     IBUS_ENGINE_CLASS(geist_engine_parent_class)->enable(engine);
 }
 
 static void geist_engine_disable(IBusEngine *engine) {
+    GEIST_ENGINE(engine)->enabled = FALSE;
     pipeline_stop(GEIST_ENGINE(engine));
     IBUS_ENGINE_CLASS(geist_engine_parent_class)->disable(engine);
 }
 
 static void geist_engine_focus_in(IBusEngine *engine) {
     GeistEngine *e = GEIST_ENGINE(engine);
+    e->focused = TRUE;
+    if (e->enabled && !e->protected_input) pipeline_start(e);
     if (e->props != NULL) {
         ibus_engine_register_properties(engine, e->props);
     }
     IBUS_ENGINE_CLASS(geist_engine_parent_class)->focus_in(engine);
+}
+
+static void geist_engine_focus_out(IBusEngine *engine) {
+    GeistEngine *e = GEIST_ENGINE(engine); e->focused = FALSE;
+    pipeline_stop(e);
+    IBUS_ENGINE_CLASS(geist_engine_parent_class)->focus_out(engine);
+}
+
+static void geist_engine_set_content_type(IBusEngine *engine, guint purpose, guint hints) {
+    GeistEngine *e = GEIST_ENGINE(engine);
+    e->protected_input = purpose == IBUS_INPUT_PURPOSE_PASSWORD || purpose == IBUS_INPUT_PURPOSE_PIN ||
+                         (hints & IBUS_INPUT_HINT_PRIVATE);
+    if (e->protected_input) pipeline_stop(e);
+    else if (e->enabled && e->focused) pipeline_start(e);
 }
 
 static void geist_engine_destroy(IBusObject *object) {
@@ -225,6 +246,8 @@ static void geist_engine_destroy(IBusObject *object) {
         g_active_engine = NULL;
     }
     pipeline_stop(GEIST_ENGINE(object));
+    g_clear_object(&GEIST_ENGINE(object)->props);
+    g_clear_object(&GEIST_ENGINE(object)->state_prop);
     IBUS_OBJECT_CLASS(geist_engine_parent_class)->destroy(object);
 }
 
@@ -248,6 +271,8 @@ static void geist_engine_class_init(GeistEngineClass *klass) {
     ec->enable                  = geist_engine_enable;
     ec->disable                 = geist_engine_disable;
     ec->focus_in                = geist_engine_focus_in;
+    ec->focus_out               = geist_engine_focus_out;
+    ec->set_content_type        = geist_engine_set_content_type;
     IBUS_OBJECT_CLASS(klass)->destroy = geist_engine_destroy;
 }
 

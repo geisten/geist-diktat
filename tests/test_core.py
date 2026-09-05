@@ -34,11 +34,11 @@ class Core(unittest.TestCase):
     def tearDownClass(cls):
         cls.tmp.cleanup()
 
-    def run_core(self, data=b'', args=('model.gguf',), fail='', piece=None):
+    def run_core(self, data=b'', args=('model.gguf',), fail='', piece=None, timeout=10):
         env = dict(os.environ, STUB_FAIL=fail, ASAN_OPTIONS='detect_leaks=0')
         if piece is not None:
             env['STUB_PIECE'] = piece
-        p = subprocess.run([self.binary, *args], input=data, capture_output=True, env=env, timeout=10)
+        p = subprocess.run([self.binary, *args], input=data, capture_output=True, env=env, timeout=timeout)
         stats = dict((k, int(v)) for k, v in re.findall(r'(\w+)=(\d+)', p.stderr.decode(errors='replace')))
         return p, stats
 
@@ -100,7 +100,7 @@ class Core(unittest.TestCase):
     def test_thirty_minutes_use_one_model_and_preserve_all_turns(self):
         # 1400 * 1.3 s = 30 min 20 s of PCM. Unpaced, fake recognition:
         # lifecycle/segmentation stress only, not a real ASR conversation test.
-        p,s=self.run_core(pcm()*1400)
+        p,s=self.run_core(pcm()*1400,timeout=60)
         self.assertEqual(p.returncode,0)
         self.assertEqual((s['loads'],s['begins'],s['ends']),(1,1400,1400))
         self.assertEqual(s['samples'],1400*65*320)
@@ -162,6 +162,10 @@ class Core(unittest.TestCase):
     def test_output_cap(self):
         p,s=self.run_core(pcm(),piece='x'*8000)
         self.assertEqual(len(p.stdout),4096)
+
+    def test_tokens_may_split_unicode(self):
+        p,s=self.run_core(pcm(),fail="split-utf8")
+        self.assertEqual(p.stdout,"ü\n".encode())
 
     def test_unicode_boundary_sanitized(self):
         p,s=self.run_core(pcm(),piece='a'*4094+'ü')

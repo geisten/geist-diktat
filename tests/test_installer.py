@@ -13,7 +13,7 @@ class Installer(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.root=Path(self.tmp.name); self.bin=self.root/'bin'; self.bin.mkdir()
-        for name in ['mktemp','rm','mkdir','cat','cut','sed','head','sh','sha256sum','shasum']:
+        for name in ['mktemp','rm','mkdir','cat','cut','sed','head','sh','sha256sum','shasum','mv','chmod','rmdir']:
             path=shutil.which(name)
             if path: (self.bin/name).symlink_to(path)
         self.env=dict(os.environ,PATH=str(self.bin),HOME=str(self.root/'home'),
@@ -28,7 +28,9 @@ case "$url" in
 */SHA256SUMS) cat "$TEST_ROOT/manifest" > "$out";;
 *) cat "$TEST_ROOT/asset" > "$out";;
 esac''')
-        self.script('tar','printf "tar\\n" >> "$TEST_ROOT/actions"')
+        self.script('tar', '\n'.join(['printf "tar\\n" >> "$TEST_ROOT/actions"',
+            'shift; out=$1; mkdir -p "$out/bin"',
+            'for f in diktat geist-diktat; do printf "#!/bin/sh\\nexit 0\\n" > "$out/bin/$f"; chmod +x "$out/bin/$f"; done']))
         self.script('id','echo 0')
         self.asset('geist-diktat_macos-arm64.tar.gz')
 
@@ -80,5 +82,25 @@ esac''')
         self.script('tar','exit 2')
         p=self.run_install(); self.assertNotEqual(p.returncode,0)
         self.assertTrue((previous/'working').exists(),'old installation deleted before extraction succeeds')
+
+    def test_update_keeps_previous_version(self):
+        previous=self.root/'home/.local/geist-diktat';previous.mkdir(parents=True)
+        (previous/'working').write_text('old')
+        p=self.run_install();self.assertEqual(p.returncode,0,p.stderr)
+        backups=list(previous.parent.glob('.geist-diktat.*.previous'))
+        self.assertEqual(len(backups),1);self.assertEqual((backups[0]/'working').read_text(),'old')
+        self.assertTrue((previous/'bin/diktat').exists())
+
+    def test_commit_failure_rolls_back(self):
+        previous=self.root/'home/.local/geist-diktat';previous.mkdir(parents=True)
+        (previous/'working').write_text('old')
+        (self.bin/'mv').unlink()
+        self.script('mv', 'case "$1" in *.previous) exec /bin/mv "$@";; esac\ncase "$2" in */geist-diktat) exit 9;; esac\nexec /bin/mv "$@"')
+        p=self.run_install();self.assertNotEqual(p.returncode,0)
+        self.assertEqual((previous/'working').read_text(),'old')
+
+    def test_concurrent_install_lock_preserves_previous(self):
+        lock=self.root/'home/.local/.geist-diktat-install.lock';lock.mkdir(parents=True)
+        p=self.run_install();self.assertNotEqual(p.returncode,0);self.assertTrue(lock.exists())
 
 if __name__=='__main__': unittest.main(verbosity=2)

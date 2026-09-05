@@ -83,3 +83,10 @@ Working name `geist-diktat`; product-name candidate: `geistschreiber`.
 ## License
 
 Apache-2.0, same as the engine.
+
+## Integration und Diagnose
+
+`geist-diktat doctor --verify` prüft die Installation.
+`geist-diktat editor-install all` installiert die asynchronen Vim-/Neovim-Adapter.
+[Prozessvertrag, Shortcuts, Linux-Einbettung und macOS-App](doc/EMBEDDING.md)
+beschreiben den aktuellen Entwicklungsstand und seine Grenzen.

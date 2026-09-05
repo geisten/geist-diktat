@@ -1,34 +1,14 @@
--- :checkhealth geist-diktat
-local M = {}
-
+local M={}
 function M.check()
-    local health = vim.health
-    health.start("geist-diktat")
-
-    local diktat = require("geist-diktat")
-    local binary = vim.fn.exepath(diktat.opts.binary)
-    if binary ~= "" then
-        health.ok("diktat binary: " .. binary)
-    else
-        health.warn(diktat.opts.binary .. " not found — set setup({ binary = ... }) or install the .deb")
-    end
-
-    if vim.fn.executable("arecord") == 1 then
-        health.ok("arecord found")
-    else
-        health.error("arecord missing (apt install alsa-utils)")
-    end
-
-    local model = diktat.opts.model
-    if vim.fn.filereadable(model) == 1 then
-        health.ok("model: " .. model)
-    else
-        health.warn("model missing — run: geist-diktat setup (or set setup({ model = ... }))")
-    end
-
-    if diktat.is_active() then
-        health.info("currently listening")
-    end
+  local h=vim.health
+  h.start('geist-diktat')
+  local d=require('geist-diktat')
+  if d.opts.cmd then h.info('custom command configured; run it manually to diagnose')
+  elseif vim.fn.executable(d.opts.launcher)==1 then
+    h.ok('launcher: '..vim.fn.exepath(d.opts.launcher))
+    local output=vim.fn.system({d.opts.launcher,'doctor'})
+    if vim.v.shell_error==0 then h.ok(output) else h.error(output) end
+  else h.error('launcher missing; install geist-diktat and run geist-diktat setup') end
+  if d.is_active() then h.info('dictation active') end
 end
-
 return M

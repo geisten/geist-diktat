@@ -6,6 +6,10 @@ on:
       - 'src/**'
       - 'ibus/**'
       - 'lua/**'
+      - 'plugin/**'
+      - 'autoload/**'
+      - 'runtime/**'
+      - 'macos/**'
       - 'packaging/**'
       - 'install.sh'
       - 'scripts/**'
@@ -71,19 +75,8 @@ jobs:
             --manifest build/speech-corpus/manifest.json --binary ./diktat \
             --model "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" \
             --tower "$HOME/.local/share/geist-diktat/audio_tower.safetensors" \
-            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean --limit 2 --timeout 240 \
+            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean --timeout 240 \
             --output build/speech-results/ubuntu-agent-quality.json
-      - name: Compare temporary x86 backend selection candidate
-        if: always()
-        run: |
-          sed 's/"cpu_neon"/"cpu_x86"/' src/diktat.c > build/diktat-x86-probe.c
-          gcc-14 -std=c23 -O2 -Igeistlib/include -march=x86-64-v3 -fopenmp -ffast-math -D_GNU_SOURCE -DGEIST_GEMM_NATIVE -o build/diktat-x86-probe build/diktat-x86-probe.c geistlib/lib/linux/release/libgeist.a -fopenmp -lm
-          python3 benchmarks/quality.py \
-            --manifest build/speech-corpus/manifest.json --binary build/diktat-x86-probe \
-            --model "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" \
-            --tower "$HOME/.local/share/geist-diktat/audio_tower.safetensors" \
-            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean --limit 2 --timeout 240 \
-            --output build/speech-results/ubuntu-x86-candidate.json
       - name: Export metrics without corpus audio or transcripts
         if: always()
         run: |

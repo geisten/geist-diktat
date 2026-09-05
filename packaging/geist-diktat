@@ -19,7 +19,8 @@ set -e
 # no patching.
 PREFIX="$(CDPATH='' cd "$(dirname "$0")/.." && pwd)"
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}/geist-diktat"
-MODEL="$DATA/gemma4-e2b-Q4_K_M.gguf"
+MODEL="${GEIST_DIKTAT_MODEL:-$DATA/gemma4-e2b-Q4_K_M.gguf}"
+CORE="${GEIST_DIKTAT_CORE:-$PREFIX/bin/diktat}"
 TOWER="$DATA/audio_tower.safetensors"
 MEL="$PREFIX/share/geist-diktat/mel_constants.bin"
 
@@ -34,29 +35,15 @@ export GEIST_MEL_CONSTANTS_PATH="${GEIST_MEL_CONSTANTS_PATH:-$MEL}"
 # nor ffmpeg ships with macOS, so probe for whichever is installed;
 # GEIST_DIKTAT_CAPTURE overrides the whole command, because the right mic
 # device is machine-specific (an avfoundation index cannot be guessed).
-capture() {
-    if [ -n "${GEIST_DIKTAT_CAPTURE:-}" ]; then
-        eval "exec $GEIST_DIKTAT_CAPTURE"
-    fi
+capture_command() {
+    if [ -n "${GEIST_DIKTAT_CAPTURE:-}" ]; then printf '%s\n' "$GEIST_DIKTAT_CAPTURE"; return; fi
     case "$(uname -s)" in
     Darwin)
-        # sox -d is the default input device — no index to guess.
-        if command -v sox >/dev/null; then
-            exec sox -q -d -t raw -r 16000 -e signed -b 16 -c 1 -
-        elif command -v ffmpeg >/dev/null; then
-            exec ffmpeg -loglevel quiet -f avfoundation -i :default \
-                -ar 16000 -ac 1 -f s16le -
-        fi
-        echo "no capture tool — brew install sox (or ffmpeg)" >&2
-        exit 1
-        ;;
-    *)
-        command -v arecord >/dev/null || {
-            echo "arecord not found (apt install alsa-utils)" >&2
-            exit 1
-        }
-        exec arecord -q -f S16_LE -r 16000 -c 1 -t raw
-        ;;
+        if command -v sox >/dev/null; then echo 'exec sox -q -d -t raw -r 16000 -e signed -b 16 -c 1 -';
+        elif command -v ffmpeg >/dev/null; then echo 'exec ffmpeg -loglevel error -f avfoundation -i :default -ar 16000 -ac 1 -f s16le -';
+        else echo 'no capture tool — brew install sox' >&2; return 1; fi ;;
+    *) command -v arecord >/dev/null || { echo 'arecord not found (apt install alsa-utils)' >&2; return 1; }
+       echo 'exec arecord -q -f S16_LE -r 16000 -c 1 -t raw' ;;
     esac
 }
 
@@ -68,14 +55,17 @@ setup() {
         echo "model ok: $MODEL"
     else
         echo "downloading model (~3.1 GB) ..."
-        curl -fL --retry 3 --retry-delay 2 -C - -o "$MODEL" "$MODEL_URL"
-        sha_ok "$MODEL" "$MODEL_SHA" || { echo "SHA mismatch: $MODEL" >&2; exit 1; }
+        curl -fL --retry 3 --retry-delay 2 -C - -o "$MODEL.part" "$MODEL_URL"
+        sha_ok "$MODEL.part" "$MODEL_SHA" || { echo "SHA mismatch: $MODEL.part" >&2; exit 1; }
+        mv "$MODEL.part" "$MODEL"
     fi
     if sha_ok "$TOWER" "$TOWER_SHA"; then
         echo "audio tower ok: $TOWER"
     else
         echo "downloading audio tower (~590 MB, Range extraction) ..."
-        python3 "$PREFIX/share/geist-diktat/fetch_audio_tower.py" -o "$TOWER" --sha256 "$TOWER_SHA"
+        python3 "$PREFIX/share/geist-diktat/fetch_audio_tower.py" -o "$TOWER.part" --sha256 "$TOWER_SHA"
+        sha_ok "$TOWER.part" "$TOWER_SHA" || exit 1
+        mv "$TOWER.part" "$TOWER"
     fi
     if [ "$(uname -s)" = Darwin ]; then
         command -v sox >/dev/null || command -v ffmpeg >/dev/null ||
@@ -83,20 +73,29 @@ setup() {
         echo "setup complete — 'geist-diktat run' prints transcript lines."
     else
         command -v arecord >/dev/null || echo "NOTE: arecord missing (apt install alsa-utils)"
-        echo "setup complete — run 'ibus restart', then add the input source"
+        echo "setup complete — sign out and back in if the new IBus source is absent, then add it"
         echo "'geist-diktat (Diktat)' under Settings -> Keyboard."
     fi
 }
 
-case "$1" in
+case "${1:-}" in
 setup) setup ;;
+doctor|editor-install)
+    exec python3 "$PREFIX/share/geist-diktat/desktop_tools.py" --prefix "$PREFIX" "$@"
+    ;;
+type)
+    shift
+    exec python3 "$PREFIX/share/geist-diktat/line_sink.py" -- "$@"
+    ;;
 run)
     shift
     [ -f "$MODEL" ] || { echo "model missing — run: geist-diktat setup" >&2; exit 1; }
-    capture | exec "$PREFIX/bin/diktat" "$MODEL" "$@"
+    CAPTURE=$(capture_command)
+    exec python3 "$PREFIX/share/geist-diktat/diktat_runtime.py" --capture "$CAPTURE" \
+        --buffer-seconds "${GEIST_DIKTAT_BUFFER_SECONDS:-6}" -- "$CORE" "$MODEL" "$@"
     ;;
 *)
-    echo "usage: geist-diktat setup | run [rms-threshold]" >&2
+    echo "usage: geist-diktat setup | doctor [--json] [--verify] | editor-install vim|nvim|all | run [rms-threshold] | type COMMAND..." >&2
     exit 2
     ;;
 esac

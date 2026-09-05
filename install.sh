@@ -37,7 +37,16 @@ if [ "$OS" = macos ] && [ "$(uname -m)" != arm64 ]; then
 fi
 
 TMP=$(mktemp -d)
-trap 'rm -rf "$TMP"' EXIT
+STAGE='' BACKUP='' DEST='' LOCK=''
+cleanup() {
+    if [ -n "$BACKUP" ] && [ -e "$BACKUP" ] && [ ! -e "$DEST" ]; then mv "$BACKUP" "$DEST"; fi
+    [ -z "$STAGE" ] || rm -rf "$STAGE"
+    [ -z "$LOCK" ] || rmdir "$LOCK"
+    rm -rf "$TMP"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 # Every asset is checked against the release's own SHA256SUMS before it is
 # installed — this catches a truncated download or a swapped asset, not a
@@ -65,7 +74,7 @@ verify() { # $1 = downloaded file, $2 = asset name as listed in SHA256SUMS
     echo "checksum ok: $2"
 }
 
-if command -v apt-get >/dev/null 2>&1; then
+if [ "$OS" = linux ] && command -v apt-get >/dev/null 2>&1; then
     DEB="geist-diktat_$DEB_ARCH.deb"
     echo "downloading $DEB ..."
     curl -fL --retry 3 -o "$TMP/$DEB" "$BASE/$DEB"
@@ -83,9 +92,25 @@ else
     echo "no apt found — unpacking the $OS tarball to $DEST ..."
     curl -fL --retry 3 -o "$TMP/$TAR" "$BASE/$TAR"
     verify "$TMP/$TAR" "$TAR"
-    rm -rf "$DEST"
-    mkdir -p "$DEST"
-    tar -C "$DEST" --strip-components=1 -xzf "$TMP/$TAR"
+    mkdir -p "$HOME/.local"
+    if mkdir "$HOME/.local/.geist-diktat-install.lock" 2>/dev/null; then
+        LOCK="$HOME/.local/.geist-diktat-install.lock"
+    else
+        echo "geist-diktat: another installation is active (or stale install lock); previous version preserved" >&2
+        exit 1
+    fi
+    STAGE=$(mktemp -d "$HOME/.local/.geist-diktat.XXXXXX")
+    tar -C "$STAGE" --strip-components=1 -xzf "$TMP/$TAR"
+    [ -x "$STAGE/bin/diktat" ] && [ -x "$STAGE/bin/geist-diktat" ] || {
+        echo "geist-diktat: incomplete release; previous installation preserved" >&2; exit 1;
+    }
+    if [ -e "$DEST" ] || [ -L "$DEST" ]; then
+        BACKUP="$STAGE.previous"
+        mv "$DEST" "$BACKUP"
+    fi
+    mv "$STAGE" "$DEST"
+    STAGE=''
+    [ -z "$BACKUP" ] || echo "previous installation retained: $BACKUP"
     echo "add to PATH: export PATH=\"$DEST/bin:\$PATH\""
 fi
 
@@ -99,6 +124,6 @@ if [ "$OS" = macos ]; then
     echo "No IBus on macOS: 'run' gives you the transcript stream to pipe;"
     echo "there is no typing-into-the-focused-app path here."
 else
-    echo "  ibus restart          # then add the input source \"geist-diktat (Diktat)\""
+    echo "  geist-diktat doctor   # then add the IBus input source in Settings"
     echo "                        # under Settings -> Keyboard (listed under German)"
 fi

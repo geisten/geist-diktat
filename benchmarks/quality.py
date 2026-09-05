@@ -58,8 +58,10 @@ def aggregate(results):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--manifest',type=Path,required=True)
+    ap.add_argument('--engine',choices=['geist','whisper'],default='geist')
+    ap.add_argument('--model-sha256')
     for name in ('binary','model','tower','mel','output'):
-        ap.add_argument('--'+name,type=Path,required=True)
+        ap.add_argument('--'+name,type=Path,required=name not in ('tower','mel'))
     ap.add_argument('--threads',type=int,default=4)
     ap.add_argument('--timeout',type=float,default=1800)
     ap.add_argument('--paced',action='store_true')
@@ -67,22 +69,32 @@ def main():
     ap.add_argument('--limit',type=int,default=0)
     args=ap.parse_args(); args.reference=None
     for name in ('binary','model','tower','mel'):
-        setattr(args,name,getattr(args,name).resolve(strict=True))
-    hashes={name:digest(getattr(args,name)) for name in ('binary','model','tower','mel')}
+        if getattr(args,name) is not None:setattr(args,name,getattr(args,name).resolve(strict=True))
+    hashes={name:digest(getattr(args,name)) for name in ('binary','model','tower','mel') if getattr(args,name) is not None}
     expected = dict(model='740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8',
                     tower='d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77')
-    if any(hashes[k] != v for k,v in expected.items()):
+    if args.engine=='whisper':
+        if not args.model_sha256:ap.error('--model-sha256 required for alternative engine')
+        expected={'model':args.model_sha256}
+    if args.engine=='geist' and (args.tower is None or args.mel is None):ap.error('Geist requires --tower and --mel')
+    if any(hashes.get(k) != v for k,v in expected.items()):
         ap.error('model/tower SHA-256 differs from the audit baseline')
     fixtures=json.loads(args.manifest.read_text())
     groups=args.groups.split(',') if args.groups else None
     fixtures=[f for f in fixtures if not groups or f['group'] in groups]
     if args.limit:fixtures=fixtures[:args.limit]
     if not fixtures:ap.error('no matching fixtures')
-    report=dict(platform=platform.platform(),threads=args.threads,paced=args.paced,
+    report=dict(engine=args.engine,platform=platform.platform(),threads=args.threads,paced=args.paced,
         environment={k:v for k,v in os.environ.items() if k.startswith('GEIST_AUDIO_') or k=='OMP_WAIT_POLICY'},
         files=hashes,manifest_sha256=digest(args.manifest),
         normalization='NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting',
         cache_policy='fresh process per fixture; hashes read before runs; warm OS caches',runs=[])
+    if args.engine=='whisper':
+        import shutil
+        cli=shutil.which(os.environ.get('GEIST_WHISPER_CLI','whisper-cli'))
+        if not cli:ap.error('GEIST_WHISPER_CLI / whisper-cli missing')
+        report['whisper_cli_sha256']=digest(cli)
+        report['resource_scope']='wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment'
     args.output.parent.mkdir(parents=True,exist_ok=True)
     for fixture in fixtures:
         path=args.manifest.parent/fixture['wav']

@@ -76,6 +76,18 @@ check('read-only buffer reports lost insertion', function()
   vim.bo.modifiable=false; output(id,{'lost',''}); vim.bo.modifiable=true
   assert(#messages>0,'pcall swallows insertion failure')
 end)
+check('100 toggles reject stale callbacks', function()
+  local m,id=fresh()
+  for n=1,100 do
+    m.stop();m.start();jobs[id].cb.on_stdout(id,{'stale',''},'stdout');jobs[id].cb.on_exit(id,143,'exit')
+    assert(m.is_active());id=current
+  end
+  output(id,{'last',''});assert(text()=='last ',text())
+end)
+check('normal-mode dictated commands are literal text and undoable', function()
+  local _,id=fresh();output(id,{':q! $(false)',''});assert(text()==':q! $(false) ')
+  vim.cmd('undo');assert(text()=='')
+end)
 vim.fn.jobstart, vim.fn.jobstop = real_start, real_stop
 vim.api.nvim_get_mode = real_mode
 io.stdout:write(('TOTAL %d FAILED %d\n'):format(count,failures))
