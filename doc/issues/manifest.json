@@ -1,0 +1,202 @@
+[
+  {
+    "slug": "core-eof",
+    "title": "[P1] EOF finalisieren: letzter Satz und Teilframe gehen verloren",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/core-eof.md"
+  },
+  {
+    "slug": "core-errors",
+    "title": "[P1] Fehlerstatus der Erkennung zuverlässig an Aufrufer weitergeben",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/core-errors.md"
+  },
+  {
+    "slug": "capture-errors",
+    "title": "[P1] Launcher darf Mikrofon-/Capture-Ausfälle nicht als Erfolg melden",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/capture-errors.md"
+  },
+  {
+    "slug": "nvim-framing",
+    "title": "[P1] Neovim: fragmentierte stdout-Zeilen und UTF-8 verlustfrei puffern",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/nvim-framing.md"
+  },
+  {
+    "slug": "nvim-session",
+    "title": "[P1] Neovim: Stop/Start-Rennen und späte Ausgabe alter Jobs verhindern",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/nvim-session.md"
+  },
+  {
+    "slug": "installer-atomic",
+    "title": "[P1] Installer atomar aktualisieren: defektes Archiv zerstört bestehende Installation",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/installer-atomic.md"
+  },
+  {
+    "slug": "engine-atomic",
+    "title": "[P1] Engine-Synchronisierung darf Git-Datei-Checkouts und lokale Modelle nicht löschen",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/engine-atomic.md"
+  },
+  {
+    "slug": "ibus-lifecycle",
+    "title": "[P2] IBus-Kindprozesse einsammeln und nach natürlichem Ende neu starten",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/ibus-lifecycle.md"
+  },
+  {
+    "slug": "nvim-queue",
+    "title": "[P2] Neovim: Commandline-Queue bei Moduswechsel leeren und Einfügefehler melden",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/nvim-queue.md"
+  },
+  {
+    "slug": "utf8-limit",
+    "title": "[P2] Textbegrenzung darf keine UTF-8-Zeichen zerschneiden",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/utf8-limit.md"
+  },
+  {
+    "slug": "rms-validation",
+    "title": "[P2] RMS-Argument vor Modellladen streng validieren",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/rms-validation.md"
+  },
+  {
+    "slug": "nvim-default",
+    "title": "[P2] Neovim-Standardstart über plattformfähigen installierten Launcher führen",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/nvim-default.md"
+  },
+  {
+    "slug": "vim-adapter",
+    "title": "[P2] Vim-Adapter mit asynchronen Jobs und sicherer modaler Einfügung liefern",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/vim-adapter.md"
+  },
+  {
+    "slug": "editor-package",
+    "title": "[P2] Editor-Plugins installieren und mit einem Schritt aktivieren",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/editor-package.md"
+  },
+  {
+    "slug": "onboarding",
+    "title": "[P2] Setup/Doctor für einen überprüfbaren ersten Diktaterfolg bauen",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/onboarding.md"
+  },
+  {
+    "slug": "linux-desktop",
+    "title": "[P2] Ubuntu-Desktop-Integration unter GNOME/Wayland und KDE vollständig abnehmen",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/linux-desktop.md"
+  },
+  {
+    "slug": "macos-desktop",
+    "title": "[P2] macOS-Systemintegration mit Hotkey, Berechtigungen und sicherem Texteinsatz",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/macos-desktop.md"
+  },
+  {
+    "slug": "linux-pipeline",
+    "title": "[P2] Linux-Pipeline-Beispiele mit zeilenweisem Einfügen und Stop-Verhalten absichern",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/linux-pipeline.md"
+  },
+  {
+    "slug": "embed-api",
+    "title": "[P2] Stabilen Einbettungsvertrag für Linux-Anwendungen definieren",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/embed-api.md"
+  },
+  {
+    "slug": "privacy-status",
+    "title": "[P2] Verlässlichen Hörstatus, globalen Stop und Fokusregeln liefern",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/privacy-status.md"
+  },
+  {
+    "slug": "pi-performance",
+    "title": "[P2] Pi5: Streaming-Worker, Threadzahl und Speicherbedarf evidenzbasiert optimieren",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/pi-performance.md"
+  },
+  {
+    "slug": "resident-backpressure",
+    "title": "[P2] Aufnahme und Decodierung mit begrenzter Warteschlange entkoppeln",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/resident-backpressure.md"
+  },
+  {
+    "slug": "dach-quality",
+    "title": "[P2] DACH-Qualitätskorpus und Release-Gates für Sprache, Rauschen und Gespräche aufbauen",
+    "labels": [
+      "enhancement"
+    ],
+    "body_file": "doc/issues/dach-quality.md"
+  },
+  {
+    "slug": "noise-hallucinations",
+    "title": "[P2] Zusatzrauschen führt zu ungesprochenen Erklärungen und Sprachwechseln",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/noise-hallucinations.md"
+  },
+  {
+    "slug": "x86-backend",
+    "title": "[P2] Linux-x64 ignoriert cpu_x86 und verwendet unnötig den Scalar-Backend",
+    "labels": [
+      "bug"
+    ],
+    "body_file": "doc/issues/x86-backend.md"
+  }
+]

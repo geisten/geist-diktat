@@ -3,6 +3,8 @@
 
 Two fixed German clips per setting, paced input. Run on an otherwise idle Pi.
 Selected candidates need repeated tests and long-conversation validation.
+GEIST_AUDIO_STREAM changes early vs lazy worker creation here: audio_begin
+always starts streaming. These values are NOT streaming off/on.
 """
 import argparse
 import os

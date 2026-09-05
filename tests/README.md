@@ -73,3 +73,7 @@ evidence of Vim compatibility.
 
 For real model tests and performance measurements see
 [`../benchmarks/README.md`](../benchmarks/README.md).
+
+## Erweiterung: Sprachqualität und gemessene Abdeckung
+
+`sh tests/coverage.sh` exportiert LLVM-Zeilen-/Zweigabdeckung des tatsächlichen C-Cores, auch wenn Regressionen rot bleiben. `test_quality.py` prüft die WER-Metrik, `test_core.py` zusätzlich 30:20 Minuten/1.400 Äußerungen im Fake-Engine-Stresstest und die x86-Backendauswahl. Das ist keine Abdeckung des neuronalen Engine-Codes. Echte deutsche, Dialekt-, Rausch- und Gesprächsdaten werden getrennt durch `benchmarks/quality.py` ausgewertet. Details: [Qualitätsbericht](../doc/QUALITY-2026-09-05.md).

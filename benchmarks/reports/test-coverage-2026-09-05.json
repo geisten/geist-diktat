@@ -1,0 +1,43 @@
+{
+  "python_methods_per_platform": 53,
+  "macos": {
+    "passed": 42,
+    "failed_methods": 11,
+    "failed_assertions": 22,
+    "skipped": 0
+  },
+  "pi5": {
+    "passed": 41,
+    "failed_methods": 11,
+    "failed_assertions": 22,
+    "skipped": 1
+  },
+  "github_ubuntu_x64": {
+    "passed": 42,
+    "failed_methods": 11,
+    "failed_assertions": 22,
+    "skipped": 0
+  },
+  "github_ubuntu_arm64": {
+    "passed": 42,
+    "failed_methods": 11,
+    "failed_assertions": 22,
+    "skipped": 0
+  },
+  "core_coverage": {
+    "file": "src/diktat.c",
+    "lines_percent": 100,
+    "branches_percent": 89.62264150943396,
+    "engine_api": "fake; not whole-engine coverage"
+  },
+  "lua_cases": {
+    "total": 13,
+    "failed": 8,
+    "included_in_python_method_count": true
+  },
+  "ibus_lifecycle": {
+    "total": 12,
+    "failed": 2
+  },
+  "github_run": "https://github.com/geisten/geist-diktat/actions/runs/33971477188"
+}

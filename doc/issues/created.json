@@ -1,0 +1,152 @@
+[
+  {
+    "slug": "core-eof",
+    "title": "[P1] EOF finalisieren: letzter Satz und Teilframe gehen verloren",
+    "url": "https://github.com/geisten/geist-diktat/issues/16",
+    "number": 16
+  },
+  {
+    "slug": "core-errors",
+    "title": "[P1] Fehlerstatus der Erkennung zuverlässig an Aufrufer weitergeben",
+    "url": "https://github.com/geisten/geist-diktat/issues/17",
+    "number": 17
+  },
+  {
+    "slug": "capture-errors",
+    "title": "[P1] Launcher darf Mikrofon-/Capture-Ausfälle nicht als Erfolg melden",
+    "url": "https://github.com/geisten/geist-diktat/issues/18",
+    "number": 18
+  },
+  {
+    "slug": "nvim-framing",
+    "title": "[P1] Neovim: fragmentierte stdout-Zeilen und UTF-8 verlustfrei puffern",
+    "url": "https://github.com/geisten/geist-diktat/issues/19",
+    "number": 19
+  },
+  {
+    "slug": "nvim-session",
+    "title": "[P1] Neovim: Stop/Start-Rennen und späte Ausgabe alter Jobs verhindern",
+    "url": "https://github.com/geisten/geist-diktat/issues/20",
+    "number": 20
+  },
+  {
+    "slug": "installer-atomic",
+    "title": "[P1] Installer atomar aktualisieren: defektes Archiv zerstört bestehende Installation",
+    "url": "https://github.com/geisten/geist-diktat/issues/21",
+    "number": 21
+  },
+  {
+    "slug": "engine-atomic",
+    "title": "[P1] Engine-Synchronisierung darf Git-Datei-Checkouts und lokale Modelle nicht löschen",
+    "url": "https://github.com/geisten/geist-diktat/issues/22",
+    "number": 22
+  },
+  {
+    "slug": "ibus-lifecycle",
+    "title": "[P2] IBus-Kindprozesse einsammeln und nach natürlichem Ende neu starten",
+    "url": "https://github.com/geisten/geist-diktat/issues/23",
+    "number": 23
+  },
+  {
+    "slug": "nvim-queue",
+    "title": "[P2] Neovim: Commandline-Queue bei Moduswechsel leeren und Einfügefehler melden",
+    "url": "https://github.com/geisten/geist-diktat/issues/24",
+    "number": 24
+  },
+  {
+    "slug": "utf8-limit",
+    "title": "[P2] Textbegrenzung darf keine UTF-8-Zeichen zerschneiden",
+    "url": "https://github.com/geisten/geist-diktat/issues/25",
+    "number": 25
+  },
+  {
+    "slug": "rms-validation",
+    "title": "[P2] RMS-Argument vor Modellladen streng validieren",
+    "url": "https://github.com/geisten/geist-diktat/issues/26",
+    "number": 26
+  },
+  {
+    "slug": "nvim-default",
+    "title": "[P2] Neovim-Standardstart über plattformfähigen installierten Launcher führen",
+    "url": "https://github.com/geisten/geist-diktat/issues/27",
+    "number": 27
+  },
+  {
+    "slug": "vim-adapter",
+    "title": "[P2] Vim-Adapter mit asynchronen Jobs und sicherer modaler Einfügung liefern",
+    "url": "https://github.com/geisten/geist-diktat/issues/28",
+    "number": 28
+  },
+  {
+    "slug": "editor-package",
+    "title": "[P2] Editor-Plugins installieren und mit einem Schritt aktivieren",
+    "url": "https://github.com/geisten/geist-diktat/issues/29",
+    "number": 29
+  },
+  {
+    "slug": "onboarding",
+    "title": "[P2] Setup/Doctor für einen überprüfbaren ersten Diktaterfolg bauen",
+    "url": "https://github.com/geisten/geist-diktat/issues/30",
+    "number": 30
+  },
+  {
+    "slug": "linux-desktop",
+    "title": "[P2] Ubuntu-Desktop-Integration unter GNOME/Wayland und KDE vollständig abnehmen",
+    "url": "https://github.com/geisten/geist-diktat/issues/31",
+    "number": 31
+  },
+  {
+    "slug": "macos-desktop",
+    "title": "[P2] macOS-Systemintegration mit Hotkey, Berechtigungen und sicherem Texteinsatz",
+    "url": "https://github.com/geisten/geist-diktat/issues/32",
+    "number": 32
+  },
+  {
+    "slug": "linux-pipeline",
+    "title": "[P2] Linux-Pipeline-Beispiele mit zeilenweisem Einfügen und Stop-Verhalten absichern",
+    "url": "https://github.com/geisten/geist-diktat/issues/33",
+    "number": 33
+  },
+  {
+    "slug": "embed-api",
+    "title": "[P2] Stabilen Einbettungsvertrag für Linux-Anwendungen definieren",
+    "url": "https://github.com/geisten/geist-diktat/issues/34",
+    "number": 34
+  },
+  {
+    "slug": "privacy-status",
+    "title": "[P2] Verlässlichen Hörstatus, globalen Stop und Fokusregeln liefern",
+    "url": "https://github.com/geisten/geist-diktat/issues/35",
+    "number": 35
+  },
+  {
+    "slug": "pi-performance",
+    "title": "[P2] Pi5: Streaming-Worker, Threadzahl und Speicherbedarf evidenzbasiert optimieren",
+    "url": "https://github.com/geisten/geist-diktat/issues/36",
+    "number": 36
+  },
+  {
+    "slug": "resident-backpressure",
+    "title": "[P2] Aufnahme und Decodierung mit begrenzter Warteschlange entkoppeln",
+    "url": "https://github.com/geisten/geist-diktat/issues/37",
+    "number": 37
+  },
+  {
+    "slug": "dach-quality",
+    "title": "[P2] DACH-Qualitätskorpus und Release-Gates für Sprache, Rauschen und Gespräche aufbauen",
+    "url": "https://github.com/geisten/geist-diktat/issues/38",
+    "number": 38
+  },
+  {
+    "slug": "noise-hallucinations",
+    "title": "[P2] Zusatzrauschen führt zu ungesprochenen Erklärungen und Sprachwechseln",
+    "url": "https://github.com/geisten/geist-diktat/issues/39",
+    "number": 39
+  },
+  {
+    "slug": "x86-backend",
+    "title": "[P2] Linux-x64 ignoriert cpu_x86 und verwendet unnötig den Scalar-Backend",
+    "url": "https://github.com/geisten/geist-diktat/issues/40",
+    "number": 40
+  }
+]

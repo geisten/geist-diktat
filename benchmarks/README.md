@@ -55,3 +55,7 @@ Editor measurements cover startup plus a **stub transcript** insertion into a
 fresh editor. IBus measurements include private daemon startup, a stub Unicode
 commit and teardown. Neither is a neural recognition benchmark. Do not add
 their medians to ASR figures and claim a measured end-to-end desktop latency.
+
+## Deutsche Qualitätsreihe
+
+Siehe [Qualitätsbericht](../doc/QUALITY-2026-09-05.md) und `prepare_quality.py`, `quality.py`, `pi_sweep.py`. Rohkorpus und vollständige Gesprächs-Hypothesen bleiben unter ignoriertem `build/`; `summarize_quality.py` exportiert ausschließlich Messwerte.

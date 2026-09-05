@@ -27,12 +27,12 @@ HF='https://huggingface.co/datasets/google/fleurs/resolve/'+REV+'/data/de_de/'
 SWISS='https://gitlab.inf.ethz.ch/ou-mtc-public/swiss-dial-samples'
 OOCC='https://zenodo.org/records/21446419/files/'
 
-def fetch(url,path):
+def fetch(url,path,read=True):
     if not path.exists():
         with urllib.request.urlopen(url,timeout=90) as src, path.with_suffix(path.suffix+'.part').open('wb') as dst:
             while data:=src.read(1024*1024):dst.write(data)
         path.with_suffix(path.suffix+'.part').replace(path)
-    return path.read_bytes()
+    return path.read_bytes() if read else path
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -108,7 +108,7 @@ def main():
         fetch(OOCC+'README.md?download=1',r/'oocc_readme')
         fetch(OOCC+'documentation.zip?download=1',r/'oocc-documentation.zip')
         fetch(OOCC+'10_minute_recordings_transcripts.zip?download=1',r/'oocc_transcripts')
-        fetch(OOCC+'10_minute_recordings_audio_video_task1.zip?download=1',r/'oocc-audio.zip')
+        fetch(OOCC+'10_minute_recordings_audio_video_task1.zip?download=1',r/'oocc-audio.zip',read=False)
         with zipfile.ZipFile(r/'oocc-audio.zip') as z:
             name=next(n for n in z.namelist() if Path(n).name=='1_free_conversation.mov')
             raw=r/'oocc-1.mov'
