@@ -24,8 +24,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: version from tag
         id: v
         run: |
@@ -47,7 +45,10 @@ jobs:
             docker run --rm -v "$PWD:/w" -w /w debian:12 bash -ec '
               export DEBIAN_FRONTEND=noninteractive
               apt-get update -q >/dev/null
-              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config >/dev/null
+              # git + ca-certificates: the engine is cloned by the build itself
+              # now (GEIST_REF), and this build runs inside the container.
+              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config \
+                                    git ca-certificates >/dev/null
               make CC=clang-19 TARGET=linux GEMM_PROVIDER=native
               make CC=clang-19 GEMM_PROVIDER=native ibus-engine-geist-diktat
             '
@@ -85,8 +86,6 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: version from tag
         id: v
         run: |

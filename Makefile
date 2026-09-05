@@ -1,21 +1,46 @@
 # geist-diktat — system-wide local dictation on the geist engine.
 #
-# geistlib is a pinned submodule; this Makefile mirrors geistlib's own
-# examples/Makefile so diktat links with exactly the flags the engine
-# was built with — no duplicated platform knowledge.
+# The engine is pinned by GEIST_REF below and checked out into $(GEISTLIB) by
+# scripts/sync-engine.sh — no git submodule. Every make run verifies the
+# checkout against the pin, so bumping GEIST_REF takes effect on the next
+# build; there is no second command to remember and no stale-engine window.
 #
-#   make            # build ./diktat (builds the pinned libgeist.a on demand)
-#   make setup      # fetch model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
-#   make test       # smoke test (full transcript check when fixtures exist)
+# Platform knowledge stays in geistlib: its detect-target.sh picks the target
+# and its mk/ fragments supply the flags, so diktat links with exactly what the
+# engine was built with.
+#
+#   make               # build ./diktat (syncs + builds libgeist.a on demand)
+#   make setup         # fetch model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
+#   make test          # smoke test (full transcript check when fixtures exist)
+#   make GEIST_REF=... # build against another engine revision, one-off
 
-GEISTLIB := geistlib
+GEIST_REPO ?= https://github.com/geisten/geistlib.git
+GEIST_REF  ?= bb751c596f7d6ed3f73fa2d4c4e29e617cada57f
+GEISTLIB   ?= geistlib
+MODE       ?= release
+
+# Parse-time, not a target: the include directives and detect-target.sh below
+# are evaluated while make is still reading this file. Skipped for goals that
+# do not need an engine, so a fresh `make clean` does not clone 14 MB and an
+# ibus-only build needs no git in its container.
+# The ibus binaries compile against libibus only — no libgeist, no engine.
+NO_ENGINE := clean distclean help ibus ibus-engine-geist-diktat \
+             ibus-engine-geist-diktat-test ibus-test-client
+ifneq (,$(filter-out $(NO_ENGINE),$(or $(MAKECMDGOALS),all)))
+
+ENGINE := $(shell GEIST_REPO='$(GEIST_REPO)' GEIST_REF='$(GEIST_REF)' \
+                  GEISTLIB='$(GEISTLIB)' sh scripts/sync-engine.sh >&2 && echo ok)
+ifneq ($(ENGINE),ok)
+$(error engine sync failed — see the messages above)
+endif
+
 TARGET ?= $(shell $(GEISTLIB)/mk/detect-target.sh)
-MODE   ?= release
-
 include $(GEISTLIB)/mk/target-$(TARGET).mk
 
 GEMM_PROVIDER ?= native
 include $(GEISTLIB)/mk/gemm-$(GEMM_PROVIDER).mk
+
+endif
 
 LIB := $(GEISTLIB)/lib/$(TARGET)/$(MODE)/libgeist.a
 
@@ -24,7 +49,7 @@ LDFLAGS := $(LDFLAGS_TARGET)
 LDLIBS  := $(LDLIBS_TARGET) $(GEMM_LDLIBS)
 
 
-.PHONY: all setup test ibus clean
+.PHONY: all setup test ibus clean distclean
 
 all: diktat
 
@@ -69,3 +94,8 @@ test: diktat
 
 clean:
 	rm -f diktat ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client
+
+# The engine checkout is build input, not source: distclean drops it so the
+# next build re-clones at the pin.
+distclean: clean
+	rm -rf $(GEISTLIB)

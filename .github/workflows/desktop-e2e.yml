@@ -20,8 +20,6 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: build diktat (host) + ibus binaries (container — dev headers without sudo)
         run: |
           make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native

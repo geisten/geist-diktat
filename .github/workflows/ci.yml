@@ -20,8 +20,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q libopenblas-dev gcc-14
       - name: build
@@ -34,8 +32,6 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       # The image default is Xcode 16.4, whose Apple clang only knows
       # -std=c2x; geistlib builds with -std=c23. Pick the newest Xcode on
       # the image rather than pinning a version that ages out.
@@ -66,8 +62,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q gcc-14 libibus-1.0-dev ibus dbus
       - name: build engine + test client
@@ -101,8 +95,6 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q lintian
       # arm64 builds in debian:12 with clang-19: the Pi world runs RasPiOS
@@ -116,7 +108,10 @@ jobs:
             docker run --rm -v "$PWD:/w" -w /w debian:12 bash -ec '
               export DEBIAN_FRONTEND=noninteractive
               apt-get update -q >/dev/null
-              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config >/dev/null
+              # git + ca-certificates: the engine is cloned by the build itself
+              # now (GEIST_REF), and this build runs inside the container.
+              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config \
+                                    git ca-certificates >/dev/null
               make CC=clang-19 TARGET=linux GEMM_PROVIDER=native
               make CC=clang-19 GEMM_PROVIDER=native ibus-engine-geist-diktat
             '

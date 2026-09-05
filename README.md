@@ -57,9 +57,9 @@ lines on stdout; compose them as in the snippet above.
 ## Build from source
 
 ```sh
-git clone --recurse-submodules https://github.com/geisten/geist-diktat
+git clone https://github.com/geisten/geist-diktat
 cd geist-diktat
-make                    # builds diktat against the pinned geistlib
+make                    # clones + builds the pinned geistlib, then diktat
 make setup              # model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
 arecord -q -f S16_LE -r 16000 -c 1 -t raw | \
   ./diktat geistlib/gguf_artifacts/gemma4-e2b-Q4_K_M.gguf   # transcript lines on stdout
