@@ -27,6 +27,36 @@ jobs:
       - name: smoke test (fixture-gated half skips without the 3.7 GB model)
         run: make CC=gcc-14 TARGET=linux test
 
+  musl-tarball:
+    # The Linux tarball is linked fully static against musl, so it must be built
+    # and proven per PR — the release job is not the place to find out that the
+    # one artifact claiming "runs on any distro" does not.
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      # Alpine 3.21 is what geistlib uses for its own musl-static artifact:
+      # gcc 14 for -std=c23, musl-built libgomp for OpenMP.
+      - name: build + package (alpine 3.21, musl-static)
+        run: |
+          docker run --rm -v "$PWD:/w" -w /w alpine:3.21 sh -ec '
+            apk add --no-cache build-base linux-headers git >/dev/null
+            git config --global --add safe.directory /w
+            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
+            sh packaging/build-tarball.sh
+          '
+      # On the glibc host: a static binary that only runs where it was built
+      # would defeat the point. build-tarball.sh already asserted no dynamic
+      # section; this asserts it actually executes elsewhere.
+      - name: runs on glibc, unpacked
+        run: |
+          mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_linux-*.tar.gz
+          /tmp/tb/geist-diktat_*/bin/geist-diktat 2>&1 | grep -q usage
+          /tmp/tb/geist-diktat_*/bin/diktat /nonexistent.gguf </dev/null 2>&1 | grep -q "model_load failed"
+          file /tmp/tb/geist-diktat_*/bin/diktat
+
   macos-build:
     # Apple Silicon only — geistlib's mac targets are cpu_neon.
     runs-on: macos-15
