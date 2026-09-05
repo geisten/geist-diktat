@@ -62,11 +62,23 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      # The image default is Xcode 16.4, whose Apple clang only knows
-      # -std=c2x; geistlib builds with -std=c23. Pick the newest Xcode on
-      # the image rather than pinning a version that ages out.
-      - name: select the newest Xcode
-        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+      # The image default is Xcode 16.4, whose Apple clang only knows -std=c2x
+      # while geistlib builds with -std=c23 — that cost a red job once already.
+      # Pinned rather than "newest on the image": newest would just as readily
+      # hand us a beta, and a toolchain that changes under the build is the
+      # same class of problem as an engine pin that is not enforced. When the
+      # image drops this version the job stops with the list of what it does
+      # have, so the bump is a decision instead of a surprise.
+      - name: select the pinned Xcode
+        run: |
+          XCODE=/Applications/Xcode_26.3.app
+          [ -d "$XCODE" ] || {
+            echo "pinned $XCODE is gone from this image; available:" >&2
+            ls -d /Applications/Xcode_*.app >&2
+            exit 1
+          }
+          sudo xcode-select -s "$XCODE"
+          cc --version | head -1   # recorded in the log: what actually built
       - name: deps
         run: brew install libomp
       - name: build (static libomp, as the release tarball does)
