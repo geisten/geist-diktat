@@ -1,0 +1,7 @@
+{
+  "description": "Proposed release targets; current Geist pilot is expected to fail. Passing a small pilot does not certify a product.",
+  "groups": {
+    "de-read-clean": {"max_wer": 0.1, "min_clips": 12},
+    "de-noise-10db": {"max_wer": 0.25, "min_clips": 6}
+  }
+}

@@ -1,0 +1,4755 @@
+{
+  "scope": "Development pilot; no physical microphone certification or representative DACH claim.",
+  "whisper_source_commit": "52a939a2a762224e255d366c1182b2af4dd1a032",
+  "mac_timing_warning": "Unrelated engine stress tests ran concurrently; Mac timings cannot establish idle-speed superiority.",
+  "excluded": "Initial Whisper adapter experiments with incorrect stdout flags are instrumentation failures, not ASR accuracy results.",
+  "tests": {
+    "macos_unittest": 77,
+    "ubuntu_arm64_unittest": 77,
+    "nvim_toggle_cycles": 100,
+    "ibus_toggle_cycles": 100,
+    "vim_toggle_cycles": 100,
+    "core_line_coverage_percent": 98.08,
+    "core_branch_coverage_percent": 73.27,
+    "coverage_scope": "src/diktat.c with controlled fake engine, ASan and UBSan; not model/driver/UI coverage"
+  },
+  "results": {
+    "product-pi-quality": {
+      "engine": "geist",
+      "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "e5b52aeb25b6f27e5cc7ef91e45852d9711f4fbda09b5ec0024e3df2cce344df",
+        "model": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "tower": "d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77",
+        "mel": "6af20c65cbfcd1ee65551bf6337a015e6a8a49f3752bcd01769eaf4f36659f76"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 3.8411239720880985,
+          "feed_start_s": 3.8414437659084797,
+          "feed_finished_s": 3.9023602369707078,
+          "exit_code": 0,
+          "wall_s": 20.362711182096973,
+          "peak_rss_mib": 2683.125,
+          "cpu_s": 49.957883,
+          "audio_s": 17.94,
+          "wall_rtf": 1.135045216393365,
+          "processing_s": 16.521587210008875,
+          "output_times_s": [
+            20.32206142391078
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 10,
+          "substitutions": 6,
+          "deletions": 3,
+          "insertions": 1,
+          "reference_words": 18,
+          "wer": 0.5555555555555556
+        },
+        {
+          "ready_s": 2.334002983989194,
+          "feed_start_s": 2.3340385579504073,
+          "feed_finished_s": 2.3457777469884604,
+          "exit_code": 0,
+          "wall_s": 15.652292924001813,
+          "peak_rss_mib": 2821.3125,
+          "cpu_s": 40.383023,
+          "audio_s": 11.16,
+          "wall_rtf": 1.40253520824389,
+          "processing_s": 13.318289940012619,
+          "output_times_s": [
+            15.610170174855739
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        },
+        {
+          "ready_s": 1.7583216100465506,
+          "feed_start_s": 1.7583575730677694,
+          "feed_finished_s": 1.7858220390044153,
+          "exit_code": 0,
+          "wall_s": 22.065979900071397,
+          "peak_rss_mib": 2881.796875,
+          "cpu_s": 60.325883,
+          "audio_s": 12.42,
+          "wall_rtf": 1.776648945255346,
+          "processing_s": 20.307658290024847,
+          "output_times_s": [
+            22.02375218900852
+          ],
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216
+        },
+        {
+          "ready_s": 1.291546736843884,
+          "feed_start_s": 1.2915857548359782,
+          "feed_finished_s": 1.312258020043373,
+          "exit_code": 0,
+          "wall_s": 21.61736002098769,
+          "peak_rss_mib": 2880.109375,
+          "cpu_s": 59.956531000000005,
+          "audio_s": 10.68,
+          "wall_rtf": 2.024097380242293,
+          "processing_s": 20.325813284143806,
+          "output_times_s": [
+            21.575157291954383
+          ],
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+          "errors": 3,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 1.2804812209215015,
+          "feed_start_s": 1.280519553925842,
+          "feed_finished_s": 1.288916447898373,
+          "exit_code": 0,
+          "wall_s": 14.650324956979603,
+          "peak_rss_mib": 2873.21875,
+          "cpu_s": 40.349872,
+          "audio_s": 9.9,
+          "wall_rtf": 1.4798308037353134,
+          "processing_s": 13.369843736058101,
+          "output_times_s": [
+            14.607449695002288
+          ],
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616
+        },
+        {
+          "ready_s": 1.306467060931027,
+          "feed_start_s": 1.3065052088350058,
+          "feed_finished_s": 1.3070569278206676,
+          "exit_code": 0,
+          "wall_s": 14.147251911927015,
+          "peak_rss_mib": 2869.859375,
+          "cpu_s": 38.84192,
+          "audio_s": 8.4,
+          "wall_rtf": 1.6841966561817874,
+          "processing_s": 12.840784850995988,
+          "output_times_s": [
+            14.104209890821949
+          ],
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 1.443581162020564,
+          "feed_start_s": 1.4436163099016994,
+          "feed_finished_s": 1.487301270943135,
+          "exit_code": 0,
+          "wall_s": 26.91688622091897,
+          "peak_rss_mib": 2858.765625,
+          "cpu_s": 71.276027,
+          "audio_s": 12.96,
+          "wall_rtf": 2.076920233095599,
+          "processing_s": 25.473305058898404,
+          "output_times_s": [
+            26.87355385092087
+          ],
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+          "errors": 6,
+          "substitutions": 5,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 34,
+          "wer": 0.17647058823529413
+        },
+        {
+          "ready_s": 1.5065685720182955,
+          "feed_start_s": 1.5066038500517607,
+          "feed_finished_s": 16.704698451096192,
+          "exit_code": 0,
+          "wall_s": 25.34392601600848,
+          "peak_rss_mib": 2864.359375,
+          "cpu_s": 70.712355,
+          "audio_s": 19.68,
+          "wall_rtf": 1.2878011186996179,
+          "processing_s": 23.837357443990186,
+          "output_times_s": [
+            9.559628308052197,
+            16.700339457951486,
+            25.300860959105194
+          ],
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+          "errors": 16,
+          "substitutions": 11,
+          "deletions": 1,
+          "insertions": 4,
+          "reference_words": 18,
+          "wer": 0.8888888888888888
+        },
+        {
+          "ready_s": 1.4233240799512714,
+          "feed_start_s": 1.4233611731324345,
+          "feed_finished_s": 1.4382189910393208,
+          "exit_code": 0,
+          "wall_s": 16.681647677905858,
+          "peak_rss_mib": 2877.03125,
+          "cpu_s": 45.717847,
+          "audio_s": 11.04,
+          "wall_rtf": 1.5110188114045162,
+          "processing_s": 15.258323597954586,
+          "output_times_s": [
+            16.635850768070668
+          ],
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+          "errors": 2,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684
+        },
+        {
+          "ready_s": 1.321714592864737,
+          "feed_start_s": 1.32175298104994,
+          "feed_finished_s": 50.73588025593199,
+          "exit_code": 0,
+          "wall_s": 58.36951931891963,
+          "peak_rss_mib": 2887.421875,
+          "cpu_s": 167.588752,
+          "audio_s": 43.38,
+          "wall_rtf": 1.3455398644287604,
+          "processing_s": 57.04780472605489,
+          "output_times_s": [
+            9.487918538041413,
+            20.675139728933573,
+            40.641445440938696,
+            50.727928729960695,
+            53.578985824016854,
+            58.324723181081936
+          ],
+          "id": "fleurs-10171859810965764480",
+          "group": "de-read-clean",
+          "wav_sha256": "a23263b8b9de2f2a8909c03e2797fe71833f2a765787ae38704047933d6a4e74",
+          "errors": 17,
+          "substitutions": 4,
+          "deletions": 1,
+          "insertions": 12,
+          "reference_words": 44,
+          "wer": 0.38636363636363635
+        },
+        {
+          "ready_s": 1.3085199519991875,
+          "feed_start_s": 1.308556618867442,
+          "feed_finished_s": 1.3090204489417374,
+          "exit_code": 0,
+          "wall_s": 13.744631375884637,
+          "peak_rss_mib": 2872.234375,
+          "cpu_s": 37.85366,
+          "audio_s": 7.14,
+          "wall_rtf": 1.9250183999838428,
+          "processing_s": 12.43611142388545,
+          "output_times_s": [
+            13.699929552851245
+          ],
+          "id": "fleurs-10229344228128634115",
+          "group": "de-read-clean",
+          "wav_sha256": "cd3e609e2d377b3e9ec56730a4e6979f7b8e4a77d1a69e22b788cb706f601889",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 17,
+          "wer": 0.11764705882352941
+        },
+        {
+          "ready_s": 1.2573741269297898,
+          "feed_start_s": 1.2574125530663878,
+          "feed_finished_s": 1.3154238709248602,
+          "exit_code": 0,
+          "wall_s": 27.66770422202535,
+          "peak_rss_mib": 2893.65625,
+          "cpu_s": 77.700729,
+          "audio_s": 16.86,
+          "wall_rtf": 1.6410263476883364,
+          "processing_s": 26.41033009509556,
+          "output_times_s": [
+            27.62399865197949
+          ],
+          "id": "fleurs-10240730312646485406",
+          "group": "de-read-clean",
+          "wav_sha256": "d78dd9f8467dd4f8a2cc3a6fa27be5f6fe3263ef5d949fe76cfb3fd90b72f075",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 32,
+          "wer": 0.03125
+        },
+        {
+          "ready_s": 1.2638896559365094,
+          "feed_start_s": 1.2639264520257711,
+          "feed_finished_s": 1.3064093438442796,
+          "exit_code": 0,
+          "wall_s": 17.642885845853016,
+          "peak_rss_mib": 2878.90625,
+          "cpu_s": 49.459488,
+          "audio_s": 17.94,
+          "wall_rtf": 0.9834384529460989,
+          "processing_s": 16.378996189916506,
+          "output_times_s": [
+            17.598749240860343
+          ],
+          "id": "fleurs-10004059102127011984-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "6f7e9b94f391802ecae240a2402fd19a404d9cca7d60a78ed2a6f624aabb54dd",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 1.366234331857413,
+          "feed_start_s": 1.3662725910544395,
+          "feed_finished_s": 1.4059520000591874,
+          "exit_code": 0,
+          "wall_s": 18.40966121200472,
+          "peak_rss_mib": 2879.625,
+          "cpu_s": 51.546566999999996,
+          "audio_s": 17.94,
+          "wall_rtf": 1.0261795547382786,
+          "processing_s": 17.043426880147308,
+          "output_times_s": [
+            18.365824179025367
+          ],
+          "id": "fleurs-10004059102127011984-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "c42c094fb7006c3636c0e0768eea89dbd1c29c157f1f2ef507828f780fcd7a23",
+          "errors": 7,
+          "substitutions": 5,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 18,
+          "wer": 0.3888888888888889
+        },
+        {
+          "ready_s": 1.287561948876828,
+          "feed_start_s": 1.2875994490459561,
+          "feed_finished_s": 1.3300977479666471,
+          "exit_code": 0,
+          "wall_s": 14.243743496015668,
+          "peak_rss_mib": 2879.0625,
+          "cpu_s": 40.606370999999996,
+          "audio_s": 17.94,
+          "wall_rtf": 0.7939656352294129,
+          "processing_s": 12.95618154713884,
+          "output_times_s": [],
+          "id": "fleurs-10004059102127011984-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "3950a6b6df8a0e43c00752550b841ab1c411f86306d6261c0464e98b54b8734e",
+          "errors": 18,
+          "substitutions": 0,
+          "deletions": 18,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 1.0
+        },
+        {
+          "ready_s": 1.2589851189404726,
+          "feed_start_s": 1.259021582081914,
+          "feed_finished_s": 1.2705091419629753,
+          "exit_code": 0,
+          "wall_s": 14.531180361984298,
+          "peak_rss_mib": 2872.828125,
+          "cpu_s": 40.175289,
+          "audio_s": 11.16,
+          "wall_rtf": 1.3020770933677686,
+          "processing_s": 13.272195243043825,
+          "output_times_s": [
+            14.48685346194543
+          ],
+          "id": "fleurs-10009182821551087671-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "7814f73e9ff81ff8d6fc82fb12df42339b7381e1a3b6c8634c0b0d962ab72251",
+          "errors": 4,
+          "substitutions": 3,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047
+        },
+        {
+          "ready_s": 1.283184913918376,
+          "feed_start_s": 1.2832234329544008,
+          "feed_finished_s": 1.3102027149870992,
+          "exit_code": 0,
+          "wall_s": 19.932875887025148,
+          "peak_rss_mib": 2884.375,
+          "cpu_s": 56.265275,
+          "audio_s": 11.16,
+          "wall_rtf": 1.7860999898768053,
+          "processing_s": 18.64969097310677,
+          "output_times_s": [
+            19.88774876995012
+          ],
+          "id": "fleurs-10009182821551087671-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "70848d54808259087b10c89ef0cfc6ae19817243cc15722f03b37bb246921d5d",
+          "errors": 7,
+          "substitutions": 6,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.3333333333333333
+        },
+        {
+          "ready_s": 1.28946553892456,
+          "feed_start_s": 1.28950259485282,
+          "feed_finished_s": 1.316361450823024,
+          "exit_code": 0,
+          "wall_s": 20.236598921008408,
+          "peak_rss_mib": 2884.15625,
+          "cpu_s": 57.201592,
+          "audio_s": 11.16,
+          "wall_rtf": 1.8133153155025454,
+          "processing_s": 18.947133382083848,
+          "output_times_s": [
+            20.19257109402679
+          ],
+          "id": "fleurs-10009182821551087671-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "e7941fc66e56f9aaff2aa57d193d335f4d42ccaa00e8e34f2ad217b34b014759",
+          "errors": 8,
+          "substitutions": 7,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.38095238095238093
+        },
+        {
+          "ready_s": 1.2852065430488437,
+          "feed_start_s": 1.2852432089857757,
+          "feed_finished_s": 1.31211739894934,
+          "exit_code": 0,
+          "wall_s": 21.517837072024122,
+          "peak_rss_mib": 2882.546875,
+          "cpu_s": 60.217389,
+          "audio_s": 12.42,
+          "wall_rtf": 1.7325150621597523,
+          "processing_s": 20.232630528975278,
+          "output_times_s": [
+            21.47337804385461
+          ],
+          "id": "fleurs-10014044777125235464-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "ad96c52ef888143f7c493d72e938decee5789ac79f57b5610cd737555be23529",
+          "errors": 8,
+          "substitutions": 8,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.34782608695652173
+        },
+        {
+          "ready_s": 1.2837308621965349,
+          "feed_start_s": 1.2837706950958818,
+          "feed_finished_s": 1.316713459091261,
+          "exit_code": 0,
+          "wall_s": 23.354775433195755,
+          "peak_rss_mib": 2888.15625,
+          "cpu_s": 66.042475,
+          "audio_s": 12.42,
+          "wall_rtf": 1.880416701545552,
+          "processing_s": 22.07104457099922,
+          "output_times_s": [
+            23.3105379040353
+          ],
+          "id": "fleurs-10014044777125235464-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "229cac9fe127468c0bc1d658d65512ad9b61c4401a62f0ce94431856c5bdadeb",
+          "errors": 6,
+          "substitutions": 5,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.2608695652173913
+        },
+        {
+          "ready_s": 1.2835676190443337,
+          "feed_start_s": 1.2836047851014882,
+          "feed_finished_s": 1.3166423081420362,
+          "exit_code": 0,
+          "wall_s": 22.993045380106196,
+          "peak_rss_mib": 2888.328125,
+          "cpu_s": 64.910437,
+          "audio_s": 12.42,
+          "wall_rtf": 1.851291898559275,
+          "processing_s": 21.709477761061862,
+          "output_times_s": [
+            22.948726722039282
+          ],
+          "id": "fleurs-10014044777125235464-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "91080ba41497f47cff16366f93b1ca03e3aeadc82495ab4884084bb1137f2393",
+          "errors": 16,
+          "substitutions": 14,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 23,
+          "wer": 0.6956521739130435
+        },
+        {
+          "ready_s": 1.2833703011274338,
+          "feed_start_s": 1.2834085230715573,
+          "feed_finished_s": 1.304091878933832,
+          "exit_code": 0,
+          "wall_s": 21.840177356032655,
+          "peak_rss_mib": 2880.03125,
+          "cpu_s": 60.806156,
+          "audio_s": 10.68,
+          "wall_rtf": 2.044960426594818,
+          "processing_s": 20.55680705490522,
+          "output_times_s": [
+            21.79619454802014
+          ],
+          "id": "fleurs-10030056357041867775-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "49d1ef9dcd9d423433c0300b653028e9302688f2b7e20e991f4f706953c122c1",
+          "errors": 5,
+          "substitutions": 4,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.16129032258064516
+        },
+        {
+          "ready_s": 1.2912663980387151,
+          "feed_start_s": 1.2913053419906646,
+          "feed_finished_s": 1.3151276241987944,
+          "exit_code": 0,
+          "wall_s": 22.95389013714157,
+          "peak_rss_mib": 2882.734375,
+          "cpu_s": 63.971377000000004,
+          "audio_s": 10.68,
+          "wall_rtf": 2.149240649545091,
+          "processing_s": 21.662623739102855,
+          "output_times_s": [
+            22.908257339149714
+          ],
+          "id": "fleurs-10030056357041867775-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "6a62b8ecbc7754885099d2b16da9ca041e3e94350bc738a4ee4c4f02e5afefbc",
+          "errors": 10,
+          "substitutions": 9,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.3225806451612903
+        },
+        {
+          "ready_s": 1.2988323860336095,
+          "feed_start_s": 1.298871441045776,
+          "feed_finished_s": 1.3226715750060976,
+          "exit_code": 0,
+          "wall_s": 21.56254410604015,
+          "peak_rss_mib": 2882.1875,
+          "cpu_s": 60.398887,
+          "audio_s": 10.68,
+          "wall_rtf": 2.0189648039363437,
+          "processing_s": 20.26371172000654,
+          "output_times_s": [
+            21.516972362995148
+          ],
+          "id": "fleurs-10030056357041867775-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "6c0ddf8c793128706a429fac5a4e8ac78221d54ba56d8f7b5894ed9fd09d29f3",
+          "errors": 17,
+          "substitutions": 13,
+          "deletions": 3,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.5483870967741935
+        },
+        {
+          "ready_s": 1.2963123240042478,
+          "feed_start_s": 1.2963493049610406,
+          "feed_finished_s": 1.3138385880738497,
+          "exit_code": 0,
+          "wall_s": 18.982345960102975,
+          "peak_rss_mib": 2880.203125,
+          "cpu_s": 52.818903000000006,
+          "audio_s": 9.9,
+          "wall_rtf": 1.9174086828386843,
+          "processing_s": 17.686033636098728,
+          "output_times_s": [
+            18.936954173026606
+          ],
+          "id": "fleurs-10058186628567796965-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "2d1b40ab89abcaeb7f3e9d172e1c8b983ffcf252b1a6e9fb0f0a744e3fb33b9d",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616
+        },
+        {
+          "ready_s": 1.2945323220919818,
+          "feed_start_s": 1.2945709330961108,
+          "feed_finished_s": 1.3120740270242095,
+          "exit_code": 0,
+          "wall_s": 18.48713643103838,
+          "peak_rss_mib": 2881.03125,
+          "cpu_s": 51.891002,
+          "audio_s": 9.9,
+          "wall_rtf": 1.867387518286705,
+          "processing_s": 17.192604108946398,
+          "output_times_s": [
+            18.44278296502307
+          ],
+          "id": "fleurs-10058186628567796965-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "c2dc558fa6f9238c1f5f1d121f6ffcf6efb2cccfd59eea26613a268cf563be5b",
+          "errors": 6,
+          "substitutions": 4,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.2857142857142857
+        },
+        {
+          "ready_s": 1.2909482959657907,
+          "feed_start_s": 1.2909901840612292,
+          "feed_finished_s": 1.3088002030272037,
+          "exit_code": 0,
+          "wall_s": 18.523554126964882,
+          "peak_rss_mib": 2880.703125,
+          "cpu_s": 51.858897000000006,
+          "audio_s": 9.9,
+          "wall_rtf": 1.871066073430796,
+          "processing_s": 17.23260583099909,
+          "output_times_s": [
+            18.478724643122405
+          ],
+          "id": "fleurs-10058186628567796965-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "428f26ed455b75be0343385a66c91e13dae9fe6f011da28364f58a969e41fb3c",
+          "errors": 14,
+          "substitutions": 11,
+          "deletions": 3,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.6666666666666666
+        },
+        {
+          "ready_s": 1.3081911669578403,
+          "feed_start_s": 1.308242463041097,
+          "feed_finished_s": 1.316543913912028,
+          "exit_code": 0,
+          "wall_s": 16.924323263112456,
+          "peak_rss_mib": 2878.0625,
+          "cpu_s": 47.000641,
+          "audio_s": 8.4,
+          "wall_rtf": 2.0148003884657686,
+          "processing_s": 15.616132096154615,
+          "output_times_s": [
+            16.878861282020807
+          ],
+          "id": "fleurs-10058299886985225661-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "522e9ac7972318830b34dfa5f956e8f1f364d2477d786c4e729e29b6b7203856",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 1.2935013670939952,
+          "feed_start_s": 1.2935409410856664,
+          "feed_finished_s": 1.3020190200768411,
+          "exit_code": 0,
+          "wall_s": 17.103266655933112,
+          "peak_rss_mib": 2878.453125,
+          "cpu_s": 47.516919,
+          "audio_s": 8.4,
+          "wall_rtf": 2.0361031733253703,
+          "processing_s": 15.809765288839117,
+          "output_times_s": [
+            17.05656531197019
+          ],
+          "id": "fleurs-10058299886985225661-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "611f2c88d2f8abd96fab00b88244b1cd07ef2b20315f48c55ae54e0ed08d2d8d",
+          "errors": 13,
+          "substitutions": 10,
+          "deletions": 3,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.8125
+        },
+        {
+          "ready_s": 1.3361356910318136,
+          "feed_start_s": 1.3361728759482503,
+          "feed_finished_s": 1.3446934181265533,
+          "exit_code": 0,
+          "wall_s": 16.20506232790649,
+          "peak_rss_mib": 2878.171875,
+          "cpu_s": 45.095797,
+          "audio_s": 8.4,
+          "wall_rtf": 1.9291740866555345,
+          "processing_s": 14.868926636874676,
+          "output_times_s": [
+            16.16011935705319
+          ],
+          "id": "fleurs-10058299886985225661-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "254260cda893ea0034cfbe3df7fc41505acaaef27b1ab7f74bc68ca112c16d0e",
+          "errors": 16,
+          "substitutions": 14,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 1.0
+        }
+      ],
+      "groups": {
+        "de-read-clean": {
+          "clips": 12,
+          "errors": 61,
+          "reference_words": 294,
+          "substitutions": 35,
+          "deletions": 7,
+          "insertions": 19,
+          "audio_s": 181.56,
+          "wall_s": 277.2202357277274,
+          "failed": 0,
+          "wer": 0.20748299319727892,
+          "wall_rtf": 1.5268794653432882
+        },
+        "de-noise-20db": {
+          "clips": 6,
+          "errors": 18,
+          "reference_words": 130,
+          "substitutions": 16,
+          "deletions": 1,
+          "insertions": 1,
+          "audio_s": 70.5,
+          "wall_s": 111.43874985910952,
+          "failed": 0,
+          "wer": 0.13846153846153847,
+          "wall_rtf": 1.5806914873632556
+        },
+        "de-noise-10db": {
+          "clips": 6,
+          "errors": 49,
+          "reference_words": 130,
+          "substitutions": 39,
+          "deletions": 7,
+          "insertions": 3,
+          "audio_s": 70.5,
+          "wall_s": 120.24160575633869,
+          "failed": 0,
+          "wer": 0.3769230769230769,
+          "wall_rtf": 1.705554691579272
+        },
+        "de-noise-5db": {
+          "clips": 6,
+          "errors": 89,
+          "reference_words": 130,
+          "substitutions": 59,
+          "deletions": 27,
+          "insertions": 3,
+          "audio_s": 70.5,
+          "wall_s": 113.7645483580418,
+          "failed": 0,
+          "wer": 0.6846153846153846,
+          "wall_rtf": 1.6136815369935007
+        }
+      }
+    },
+    "product-mac-quality-contended": {
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "b423c6ad26c7e0036b8358fc12b73a0a7f655a03389f599de8204625a8ed3f65",
+        "model": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "tower": "d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77",
+        "mel": "6af20c65cbfcd1ee65551bf6337a015e6a8a49f3752bcd01769eaf4f36659f76"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 5.497702415988897,
+          "feed_start_s": 5.507674249995034,
+          "feed_finished_s": 84.82546487500076,
+          "exit_code": 0,
+          "wall_s": 84.94951774999208,
+          "peak_rss_mib": 6345.59375,
+          "cpu_s": 316.09806,
+          "audio_s": 17.94,
+          "wall_rtf": 4.735201658305021,
+          "processing_s": 79.45181533400319,
+          "output_times_s": [
+            84.82363945800171
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.05555555555555555
+        },
+        {
+          "ready_s": 6.299330124995322,
+          "feed_start_s": 6.313117917001364,
+          "feed_finished_s": 33.75679745800153,
+          "exit_code": 0,
+          "wall_s": 33.83241029200144,
+          "peak_rss_mib": 6321.5625,
+          "cpu_s": 132.3623,
+          "audio_s": 11.16,
+          "wall_rtf": 3.031577983154251,
+          "processing_s": 27.53308016700612,
+          "output_times_s": [
+            33.7559721669968
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        },
+        {
+          "ready_s": 3.2501090000005206,
+          "feed_start_s": 3.2519848749943776,
+          "feed_finished_s": 3.314244167006109,
+          "exit_code": 0,
+          "wall_s": 113.48810783399676,
+          "peak_rss_mib": 6336.671875,
+          "cpu_s": 426.810085,
+          "audio_s": 12.42,
+          "wall_rtf": 9.137528811110851,
+          "processing_s": 110.23799883399624,
+          "output_times_s": [
+            113.42209604200616
+          ],
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216
+        },
+        {
+          "ready_s": 5.549780625005951,
+          "feed_start_s": 5.561877667001681,
+          "feed_finished_s": 5.680670208006632,
+          "exit_code": 0,
+          "wall_s": 92.27759641701414,
+          "peak_rss_mib": 6336.765625,
+          "cpu_s": 349.555653,
+          "audio_s": 10.68,
+          "wall_rtf": 8.640224383615557,
+          "processing_s": 86.72781579200819,
+          "output_times_s": [
+            92.15218587500567
+          ],
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+          "errors": 3,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 5.379717457995866,
+          "feed_start_s": 5.384041499986779,
+          "feed_finished_s": 5.461282749995007,
+          "exit_code": 0,
+          "wall_s": 52.09930370798975,
+          "peak_rss_mib": 6328.15625,
+          "cpu_s": 190.00392399999998,
+          "audio_s": 9.9,
+          "wall_rtf": 5.262555930099975,
+          "processing_s": 46.71958624999388,
+          "output_times_s": [
+            52.03210395798669
+          ],
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+          "errors": 2,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        },
+        {
+          "ready_s": 6.562518708000425,
+          "feed_start_s": 6.568212166996091,
+          "feed_finished_s": 6.650035166996531,
+          "exit_code": 0,
+          "wall_s": 76.87537358299596,
+          "peak_rss_mib": 6322.15625,
+          "cpu_s": 288.21116900000004,
+          "audio_s": 8.4,
+          "wall_rtf": 9.1518301884519,
+          "processing_s": 70.31285487499554,
+          "output_times_s": [
+            76.79526512499433
+          ],
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 5.846135167012108,
+          "feed_start_s": 5.854234292011824,
+          "feed_finished_s": 5.984396959000151,
+          "exit_code": 0,
+          "wall_s": 137.08120641700225,
+          "peak_rss_mib": 6346.609375,
+          "cpu_s": 499.629469,
+          "audio_s": 12.96,
+          "wall_rtf": 10.577253581558814,
+          "processing_s": 131.23507124999014,
+          "output_times_s": [
+            136.92701170900546
+          ],
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+          "errors": 5,
+          "substitutions": 4,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 34,
+          "wer": 0.14705882352941177
+        },
+        {
+          "ready_s": 6.004804583993973,
+          "feed_start_s": 6.014993083997979,
+          "feed_finished_s": 169.99676829199598,
+          "exit_code": 0,
+          "wall_s": 170.1018738339917,
+          "peak_rss_mib": 6324.453125,
+          "cpu_s": 614.933713,
+          "audio_s": 19.68,
+          "wall_rtf": 8.643387898068685,
+          "processing_s": 164.09706924999773,
+          "output_times_s": [
+            62.900461666999036,
+            104.0338442499924,
+            169.99622795899631
+          ],
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+          "errors": 13,
+          "substitutions": 12,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 18,
+          "wer": 0.7222222222222222
+        },
+        {
+          "ready_s": 6.330800874988199,
+          "feed_start_s": 6.331542832995183,
+          "feed_finished_s": 6.425184833002277,
+          "exit_code": 0,
+          "wall_s": 61.795377957998426,
+          "peak_rss_mib": 6330.890625,
+          "cpu_s": 235.473546,
+          "audio_s": 11.04,
+          "wall_rtf": 5.597407423731742,
+          "processing_s": 55.46457708301023,
+          "output_times_s": [
+            61.7251361660019
+          ],
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684
+        }
+      ],
+      "groups": {
+        "de-read-clean": {
+          "clips": 9,
+          "errors": 29,
+          "reference_words": 201,
+          "substitutions": 23,
+          "deletions": 3,
+          "insertions": 3,
+          "audio_s": 114.18,
+          "wall_s": 822.5007677929825,
+          "failed": 0,
+          "wer": 0.14427860696517414,
+          "wall_rtf": 7.203544997311109
+        }
+      },
+      "interrupted": "Stopped after 9 completed clips: unrelated engine stress test uses roughly 6.6 CPU cores; timings cannot support a performance comparison.",
+      "timing_valid_for_idle_comparison": false
+    },
+    "product-mac-whisper-validated": {
+      "engine": "whisper",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "1686a2944ec4d125d79680d7e5b5ebf681999140c4aa7bdb79e3c6e940518ffa",
+        "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 0.06382670799212065,
+          "feed_start_s": 0.06388170798891224,
+          "feed_finished_s": 7.756722916994477,
+          "exit_code": 0,
+          "wall_s": 7.775136457988992,
+          "peak_rss_mib": 488.0,
+          "cpu_s": 16.456946000000002,
+          "audio_s": 17.94,
+          "wall_rtf": 0.433396681047324,
+          "processing_s": 7.711309749996872,
+          "output_times_s": [
+            7.752430291991914
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 0.08400799999071751,
+          "feed_start_s": 0.08441795800172258,
+          "feed_finished_s": 0.10501887499412987,
+          "exit_code": 0,
+          "wall_s": 7.140400791002321,
+          "peak_rss_mib": 487.765625,
+          "cpu_s": 14.690516,
+          "audio_s": 11.16,
+          "wall_rtf": 0.6398208594088102,
+          "processing_s": 7.0563927910116035,
+          "output_times_s": [
+            7.131742457990185
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047
+        },
+        {
+          "ready_s": 0.09396641599596478,
+          "feed_start_s": 0.09464316599769518,
+          "feed_finished_s": 0.11484700000437442,
+          "exit_code": 0,
+          "wall_s": 9.449838915999862,
+          "peak_rss_mib": 490.34375,
+          "cpu_s": 20.513835,
+          "audio_s": 12.42,
+          "wall_rtf": 0.7608565954911323,
+          "processing_s": 9.355872500003898,
+          "output_times_s": [
+            9.445992374996422
+          ],
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216
+        },
+        {
+          "ready_s": 0.09804312499181833,
+          "feed_start_s": 0.09939612499147188,
+          "feed_finished_s": 0.1219601659977343,
+          "exit_code": 0,
+          "wall_s": 8.97331720800139,
+          "peak_rss_mib": 488.625,
+          "cpu_s": 19.176185,
+          "audio_s": 10.68,
+          "wall_rtf": 0.8401982404495684,
+          "processing_s": 8.875274083009572,
+          "output_times_s": [
+            8.966647749999538
+          ],
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 0.08916958299232647,
+          "feed_start_s": 0.0901798749982845,
+          "feed_finished_s": 0.10021716699702665,
+          "exit_code": 0,
+          "wall_s": 7.4213843749894295,
+          "peak_rss_mib": 487.671875,
+          "cpu_s": 15.347828000000002,
+          "audio_s": 9.9,
+          "wall_rtf": 0.7496347853524676,
+          "processing_s": 7.332214791997103,
+          "output_times_s": [
+            7.414611416999833
+          ],
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616
+        },
+        {
+          "ready_s": 0.10311262500181329,
+          "feed_start_s": 0.10433550000016112,
+          "feed_finished_s": 0.11588054199819453,
+          "exit_code": 0,
+          "wall_s": 7.781573041997035,
+          "peak_rss_mib": 487.9375,
+          "cpu_s": 16.110993,
+          "audio_s": 8.4,
+          "wall_rtf": 0.9263777430948851,
+          "processing_s": 7.678460416995222,
+          "output_times_s": [
+            7.7766287499980535
+          ],
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0625
+        },
+        {
+          "ready_s": 0.07850262499414384,
+          "feed_start_s": 0.07871770800556988,
+          "feed_finished_s": 0.10726937500294298,
+          "exit_code": 0,
+          "wall_s": 11.891356541003915,
+          "peak_rss_mib": 489.8125,
+          "cpu_s": 26.209576,
+          "audio_s": 12.96,
+          "wall_rtf": 0.9175429429786971,
+          "processing_s": 11.812853916009772,
+          "output_times_s": [
+            11.881724833001499
+          ],
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 34,
+          "wer": 0.08823529411764706
+        },
+        {
+          "ready_s": 0.0574461250071181,
+          "feed_start_s": 0.05745795799884945,
+          "feed_finished_s": 14.539315333007835,
+          "exit_code": 0,
+          "wall_s": 14.545298500001081,
+          "peak_rss_mib": 487.203125,
+          "cpu_s": 27.575333,
+          "audio_s": 19.68,
+          "wall_rtf": 0.7390903709350143,
+          "processing_s": 14.487852374993963,
+          "output_times_s": [
+            4.756340167004964,
+            9.487543541996274,
+            14.539079000009224
+          ],
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.16666666666666666
+        },
+        {
+          "ready_s": 0.090604875003919,
+          "feed_start_s": 0.09087637500488199,
+          "feed_finished_s": 0.10648912499891594,
+          "exit_code": 0,
+          "wall_s": 7.6444251670036465,
+          "peak_rss_mib": 488.90625,
+          "cpu_s": 16.042501,
+          "audio_s": 11.04,
+          "wall_rtf": 0.6924298158517797,
+          "processing_s": 7.5538202919997275,
+          "output_times_s": [
+            7.639252292006859
+          ],
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684
+        },
+        {
+          "ready_s": 0.03367287501168903,
+          "feed_start_s": 0.033694959012791514,
+          "feed_finished_s": 14.2313656250044,
+          "exit_code": 0,
+          "wall_s": 14.23781125000096,
+          "peak_rss_mib": 490.515625,
+          "cpu_s": 37.514069,
+          "audio_s": 43.38,
+          "wall_rtf": 0.32821141655142827,
+          "processing_s": 14.20413837498927,
+          "output_times_s": [
+            0.9902892500103917,
+            2.824805667012697,
+            5.127258250009618,
+            8.396122167003341,
+            11.128532292001182,
+            14.230093959005899
+          ],
+          "id": "fleurs-10171859810965764480",
+          "group": "de-read-clean",
+          "wav_sha256": "a23263b8b9de2f2a8909c03e2797fe71833f2a765787ae38704047933d6a4e74",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 44,
+          "wer": 0.09090909090909091
+        },
+        {
+          "ready_s": 0.0671064589987509,
+          "feed_start_s": 0.06713237499934621,
+          "feed_finished_s": 0.07054120900284033,
+          "exit_code": 0,
+          "wall_s": 1.7960140840004897,
+          "peak_rss_mib": 488.34375,
+          "cpu_s": 5.159428999999999,
+          "audio_s": 7.14,
+          "wall_rtf": 0.2515425887955868,
+          "processing_s": 1.7289076250017388,
+          "output_times_s": [
+            1.7915485840057954
+          ],
+          "id": "fleurs-10229344228128634115",
+          "group": "de-read-clean",
+          "wav_sha256": "cd3e609e2d377b3e9ec56730a4e6979f7b8e4a77d1a69e22b788cb706f601889",
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 17,
+          "wer": 0.058823529411764705
+        },
+        {
+          "ready_s": 0.03485516700311564,
+          "feed_start_s": 0.034882625011960045,
+          "feed_finished_s": 0.04337741700874176,
+          "exit_code": 0,
+          "wall_s": 6.244728792007663,
+          "peak_rss_mib": 490.375,
+          "cpu_s": 15.666498,
+          "audio_s": 16.86,
+          "wall_rtf": 0.37038723558764314,
+          "processing_s": 6.209873625004548,
+          "output_times_s": [
+            6.240293542010477
+          ],
+          "id": "fleurs-10240730312646485406",
+          "group": "de-read-clean",
+          "wav_sha256": "d78dd9f8467dd4f8a2cc3a6fa27be5f6fe3263ef5d949fe76cfb3fd90b72f075",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 32,
+          "wer": 0.09375
+        },
+        {
+          "ready_s": 0.056105333991581574,
+          "feed_start_s": 0.05614837499160785,
+          "feed_finished_s": 7.175531125001726,
+          "exit_code": 0,
+          "wall_s": 7.182257084001321,
+          "peak_rss_mib": 486.84375,
+          "cpu_s": 15.064675999999999,
+          "audio_s": 17.94,
+          "wall_rtf": 0.4003487783724259,
+          "processing_s": 7.12615175000974,
+          "output_times_s": [
+            7.175080333996448
+          ],
+          "id": "fleurs-10004059102127011984-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "6f7e9b94f391802ecae240a2402fd19a404d9cca7d60a78ed2a6f624aabb54dd",
+          "errors": 6,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 4,
+          "reference_words": 18,
+          "wer": 0.3333333333333333
+        },
+        {
+          "ready_s": 0.1077479170053266,
+          "feed_start_s": 0.11355595900386106,
+          "feed_finished_s": 8.456815084005939,
+          "exit_code": 0,
+          "wall_s": 8.468362667001202,
+          "peak_rss_mib": 488.171875,
+          "cpu_s": 17.388955,
+          "audio_s": 17.94,
+          "wall_rtf": 0.47203805278713495,
+          "processing_s": 8.360614749995875,
+          "output_times_s": [
+            8.453049624993582
+          ],
+          "id": "fleurs-10004059102127011984-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "c42c094fb7006c3636c0e0768eea89dbd1c29c157f1f2ef507828f780fcd7a23",
+          "errors": 10,
+          "substitutions": 7,
+          "deletions": 0,
+          "insertions": 3,
+          "reference_words": 18,
+          "wer": 0.5555555555555556
+        },
+        {
+          "ready_s": 0.08454499999061227,
+          "feed_start_s": 0.08501212499686517,
+          "feed_finished_s": 12.602014709002106,
+          "exit_code": 0,
+          "wall_s": 12.612723416998051,
+          "peak_rss_mib": 488.1875,
+          "cpu_s": 27.411308000000002,
+          "audio_s": 17.94,
+          "wall_rtf": 0.703050357692199,
+          "processing_s": 12.528178417007439,
+          "output_times_s": [
+            12.596213041993906
+          ],
+          "id": "fleurs-10004059102127011984-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "3950a6b6df8a0e43c00752550b841ab1c411f86306d6261c0464e98b54b8734e",
+          "errors": 21,
+          "substitutions": 16,
+          "deletions": 0,
+          "insertions": 5,
+          "reference_words": 18,
+          "wer": 1.1666666666666667
+        },
+        {
+          "ready_s": 0.08428208300028928,
+          "feed_start_s": 0.08434291700541507,
+          "feed_finished_s": 6.507975750006153,
+          "exit_code": 0,
+          "wall_s": 6.520287916995585,
+          "peak_rss_mib": 487.71875,
+          "cpu_s": 13.291357000000001,
+          "audio_s": 11.16,
+          "wall_rtf": 0.5842551896949448,
+          "processing_s": 6.436005833995296,
+          "output_times_s": [
+            6.50670166699274
+          ],
+          "id": "fleurs-10009182821551087671-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "7814f73e9ff81ff8d6fc82fb12df42339b7381e1a3b6c8634c0b0d962ab72251",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        },
+        {
+          "ready_s": 0.09383029199671,
+          "feed_start_s": 0.0952341670054011,
+          "feed_finished_s": 0.10918437500367872,
+          "exit_code": 0,
+          "wall_s": 6.860942667000927,
+          "peak_rss_mib": 488.25,
+          "cpu_s": 13.889512999999999,
+          "audio_s": 11.16,
+          "wall_rtf": 0.6147798088710508,
+          "processing_s": 6.767112375004217,
+          "output_times_s": [
+            6.849197624993394
+          ],
+          "id": "fleurs-10009182821551087671-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "70848d54808259087b10c89ef0cfc6ae19817243cc15722f03b37bb246921d5d",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.14285714285714285
+        },
+        {
+          "ready_s": 0.07592687501164619,
+          "feed_start_s": 0.07666987500851974,
+          "feed_finished_s": 0.09116891700250562,
+          "exit_code": 0,
+          "wall_s": 6.674112125008833,
+          "peak_rss_mib": 489.703125,
+          "cpu_s": 13.987241000000001,
+          "audio_s": 11.16,
+          "wall_rtf": 0.5980387208789276,
+          "processing_s": 6.5981852499971865,
+          "output_times_s": [
+            6.668024834012613
+          ],
+          "id": "fleurs-10009182821551087671-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "e7941fc66e56f9aaff2aa57d193d335f4d42ccaa00e8e34f2ad217b34b014759",
+          "errors": 5,
+          "substitutions": 4,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.23809523809523808
+        },
+        {
+          "ready_s": 0.06617979200382251,
+          "feed_start_s": 0.06619775001308881,
+          "feed_finished_s": 0.09210879199963529,
+          "exit_code": 0,
+          "wall_s": 7.1065245420031715,
+          "peak_rss_mib": 487.703125,
+          "cpu_s": 15.594677,
+          "audio_s": 12.42,
+          "wall_rtf": 0.5721839405799655,
+          "processing_s": 7.040344749999349,
+          "output_times_s": [
+            7.094168499999796
+          ],
+          "id": "fleurs-10014044777125235464-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "ad96c52ef888143f7c493d72e938decee5789ac79f57b5610cd737555be23529",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.13043478260869565
+        },
+        {
+          "ready_s": 0.10067054200044367,
+          "feed_start_s": 0.1024783749890048,
+          "feed_finished_s": 0.11757504199340474,
+          "exit_code": 0,
+          "wall_s": 4.052117125000223,
+          "peak_rss_mib": 489.8125,
+          "cpu_s": 8.802852,
+          "audio_s": 12.42,
+          "wall_rtf": 0.32625741747183756,
+          "processing_s": 3.951446582999779,
+          "output_times_s": [
+            4.047769999990123
+          ],
+          "id": "fleurs-10014044777125235464-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "229cac9fe127468c0bc1d658d65512ad9b61c4401a62f0ce94431856c5bdadeb",
+          "errors": 3,
+          "substitutions": 2,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.13043478260869565
+        },
+        {
+          "ready_s": 0.03350416700413916,
+          "feed_start_s": 0.033525042003020644,
+          "feed_finished_s": 0.0397280830075033,
+          "exit_code": 0,
+          "wall_s": 1.9716738330025692,
+          "peak_rss_mib": 492.0,
+          "cpu_s": 6.546607,
+          "audio_s": 12.42,
+          "wall_rtf": 0.1587499060388542,
+          "processing_s": 1.93816966599843,
+          "output_times_s": [
+            1.9672891670052195
+          ],
+          "id": "fleurs-10014044777125235464-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "91080ba41497f47cff16366f93b1ca03e3aeadc82495ab4884084bb1137f2393",
+          "errors": 10,
+          "substitutions": 6,
+          "deletions": 1,
+          "insertions": 3,
+          "reference_words": 23,
+          "wer": 0.43478260869565216
+        },
+        {
+          "ready_s": 0.034625375003088266,
+          "feed_start_s": 0.03470770800777245,
+          "feed_finished_s": 0.04001008300110698,
+          "exit_code": 0,
+          "wall_s": 2.2139696670055855,
+          "peak_rss_mib": 491.828125,
+          "cpu_s": 7.1797640000000005,
+          "audio_s": 10.68,
+          "wall_rtf": 0.2073005306185005,
+          "processing_s": 2.1793442920024972,
+          "output_times_s": [
+            2.209185667001293
+          ],
+          "id": "fleurs-10030056357041867775-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "49d1ef9dcd9d423433c0300b653028e9302688f2b7e20e991f4f706953c122c1",
+          "errors": 3,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 0.03909770799509715,
+          "feed_start_s": 0.03912099999433849,
+          "feed_finished_s": 0.04516920799505897,
+          "exit_code": 0,
+          "wall_s": 2.2749790829984704,
+          "peak_rss_mib": 489.328125,
+          "cpu_s": 7.0697209999999995,
+          "audio_s": 10.68,
+          "wall_rtf": 0.2130130227526658,
+          "processing_s": 2.2358813750033733,
+          "output_times_s": [
+            2.2706769999931566
+          ],
+          "id": "fleurs-10030056357041867775-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "6a62b8ecbc7754885099d2b16da9ca041e3e94350bc738a4ee4c4f02e5afefbc",
+          "errors": 9,
+          "substitutions": 7,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 31,
+          "wer": 0.2903225806451613
+        },
+        {
+          "ready_s": 0.03296858300745953,
+          "feed_start_s": 0.03299991600215435,
+          "feed_finished_s": 0.03832725000393111,
+          "exit_code": 0,
+          "wall_s": 1.7365852080110926,
+          "peak_rss_mib": 489.078125,
+          "cpu_s": 5.955419,
+          "audio_s": 10.68,
+          "wall_rtf": 0.16260161123699368,
+          "processing_s": 1.703616625003633,
+          "output_times_s": [
+            1.7322512500104494
+          ],
+          "id": "fleurs-10030056357041867775-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "6c0ddf8c793128706a429fac5a4e8ac78221d54ba56d8f7b5894ed9fd09d29f3",
+          "errors": 12,
+          "substitutions": 9,
+          "deletions": 1,
+          "insertions": 2,
+          "reference_words": 31,
+          "wer": 0.3870967741935484
+        },
+        {
+          "ready_s": 0.034651750000193715,
+          "feed_start_s": 0.034684957994613796,
+          "feed_finished_s": 0.03922783299640287,
+          "exit_code": 0,
+          "wall_s": 1.415202207994298,
+          "peak_rss_mib": 487.234375,
+          "cpu_s": 4.703472,
+          "audio_s": 9.9,
+          "wall_rtf": 0.142949717979222,
+          "processing_s": 1.3805504579941044,
+          "output_times_s": [
+            1.4109612079919316
+          ],
+          "id": "fleurs-10058186628567796965-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "2d1b40ab89abcaeb7f3e9d172e1c8b983ffcf252b1a6e9fb0f0a744e3fb33b9d",
+          "errors": 2,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        },
+        {
+          "ready_s": 0.03539045799698215,
+          "feed_start_s": 0.035429166004178114,
+          "feed_finished_s": 0.03980483300983906,
+          "exit_code": 0,
+          "wall_s": 1.3912052910018247,
+          "peak_rss_mib": 487.8125,
+          "cpu_s": 4.609869000000001,
+          "audio_s": 9.9,
+          "wall_rtf": 0.14052578696988127,
+          "processing_s": 1.3558148330048425,
+          "output_times_s": [
+            1.3867834999982733
+          ],
+          "id": "fleurs-10058186628567796965-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "c2dc558fa6f9238c1f5f1d121f6ffcf6efb2cccfd59eea26613a268cf563be5b",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.14285714285714285
+        },
+        {
+          "ready_s": 0.032799416992929764,
+          "feed_start_s": 0.03282716700050514,
+          "feed_finished_s": 0.0379302499932237,
+          "exit_code": 0,
+          "wall_s": 1.4341031249932712,
+          "peak_rss_mib": 488.3125,
+          "cpu_s": 4.782593,
+          "audio_s": 9.9,
+          "wall_rtf": 0.14485890151447184,
+          "processing_s": 1.4013037080003414,
+          "output_times_s": [
+            1.4298370420001447
+          ],
+          "id": "fleurs-10058186628567796965-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "428f26ed455b75be0343385a66c91e13dae9fe6f011da28364f58a969e41fb3c",
+          "errors": 5,
+          "substitutions": 5,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.23809523809523808
+        },
+        {
+          "ready_s": 0.033806707986514084,
+          "feed_start_s": 0.03383779199793935,
+          "feed_finished_s": 0.037634791995515116,
+          "exit_code": 0,
+          "wall_s": 1.4884211669996148,
+          "peak_rss_mib": 487.734375,
+          "cpu_s": 4.973516,
+          "audio_s": 8.4,
+          "wall_rtf": 0.1771929960713827,
+          "processing_s": 1.4546144590131007,
+          "output_times_s": [
+            1.4839054999902146
+          ],
+          "id": "fleurs-10058299886985225661-snr20",
+          "group": "de-noise-20db",
+          "wav_sha256": "522e9ac7972318830b34dfa5f956e8f1f364d2477d786c4e729e29b6b7203856",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0625
+        },
+        {
+          "ready_s": 0.03904454100120347,
+          "feed_start_s": 0.0390765409974847,
+          "feed_finished_s": 0.0426104999933159,
+          "exit_code": 0,
+          "wall_s": 1.4037905409932137,
+          "peak_rss_mib": 487.296875,
+          "cpu_s": 4.630856,
+          "audio_s": 8.4,
+          "wall_rtf": 0.16711792154681115,
+          "processing_s": 1.3647459999920102,
+          "output_times_s": [
+            1.399442458001431
+          ],
+          "id": "fleurs-10058299886985225661-snr10",
+          "group": "de-noise-10db",
+          "wav_sha256": "611f2c88d2f8abd96fab00b88244b1cd07ef2b20315f48c55ae54e0ed08d2d8d",
+          "errors": 6,
+          "substitutions": 6,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.375
+        },
+        {
+          "ready_s": 0.03415912500349805,
+          "feed_start_s": 0.03418208300718106,
+          "feed_finished_s": 0.038265291004790924,
+          "exit_code": 0,
+          "wall_s": 2.1190610000048764,
+          "peak_rss_mib": 488.765625,
+          "cpu_s": 7.352903,
+          "audio_s": 8.4,
+          "wall_rtf": 0.2522691666672472,
+          "processing_s": 2.0849018750013784,
+          "output_times_s": [
+            2.114709874993423
+          ],
+          "id": "fleurs-10058299886985225661-snr5",
+          "group": "de-noise-5db",
+          "wav_sha256": "254260cda893ea0034cfbe3df7fc41505acaaef27b1ab7f74bc68ca112c16d0e",
+          "errors": 18,
+          "substitutions": 13,
+          "deletions": 0,
+          "insertions": 5,
+          "reference_words": 16,
+          "wer": 1.125
+        }
+      ],
+      "whisper_cli_sha256": "5b678561c8ce6d85f2258e75925c32c87c4b23085fbf98584ffdacc873acabba",
+      "resource_scope": "wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment",
+      "groups": {
+        "de-read-clean": {
+          "clips": 12,
+          "errors": 26,
+          "reference_words": 294,
+          "substitutions": 16,
+          "deletions": 8,
+          "insertions": 2,
+          "audio_s": 181.56,
+          "wall_s": 104.90128512399679,
+          "failed": 0,
+          "wer": 0.08843537414965986,
+          "wall_rtf": 0.5777775122493765
+        },
+        "de-noise-20db": {
+          "clips": 6,
+          "errors": 17,
+          "reference_words": 130,
+          "substitutions": 11,
+          "deletions": 1,
+          "insertions": 5,
+          "audio_s": 70.5,
+          "wall_s": 25.926662584999576,
+          "failed": 0,
+          "wer": 0.13076923076923078,
+          "wall_rtf": 0.36775407921985215
+        },
+        "de-noise-10db": {
+          "clips": 6,
+          "errors": 34,
+          "reference_words": 130,
+          "substitutions": 28,
+          "deletions": 1,
+          "insertions": 5,
+          "audio_s": 70.5,
+          "wall_s": 24.45139737399586,
+          "failed": 0,
+          "wer": 0.26153846153846155,
+          "wall_rtf": 0.3468283315460406
+        },
+        "de-noise-5db": {
+          "clips": 6,
+          "errors": 71,
+          "reference_words": 130,
+          "substitutions": 53,
+          "deletions": 3,
+          "insertions": 15,
+          "audio_s": 70.5,
+          "wall_s": 26.548258708018693,
+          "failed": 0,
+          "wer": 0.5461538461538461,
+          "wall_rtf": 0.37657104550381126
+        }
+      }
+    },
+    "product-mac-whisper-dialects": {
+      "engine": "whisper",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "1686a2944ec4d125d79680d7e5b5ebf681999140c4aa7bdb79e3c6e940518ffa",
+        "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 0.032575624994933605,
+          "feed_start_s": 0.032593415991868824,
+          "feed_finished_s": 0.035272332999738865,
+          "exit_code": 0,
+          "wall_s": 1.4742885829909937,
+          "peak_rss_mib": 489.515625,
+          "cpu_s": 4.965111,
+          "audio_s": 5.8238125,
+          "wall_rtf": 0.25314835994307744,
+          "processing_s": 1.4417129579960601,
+          "output_times_s": [
+            1.4686750830005622
+          ],
+          "id": "swiss-ch_ag_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "af8e1e773cbf4cca40736cfb32365e2c091f529fd66c134fd190997cba3afa16",
+          "errors": 18,
+          "substitutions": 13,
+          "deletions": 2,
+          "insertions": 3,
+          "reference_words": 20,
+          "wer": 0.9,
+          "dialect_score": {
+            "errors": 21,
+            "substitutions": 20,
+            "deletions": 0,
+            "insertions": 1,
+            "reference_words": 20,
+            "wer": 1.05
+          }
+        },
+        {
+          "ready_s": 0.029674707999220118,
+          "feed_start_s": 0.029694249999010935,
+          "feed_finished_s": 0.03337120800279081,
+          "exit_code": 0,
+          "wall_s": 1.4783189580048202,
+          "peak_rss_mib": 487.203125,
+          "cpu_s": 5.0398000000000005,
+          "audio_s": 8.2100625,
+          "wall_rtf": 0.18006183972470616,
+          "processing_s": 1.4486442500056,
+          "output_times_s": [
+            1.473603375008679
+          ],
+          "id": "swiss-ch_be_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "560b328e0ea8551883ec51ff00c258c3b87b4343192ba1f775caaad1ce944532",
+          "errors": 13,
+          "substitutions": 11,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 20,
+          "wer": 0.65,
+          "dialect_score": {
+            "errors": 17,
+            "substitutions": 13,
+            "deletions": 1,
+            "insertions": 3,
+            "reference_words": 20,
+            "wer": 0.85
+          }
+        },
+        {
+          "ready_s": 0.03287404199363664,
+          "feed_start_s": 0.03289841700461693,
+          "feed_finished_s": 0.03659304199391045,
+          "exit_code": 0,
+          "wall_s": 1.4415240829985123,
+          "peak_rss_mib": 487.046875,
+          "cpu_s": 4.882875,
+          "audio_s": 7.658375,
+          "wall_rtf": 0.18822845355555354,
+          "processing_s": 1.4086500410048757,
+          "output_times_s": [
+            1.4375677920033922
+          ],
+          "id": "swiss-ch_bs_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "750578fd5286e0396dfc5d85f09bfc39c8203cff56504a0dc8d0548a7d8d6725",
+          "errors": 13,
+          "substitutions": 11,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 20,
+          "wer": 0.65,
+          "dialect_score": {
+            "errors": 15,
+            "substitutions": 13,
+            "deletions": 2,
+            "insertions": 0,
+            "reference_words": 22,
+            "wer": 0.6818181818181818
+          }
+        },
+        {
+          "ready_s": 0.03078924999863375,
+          "feed_start_s": 0.030806041992036626,
+          "feed_finished_s": 0.0333893339993665,
+          "exit_code": 0,
+          "wall_s": 1.4663319999963278,
+          "peak_rss_mib": 487.03125,
+          "cpu_s": 4.998569,
+          "audio_s": 6.3900625,
+          "wall_rtf": 0.2294706820154463,
+          "processing_s": 1.435542749997694,
+          "output_times_s": [
+            1.4625047089939471
+          ],
+          "id": "swiss-ch_gr_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "cc8347e1a2fde7c6cbc88cdcb00bc9c505ed0815d337a3fe80dd50398de4c5c8",
+          "errors": 9,
+          "substitutions": 8,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 20,
+          "wer": 0.45,
+          "dialect_score": {
+            "errors": 14,
+            "substitutions": 11,
+            "deletions": 3,
+            "insertions": 0,
+            "reference_words": 22,
+            "wer": 0.6363636363636364
+          }
+        },
+        {
+          "ready_s": 0.030001250008353963,
+          "feed_start_s": 0.030018084013136104,
+          "feed_finished_s": 0.03260754200164229,
+          "exit_code": 0,
+          "wall_s": 1.4488112090039067,
+          "peak_rss_mib": 486.890625,
+          "cpu_s": 4.931289,
+          "audio_s": 6.0186875,
+          "wall_rtf": 0.24071879608368213,
+          "processing_s": 1.4188099589955527,
+          "output_times_s": [
+            1.4448686670075404
+          ],
+          "id": "swiss-ch_lu_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "5689727433d5770b27ac4c0744faec6c14fc43609beeaa6005c92deb6a4a8cf7",
+          "errors": 13,
+          "substitutions": 11,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 20,
+          "wer": 0.65,
+          "dialect_score": {
+            "errors": 20,
+            "substitutions": 18,
+            "deletions": 2,
+            "insertions": 0,
+            "reference_words": 22,
+            "wer": 0.9090909090909091
+          }
+        },
+        {
+          "ready_s": 0.030949334002798423,
+          "feed_start_s": 0.030966209000325762,
+          "feed_finished_s": 0.03465299999515992,
+          "exit_code": 0,
+          "wall_s": 1.4428872499993304,
+          "peak_rss_mib": 487.640625,
+          "cpu_s": 4.902318,
+          "audio_s": 7.98,
+          "wall_rtf": 0.18081293859640732,
+          "processing_s": 1.411937915996532,
+          "output_times_s": [
+            1.4390001669962658
+          ],
+          "id": "swiss-ch_sg_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "7982273606f2f87b297560823fe596c20bcce05cd1f545e1fc4f378db53c06ed",
+          "errors": 11,
+          "substitutions": 8,
+          "deletions": 2,
+          "insertions": 1,
+          "reference_words": 20,
+          "wer": 0.55,
+          "dialect_score": {
+            "errors": 12,
+            "substitutions": 11,
+            "deletions": 0,
+            "insertions": 1,
+            "reference_words": 18,
+            "wer": 0.6666666666666666
+          }
+        },
+        {
+          "ready_s": 0.030572167001082562,
+          "feed_start_s": 0.030588125009671785,
+          "feed_finished_s": 0.03420275000098627,
+          "exit_code": 0,
+          "wall_s": 1.553405084006954,
+          "peak_rss_mib": 487.953125,
+          "cpu_s": 5.324141,
+          "audio_s": 7.48,
+          "wall_rtf": 0.2076744764715179,
+          "processing_s": 1.5228329170058714,
+          "output_times_s": [
+            1.549468125012936
+          ],
+          "id": "swiss-ch_ws_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "46da1a3c480dad98704cc152a258e48e6181d807585a59eb078c60a02edc5408",
+          "errors": 13,
+          "substitutions": 8,
+          "deletions": 2,
+          "insertions": 3,
+          "reference_words": 20,
+          "wer": 0.65,
+          "dialect_score": {
+            "errors": 18,
+            "substitutions": 14,
+            "deletions": 2,
+            "insertions": 2,
+            "reference_words": 21,
+            "wer": 0.8571428571428571
+          }
+        },
+        {
+          "ready_s": 0.029727750006713904,
+          "feed_start_s": 0.029742750004515983,
+          "feed_finished_s": 0.033430249997763894,
+          "exit_code": 0,
+          "wall_s": 1.468276416999288,
+          "peak_rss_mib": 486.75,
+          "cpu_s": 5.007727,
+          "audio_s": 7.6645625,
+          "wall_rtf": 0.19156689204364735,
+          "processing_s": 1.438548666992574,
+          "output_times_s": [
+            1.464113834008458
+          ],
+          "id": "swiss-ch_zh_1682",
+          "group": "ch-dialect",
+          "wav_sha256": "befa509e10265e026978bfaaf703664563b6de1eab186ee197be4a26cb651125",
+          "errors": 12,
+          "substitutions": 11,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 20,
+          "wer": 0.6,
+          "dialect_score": {
+            "errors": 13,
+            "substitutions": 13,
+            "deletions": 0,
+            "insertions": 0,
+            "reference_words": 21,
+            "wer": 0.6190476190476191
+          }
+        },
+        {
+          "ready_s": 0.031676500002504326,
+          "feed_start_s": 0.031692042000941,
+          "feed_finished_s": 0.03202633300679736,
+          "exit_code": 0,
+          "wall_s": 1.03671995800687,
+          "peak_rss_mib": 487.109375,
+          "cpu_s": 3.344581,
+          "audio_s": 2.19525,
+          "wall_rtf": 0.4722559881593759,
+          "processing_s": 1.0050434580043657,
+          "output_times_s": [
+            1.0329927499988116
+          ],
+          "id": "swiss-ch_ag_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "23667926291716ff407e46e94140aafb4409a71ed58458782b5cb6b599ed84d6",
+          "errors": 2,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 8,
+          "wer": 0.25,
+          "dialect_score": {
+            "errors": 9,
+            "substitutions": 8,
+            "deletions": 1,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 1.0
+          }
+        },
+        {
+          "ready_s": 0.02985824999632314,
+          "feed_start_s": 0.02987366598972585,
+          "feed_finished_s": 0.031241082993801683,
+          "exit_code": 0,
+          "wall_s": 1.0525512079912005,
+          "peak_rss_mib": 486.953125,
+          "cpu_s": 3.406085,
+          "audio_s": 3.42,
+          "wall_rtf": 0.30776351110853817,
+          "processing_s": 1.0226929579948774,
+          "output_times_s": [
+            1.0485091250011465
+          ],
+          "id": "swiss-ch_be_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "a42f879ed21fa09bc6945d7470adcdcea5e4c398755946cae52c61713ea41611",
+          "errors": 3,
+          "substitutions": 2,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.375,
+          "dialect_score": {
+            "errors": 7,
+            "substitutions": 6,
+            "deletions": 0,
+            "insertions": 1,
+            "reference_words": 8,
+            "wer": 0.875
+          }
+        },
+        {
+          "ready_s": 0.02955445800034795,
+          "feed_start_s": 0.02956979199370835,
+          "feed_finished_s": 0.029931416996987537,
+          "exit_code": 0,
+          "wall_s": 1.0677508329972625,
+          "peak_rss_mib": 488.0,
+          "cpu_s": 3.4738659999999997,
+          "audio_s": 3.0036875,
+          "wall_rtf": 0.3554800001655507,
+          "processing_s": 1.0381963749969145,
+          "output_times_s": [
+            1.0638985830009915
+          ],
+          "id": "swiss-ch_bs_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "2debd222badecbf2822c454a488fcf5facf8ec8402d1398811d82111ac776dfe",
+          "errors": 6,
+          "substitutions": 5,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.75,
+          "dialect_score": {
+            "errors": 5,
+            "substitutions": 5,
+            "deletions": 0,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 0.5555555555555556
+          }
+        },
+        {
+          "ready_s": 0.0300815839873394,
+          "feed_start_s": 0.03009945899248123,
+          "feed_finished_s": 0.03038337499310728,
+          "exit_code": 0,
+          "wall_s": 1.0236317919916473,
+          "peak_rss_mib": 487.0625,
+          "cpu_s": 3.2996030000000003,
+          "audio_s": 2.545375,
+          "wall_rtf": 0.40215362844046454,
+          "processing_s": 0.9935502080043079,
+          "output_times_s": [
+            1.0198494999931427
+          ],
+          "id": "swiss-ch_gr_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "57006a0306f5357e78a72c7275f66fd5f7c646ab9c8e8518a8b5f508be24d077",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.25,
+          "dialect_score": {
+            "errors": 5,
+            "substitutions": 5,
+            "deletions": 0,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 0.5555555555555556
+          }
+        },
+        {
+          "ready_s": 0.029832500003976747,
+          "feed_start_s": 0.029848417005268857,
+          "feed_finished_s": 0.030136041998048313,
+          "exit_code": 0,
+          "wall_s": 1.0830133330018725,
+          "peak_rss_mib": 488.0,
+          "cpu_s": 3.528671,
+          "audio_s": 2.526,
+          "wall_rtf": 0.42874637094294243,
+          "processing_s": 1.0531808329978958,
+          "output_times_s": [
+            1.07923825000762
+          ],
+          "id": "swiss-ch_lu_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "6643523c17bf26f05d3f70d628163c5c56bc1a9f3ae403786e0f9faf200a0a69",
+          "errors": 4,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.5,
+          "dialect_score": {
+            "errors": 9,
+            "substitutions": 9,
+            "deletions": 0,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 1.0
+          }
+        },
+        {
+          "ready_s": 0.02973504200053867,
+          "feed_start_s": 0.029752208007266745,
+          "feed_finished_s": 0.030107625003438443,
+          "exit_code": 0,
+          "wall_s": 1.0422701250063255,
+          "peak_rss_mib": 487.15625,
+          "cpu_s": 3.373826,
+          "audio_s": 3.0270625,
+          "wall_rtf": 0.3443173456135529,
+          "processing_s": 1.0125350830057869,
+          "output_times_s": [
+            1.0385232500120765
+          ],
+          "id": "swiss-ch_sg_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "ec0781960896dda1c94065cb9989976f742b8fa0a077e636b169b058c6b530a4",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.25,
+          "dialect_score": {
+            "errors": 6,
+            "substitutions": 6,
+            "deletions": 0,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 0.6666666666666666
+          }
+        },
+        {
+          "ready_s": 0.029883208000683226,
+          "feed_start_s": 0.02989974999218248,
+          "feed_finished_s": 0.030186124989995733,
+          "exit_code": 0,
+          "wall_s": 1.0580099579965463,
+          "peak_rss_mib": 488.0625,
+          "cpu_s": 3.420752,
+          "audio_s": 2.7909375,
+          "wall_rtf": 0.3790876571032301,
+          "processing_s": 1.028126749995863,
+          "output_times_s": [
+            1.0542753749905387
+          ],
+          "id": "swiss-ch_ws_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "d037e49b062bd17e6701686aa7978b57c65c88953ce9a55cd7149b6e20b5879e",
+          "errors": 5,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 1,
+          "reference_words": 8,
+          "wer": 0.625,
+          "dialect_score": {
+            "errors": 6,
+            "substitutions": 4,
+            "deletions": 2,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 0.6666666666666666
+          }
+        },
+        {
+          "ready_s": 0.03242862499610055,
+          "feed_start_s": 0.03245370800141245,
+          "feed_finished_s": 0.03266404100577347,
+          "exit_code": 0,
+          "wall_s": 1.0153810000047088,
+          "peak_rss_mib": 488.75,
+          "cpu_s": 3.245357,
+          "audio_s": 2.6198125,
+          "wall_rtf": 0.3875777369581635,
+          "processing_s": 0.9829523750086082,
+          "output_times_s": [
+            1.0110977909935173
+          ],
+          "id": "swiss-ch_zh_2547",
+          "group": "ch-dialect",
+          "wav_sha256": "f915220c7e530bd66d9ebe2c5cb175c7f9be40bd0a96564def17724e6c40cbb9",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 8,
+          "wer": 0.375,
+          "dialect_score": {
+            "errors": 7,
+            "substitutions": 6,
+            "deletions": 1,
+            "insertions": 0,
+            "reference_words": 9,
+            "wer": 0.7777777777777778
+          }
+        }
+      ],
+      "whisper_cli_sha256": "5b678561c8ce6d85f2258e75925c32c87c4b23085fbf98584ffdacc873acabba",
+      "resource_scope": "wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment",
+      "groups": {
+        "ch-dialect": {
+          "clips": 16,
+          "errors": 129,
+          "reference_words": 224,
+          "substitutions": 100,
+          "deletions": 11,
+          "insertions": 18,
+          "audio_s": 79.3536875,
+          "wall_s": 20.153171790996566,
+          "failed": 0,
+          "wer": 0.5758928571428571,
+          "wall_rtf": 0.2539664182713193
+        }
+      },
+      "dialect_orthography_wer": 0.7763713080168776
+    },
+    "product-pi-whisper": {
+      "engine": "whisper",
+      "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "1686a2944ec4d125d79680d7e5b5ebf681999140c4aa7bdb79e3c6e940518ffa",
+        "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 0.028547601075842977,
+          "feed_start_s": 0.028564804000779986,
+          "feed_finished_s": 0.04364933003671467,
+          "exit_code": 0,
+          "wall_s": 10.804591102991253,
+          "peak_rss_mib": 462.03125,
+          "cpu_s": 42.006816,
+          "audio_s": 17.94,
+          "wall_rtf": 0.6022626032882527,
+          "processing_s": 10.77604350191541,
+          "output_times_s": [
+            10.783683320973068
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 0.027230145875364542,
+          "feed_start_s": 0.027247886871919036,
+          "feed_finished_s": 0.03273270092904568,
+          "exit_code": 0,
+          "wall_s": 10.574783894931898,
+          "peak_rss_mib": 461.703125,
+          "cpu_s": 41.077182,
+          "audio_s": 11.16,
+          "wall_rtf": 0.9475612809078761,
+          "processing_s": 10.547553749056533,
+          "output_times_s": [
+            10.564749242039397
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047
+        },
+        {
+          "ready_s": 0.027491478016600013,
+          "feed_start_s": 0.027518273796886206,
+          "feed_finished_s": 0.03512392588891089,
+          "exit_code": 0,
+          "wall_s": 12.10194592596963,
+          "peak_rss_mib": 461.9375,
+          "cpu_s": 47.095945,
+          "audio_s": 12.42,
+          "wall_rtf": 0.9743917814790363,
+          "processing_s": 12.07445444795303,
+          "output_times_s": [
+            12.093831666978076
+          ],
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216
+        },
+        {
+          "ready_s": 0.027074611047282815,
+          "feed_start_s": 0.02709011104889214,
+          "feed_finished_s": 0.03259414713829756,
+          "exit_code": 0,
+          "wall_s": 12.055251136189327,
+          "peak_rss_mib": 462.046875,
+          "cpu_s": 46.877218,
+          "audio_s": 10.68,
+          "wall_rtf": 1.1287688329765286,
+          "processing_s": 12.028176525142044,
+          "output_times_s": [
+            12.047173265134916
+          ],
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 0.027319833170622587,
+          "feed_start_s": 0.02733868407085538,
+          "feed_finished_s": 0.0308658080175519,
+          "exit_code": 0,
+          "wall_s": 10.840011348947883,
+          "peak_rss_mib": 462.03125,
+          "cpu_s": 42.178162,
+          "audio_s": 9.9,
+          "wall_rtf": 1.094950641307867,
+          "processing_s": 10.81269151577726,
+          "output_times_s": [
+            10.830561173148453
+          ],
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616
+        },
+        {
+          "ready_s": 0.02733885101042688,
+          "feed_start_s": 0.027366518042981625,
+          "feed_finished_s": 0.028732674894854426,
+          "exit_code": 0,
+          "wall_s": 10.965882725082338,
+          "peak_rss_mib": 461.640625,
+          "cpu_s": 42.713300000000004,
+          "audio_s": 8.4,
+          "wall_rtf": 1.3054622291764688,
+          "processing_s": 10.938543874071911,
+          "output_times_s": [
+            10.957603428978473
+          ],
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0625
+        },
+        {
+          "ready_s": 0.02741873892955482,
+          "feed_start_s": 0.027438054094091058,
+          "feed_finished_s": 0.035861125914379954,
+          "exit_code": 0,
+          "wall_s": 13.166773244040087,
+          "peak_rss_mib": 461.984375,
+          "cpu_s": 51.165081,
+          "audio_s": 12.96,
+          "wall_rtf": 1.015954725620377,
+          "processing_s": 13.139354505110532,
+          "output_times_s": [
+            13.158609872916713
+          ],
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 34,
+          "wer": 0.08823529411764706
+        },
+        {
+          "ready_s": 0.027350259013473988,
+          "feed_start_s": 0.027374666184186935,
+          "feed_finished_s": 18.556980608031154,
+          "exit_code": 0,
+          "wall_s": 27.896828174125403,
+          "peak_rss_mib": 461.671875,
+          "cpu_s": 108.77913,
+          "audio_s": 19.68,
+          "wall_rtf": 1.4175217568153151,
+          "processing_s": 27.86947791511193,
+          "output_times_s": [
+            9.343210238032043,
+            18.555691857123747,
+            27.885209882166237
+          ],
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.16666666666666666
+        },
+        {
+          "ready_s": 0.027627720963209867,
+          "feed_start_s": 0.027644127840176225,
+          "feed_finished_s": 0.032592186937108636,
+          "exit_code": 0,
+          "wall_s": 11.295929681975394,
+          "peak_rss_mib": 461.96875,
+          "cpu_s": 43.728657000000005,
+          "audio_s": 11.04,
+          "wall_rtf": 1.0231820364108148,
+          "processing_s": 11.268301961012185,
+          "output_times_s": [
+            11.286452837986872
+          ],
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684
+        },
+        {
+          "ready_s": 0.027788720093667507,
+          "feed_start_s": 0.02780564595013857,
+          "feed_finished_s": 39.47697363700718,
+          "exit_code": 0,
+          "wall_s": 57.31678269105032,
+          "peak_rss_mib": 462.25,
+          "cpu_s": 223.801,
+          "audio_s": 43.38,
+          "wall_rtf": 1.3212720767876975,
+          "processing_s": 57.28899397095665,
+          "output_times_s": [
+            9.289118038956076,
+            19.14439321612008,
+            30.010144181083888,
+            39.47453461610712,
+            48.224130268907174,
+            57.3030723570846
+          ],
+          "id": "fleurs-10171859810965764480",
+          "group": "de-read-clean",
+          "wav_sha256": "a23263b8b9de2f2a8909c03e2797fe71833f2a765787ae38704047933d6a4e74",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 44,
+          "wer": 0.09090909090909091
+        },
+        {
+          "ready_s": 0.027449500979855657,
+          "feed_start_s": 0.027465742081403732,
+          "feed_finished_s": 0.02792201703414321,
+          "exit_code": 0,
+          "wall_s": 10.47984830616042,
+          "peak_rss_mib": 461.75,
+          "cpu_s": 40.731359,
+          "audio_s": 7.14,
+          "wall_rtf": 1.467765869210143,
+          "processing_s": 10.452398805180565,
+          "output_times_s": [
+            10.471225753193721
+          ],
+          "id": "fleurs-10229344228128634115",
+          "group": "de-read-clean",
+          "wav_sha256": "cd3e609e2d377b3e9ec56730a4e6979f7b8e4a77d1a69e22b788cb706f601889",
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 17,
+          "wer": 0.058823529411764705
+        },
+        {
+          "ready_s": 0.027576056076213717,
+          "feed_start_s": 0.02759881503880024,
+          "feed_finished_s": 0.04212253214791417,
+          "exit_code": 0,
+          "wall_s": 12.795185854192823,
+          "peak_rss_mib": 462.359375,
+          "cpu_s": 49.757977,
+          "audio_s": 16.86,
+          "wall_rtf": 0.7589078205333822,
+          "processing_s": 12.76760979811661,
+          "output_times_s": [
+            12.785537197021767
+          ],
+          "id": "fleurs-10240730312646485406",
+          "group": "de-read-clean",
+          "wav_sha256": "d78dd9f8467dd4f8a2cc3a6fa27be5f6fe3263ef5d949fe76cfb3fd90b72f075",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 32,
+          "wer": 0.09375
+        }
+      ],
+      "whisper_cli_sha256": "d906fd8ad6db873c8a683db84a79d3e0ac12544571fb0ee159cc5628d689ea26",
+      "resource_scope": "wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment",
+      "groups": {
+        "de-read-clean": {
+          "clips": 12,
+          "errors": 26,
+          "reference_words": 294,
+          "substitutions": 16,
+          "deletions": 8,
+          "insertions": 2,
+          "audio_s": 181.56,
+          "wall_s": 200.29381408565678,
+          "failed": 0,
+          "wer": 0.08843537414965986,
+          "wall_rtf": 1.1031824966163075
+        }
+      }
+    },
+    "product-pi-whisper-beam1": {
+      "engine": "whisper",
+      "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+      "threads": 4,
+      "paced": false,
+      "environment": {
+        "GEIST_WHISPER_BEAM_SIZE": "1"
+      },
+      "files": {
+        "binary": "d88f0673254f3b26acd21cd76298493a24c67af02e5b89a105909dc3d3d077ab",
+        "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 0.02745007909834385,
+          "feed_start_s": 0.02746904199011624,
+          "feed_finished_s": 0.04332425305619836,
+          "exit_code": 0,
+          "wall_s": 9.188902786001563,
+          "peak_rss_mib": 346.625,
+          "cpu_s": 35.926919999999996,
+          "audio_s": 17.94,
+          "wall_rtf": 0.5122019390190391,
+          "processing_s": 9.16145270690322,
+          "output_times_s": [
+            9.175972481956705
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0
+        },
+        {
+          "ready_s": 0.027338284067809582,
+          "feed_start_s": 0.02736072801053524,
+          "feed_finished_s": 0.032896358985453844,
+          "exit_code": 0,
+          "wall_s": 9.045453645987436,
+          "peak_rss_mib": 346.359375,
+          "cpu_s": 35.371063,
+          "audio_s": 11.16,
+          "wall_rtf": 0.8105245202497703,
+          "processing_s": 9.018115361919627,
+          "output_times_s": [
+            9.0353381941095
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047
+        },
+        {
+          "ready_s": 0.027276969980448484,
+          "feed_start_s": 0.027294283965602517,
+          "feed_finished_s": 0.03495827107690275,
+          "exit_code": 0,
+          "wall_s": 9.572180264862254,
+          "peak_rss_mib": 346.71875,
+          "cpu_s": 37.399129,
+          "audio_s": 12.42,
+          "wall_rtf": 0.7707069456410833,
+          "processing_s": 9.544903294881806,
+          "output_times_s": [
+            9.56379354186356
+          ],
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216
+        },
+        {
+          "ready_s": 0.027221783995628357,
+          "feed_start_s": 0.027238914044573903,
+          "feed_finished_s": 0.032778674038127065,
+          "exit_code": 0,
+          "wall_s": 9.585077008930966,
+          "peak_rss_mib": 346.65625,
+          "cpu_s": 37.40781,
+          "audio_s": 10.68,
+          "wall_rtf": 0.8974791206864201,
+          "processing_s": 9.557855224935338,
+          "output_times_s": [
+            9.577007394982502
+          ],
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871
+        },
+        {
+          "ready_s": 0.02736071008257568,
+          "feed_start_s": 0.027380728162825108,
+          "feed_finished_s": 0.030997093999758363,
+          "exit_code": 0,
+          "wall_s": 9.260122667066753,
+          "peak_rss_mib": 346.359375,
+          "cpu_s": 35.963432,
+          "audio_s": 9.9,
+          "wall_rtf": 0.9353659259663386,
+          "processing_s": 9.232761956984177,
+          "output_times_s": [
+            9.250756302149966
+          ],
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616
+        },
+        {
+          "ready_s": 0.027301098918542266,
+          "feed_start_s": 0.027317709987983108,
+          "feed_finished_s": 0.028685016091912985,
+          "exit_code": 0,
+          "wall_s": 9.232297692913562,
+          "peak_rss_mib": 346.3125,
+          "cpu_s": 36.126862,
+          "audio_s": 8.4,
+          "wall_rtf": 1.0990830586801859,
+          "processing_s": 9.20499659399502,
+          "output_times_s": [
+            9.224042895017192
+          ],
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0625
+        },
+        {
+          "ready_s": 0.027523395139724016,
+          "feed_start_s": 0.02754828310571611,
+          "feed_finished_s": 0.035997673170641065,
+          "exit_code": 0,
+          "wall_s": 9.956178938038647,
+          "peak_rss_mib": 346.84375,
+          "cpu_s": 38.844485,
+          "audio_s": 12.96,
+          "wall_rtf": 0.7682236834906363,
+          "processing_s": 9.928655542898923,
+          "output_times_s": [
+            9.947768085170537
+          ],
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+          "errors": 4,
+          "substitutions": 4,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 34,
+          "wer": 0.11764705882352941
+        },
+        {
+          "ready_s": 0.027591726975515485,
+          "feed_start_s": 0.02760917111299932,
+          "feed_finished_s": 17.451515757013112,
+          "exit_code": 0,
+          "wall_s": 26.221812224946916,
+          "peak_rss_mib": 346.125,
+          "cpu_s": 102.735011,
+          "audio_s": 19.68,
+          "wall_rtf": 1.332409157771693,
+          "processing_s": 26.1942204979714,
+          "output_times_s": [
+            8.733173548942432,
+            17.450257099000737,
+            26.210296022007242
+          ],
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.2222222222222222
+        },
+        {
+          "ready_s": 0.02774729998782277,
+          "feed_start_s": 0.02777061494998634,
+          "feed_finished_s": 0.032789601013064384,
+          "exit_code": 0,
+          "wall_s": 9.3058928870596,
+          "peak_rss_mib": 345.953125,
+          "cpu_s": 36.348539,
+          "audio_s": 11.04,
+          "wall_rtf": 0.8429250803496015,
+          "processing_s": 9.278145587071776,
+          "output_times_s": [
+            9.296475652139634
+          ],
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684
+        },
+        {
+          "ready_s": 0.027722744969651103,
+          "feed_start_s": 0.027740818914026022,
+          "feed_finished_s": 35.542561443988234,
+          "exit_code": 0,
+          "wall_s": 52.58278090390377,
+          "peak_rss_mib": 346.90625,
+          "cpu_s": 206.450301,
+          "audio_s": 43.38,
+          "wall_rtf": 1.2121434048848263,
+          "processing_s": 52.555058158934116,
+          "output_times_s": [
+            8.73845324292779,
+            17.591367485933006,
+            26.758978961966932,
+            35.540131682064384,
+            44.07058296399191,
+            52.56878555100411
+          ],
+          "id": "fleurs-10171859810965764480",
+          "group": "de-read-clean",
+          "wav_sha256": "a23263b8b9de2f2a8909c03e2797fe71833f2a765787ae38704047933d6a4e74",
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 44,
+          "wer": 0.09090909090909091
+        },
+        {
+          "ready_s": 0.027640432119369507,
+          "feed_start_s": 0.027657487196847796,
+          "feed_finished_s": 0.028116281144320965,
+          "exit_code": 0,
+          "wall_s": 9.059803010197356,
+          "peak_rss_mib": 346.8125,
+          "cpu_s": 35.486862,
+          "audio_s": 7.14,
+          "wall_rtf": 1.2688799734169967,
+          "processing_s": 9.032162578077987,
+          "output_times_s": [
+            9.051536564016715
+          ],
+          "id": "fleurs-10229344228128634115",
+          "group": "de-read-clean",
+          "wav_sha256": "cd3e609e2d377b3e9ec56730a4e6979f7b8e4a77d1a69e22b788cb706f601889",
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 17,
+          "wer": 0.058823529411764705
+        },
+        {
+          "ready_s": 0.028291556984186172,
+          "feed_start_s": 0.028320593992248178,
+          "feed_finished_s": 0.04267690796405077,
+          "exit_code": 0,
+          "wall_s": 9.921315802028403,
+          "peak_rss_mib": 347.546875,
+          "cpu_s": 38.661362,
+          "audio_s": 16.86,
+          "wall_rtf": 0.5884528945449824,
+          "processing_s": 9.893024245044217,
+          "output_times_s": [
+            9.911392736947164
+          ],
+          "id": "fleurs-10240730312646485406",
+          "group": "de-read-clean",
+          "wav_sha256": "d78dd9f8467dd4f8a2cc3a6fa27be5f6fe3263ef5d949fe76cfb3fd90b72f075",
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 32,
+          "wer": 0.09375
+        }
+      ],
+      "whisper_cli_sha256": "d906fd8ad6db873c8a683db84a79d3e0ac12544571fb0ee159cc5628d689ea26",
+      "resource_scope": "wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment",
+      "groups": {
+        "de-read-clean": {
+          "clips": 12,
+          "errors": 28,
+          "reference_words": 294,
+          "substitutions": 18,
+          "deletions": 8,
+          "insertions": 2,
+          "audio_s": 181.56,
+          "wall_s": 172.93181783193722,
+          "failed": 0,
+          "wer": 0.09523809523809523,
+          "wall_rtf": 0.9524775161485857
+        }
+      }
+    },
+    "product-pi-live": {
+      "exit_code": 75,
+      "wall_s": 34.18067045509815,
+      "timeout": false,
+      "buffer_seconds": 6,
+      "physical_microphone": false,
+      "samples": [
+        {
+          "t": 0.00030314596369862556,
+          "tree_rss_mib": 7.171875
+        },
+        {
+          "t": 0.25809425208717585,
+          "tree_rss_mib": 393.15625
+        },
+        {
+          "t": 0.5167920920066535,
+          "tree_rss_mib": 764.15625
+        },
+        {
+          "t": 0.7752192860934883,
+          "tree_rss_mib": 1064.734375
+        },
+        {
+          "t": 1.0330993549432606,
+          "tree_rss_mib": 1328.984375
+        },
+        {
+          "t": 1.3065815321169794,
+          "tree_rss_mib": 1646.28125
+        },
+        {
+          "t": 1.564558323007077,
+          "tree_rss_mib": 2195.625
+        },
+        {
+          "t": 1.8221091909799725,
+          "tree_rss_mib": 2699.5
+        },
+        {
+          "t": 2.081522803986445,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 2.3380764389876276,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 2.594575389055535,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 2.8508739511016756,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 3.1071682181209326,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 3.3635023541282862,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 3.619918157113716,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 3.876415570033714,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 4.13316811202094,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 4.389470508089289,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 4.645702498033643,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 4.901937413960695,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 5.158249366097152,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 5.4144159310963005,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 5.670743476133794,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 5.927064262097701,
+          "tree_rss_mib": 2835.171875
+        },
+        {
+          "t": 6.183523287065327,
+          "tree_rss_mib": 2836.171875
+        },
+        {
+          "t": 6.441876392113045,
+          "tree_rss_mib": 2836.171875
+        },
+        {
+          "t": 6.706096362089738,
+          "tree_rss_mib": 2837.671875
+        },
+        {
+          "t": 6.963332196930423,
+          "tree_rss_mib": 2837.671875
+        },
+        {
+          "t": 7.220581661909819,
+          "tree_rss_mib": 2819.671875
+        },
+        {
+          "t": 7.477637758012861,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 7.743940140120685,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 8.004922615131363,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 8.262791353045031,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 8.520259632030502,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 8.78521430096589,
+          "tree_rss_mib": 2821.171875
+        },
+        {
+          "t": 9.047346934909001,
+          "tree_rss_mib": 2821.671875
+        },
+        {
+          "t": 9.304830955108628,
+          "tree_rss_mib": 2825.171875
+        },
+        {
+          "t": 9.565624840091914,
+          "tree_rss_mib": 2825.171875
+        },
+        {
+          "t": 9.823170359944925,
+          "tree_rss_mib": 2825.171875
+        },
+        {
+          "t": 10.098412529099733,
+          "tree_rss_mib": 2825.671875
+        },
+        {
+          "t": 10.355359553126618,
+          "tree_rss_mib": 2825.671875
+        },
+        {
+          "t": 10.61231178091839,
+          "tree_rss_mib": 2825.671875
+        },
+        {
+          "t": 10.869545544032007,
+          "tree_rss_mib": 2827.171875
+        },
+        {
+          "t": 11.127332431962714,
+          "tree_rss_mib": 2827.171875
+        },
+        {
+          "t": 11.391019352944568,
+          "tree_rss_mib": 2827.171875
+        },
+        {
+          "t": 11.653309191111475,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 11.911195431137457,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 12.168678248068318,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 12.427815220085904,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 12.685306296916679,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 12.944059902103618,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 13.201381220947951,
+          "tree_rss_mib": 2828.171875
+        },
+        {
+          "t": 13.477638772921637,
+          "tree_rss_mib": 2829.171875
+        },
+        {
+          "t": 13.735702828038484,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 13.996464862953871,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 14.260349337942898,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 14.53895780001767,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 14.799243950052187,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 15.056241920916364,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 15.317655285121873,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 15.577616659924388,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 15.837221629917622,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 16.099672209937125,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 16.356957159936428,
+          "tree_rss_mib": 2832.671875
+        },
+        {
+          "t": 16.615968208992854,
+          "tree_rss_mib": 2805.171875
+        },
+        {
+          "t": 16.876207045977935,
+          "tree_rss_mib": 2805.171875
+        },
+        {
+          "t": 17.137628263095394,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 17.3964345541317,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 17.655752435093746,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 17.913620084989816,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 18.17761891405098,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 18.441613557050005,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 18.70240583503619,
+          "tree_rss_mib": 2803.671875
+        },
+        {
+          "t": 18.959615213098004,
+          "tree_rss_mib": 2804.671875
+        },
+        {
+          "t": 19.217365087009966,
+          "tree_rss_mib": 2804.671875
+        },
+        {
+          "t": 19.475471459096298,
+          "tree_rss_mib": 2804.671875
+        },
+        {
+          "t": 19.733351703034714,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 20.02090597199276,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 20.305650817928836,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 20.564808349125087,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 20.860919669037685,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 21.15900358511135,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 21.458727453136817,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 21.75720870005898,
+          "tree_rss_mib": 2805.203125
+        },
+        {
+          "t": 22.056666532997042,
+          "tree_rss_mib": 2805.703125
+        },
+        {
+          "t": 22.355502889025956,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 22.662561482051387,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 22.962495903950185,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 23.25538760004565,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 23.55525963404216,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 23.85504546505399,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 24.193623387021944,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 24.47664195112884,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 24.775543437106535,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 25.071307483129203,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 25.329794855089858,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 25.592156884027645,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 25.849312247009948,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 26.106046963948756,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 26.36385315610096,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 26.62069242913276,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 26.87814704910852,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 27.137624562950805,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 27.39768240507692,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 27.66956073604524,
+          "tree_rss_mib": 2806.203125
+        },
+        {
+          "t": 27.95646083005704,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 28.255963386967778,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 28.55388975306414,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 28.84147034212947,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 29.098699908936396,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 29.355459091020748,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 29.61426111101173,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 29.87235059798695,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 30.129597610095516,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 30.387752319918945,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 30.653346698032692,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 30.911736221052706,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 31.173182314028963,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 31.43361658207141,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 31.69078022497706,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 31.956540991086513,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 32.21762543893419,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 32.477623376995325,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 32.7351069629658,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 33.03058918192983,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 33.306831483962014,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 33.59882613597438,
+          "tree_rss_mib": 2806.703125
+        },
+        {
+          "t": 33.88876952510327,
+          "tree_rss_mib": 2806.703125
+        }
+      ],
+      "peak_sampled_tree_rss_mib": 2837.671875,
+      "interpretation": "Exit 75 is controlled overload, not successful continuous dictation. No WER on incomplete audio."
+    },
+    "product-pi-whisper-live": {
+      "exit_code": 75,
+      "wall_s": 31.836133405100554,
+      "timeout": false,
+      "buffer_seconds": 6,
+      "physical_microphone": false,
+      "max_audio_seconds": 120.0,
+      "samples": [
+        {
+          "t": 0.00032210908830165863,
+          "tree_rss_mib": 6.59375
+        },
+        {
+          "t": 0.257431420031935,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 0.5139785672072321,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 0.7702892711386085,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 1.0265668460633606,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 1.282728070160374,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 1.5388816460035741,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 1.7950330930761993,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 2.0512042799964547,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 2.3073294670321047,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 2.5634641360957175,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 2.8195973231922835,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 3.0757137150503695,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 3.3318403651937842,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 3.5879752011969686,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 3.8442184061277658,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 4.101015071151778,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 4.357391905039549,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 4.617308623157442,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 4.876803140155971,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 5.136250047013164,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 5.395684398012236,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 5.655018842080608,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 5.9144069901667535,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 6.173867063131183,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 6.4338903171010315,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 6.693556574173272,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 6.953081462066621,
+          "tree_rss_mib": 35.5
+        },
+        {
+          "t": 7.212538758059964,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 7.471916665090248,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 7.731389868073165,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 7.990825516171753,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 8.250230997102335,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 8.50966134807095,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 8.769094421993941,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 9.028475607046857,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 9.287878829054534,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 9.547203737078235,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 9.80649210815318,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 10.066012923140079,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 10.325402700109407,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 10.584800923010334,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 10.844138868153095,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 11.103495239047334,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 11.362815147032961,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 11.622187869157642,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 11.88185140513815,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 12.141349868150428,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 12.40077240508981,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 12.660248572006822,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 12.919618443120271,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 13.178944832179695,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 13.438396777026355,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 13.69776425906457,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 13.957441147184,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 14.216904832050204,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 14.476492480142042,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 14.73592592519708,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 14.995277333073318,
+          "tree_rss_mib": 36.0
+        },
+        {
+          "t": 15.254646890098229,
+          "tree_rss_mib": 84.703125
+        },
+        {
+          "t": 15.515879064099863,
+          "tree_rss_mib": 354.0625
+        },
+        {
+          "t": 15.77655694517307,
+          "tree_rss_mib": 358.0625
+        },
+        {
+          "t": 16.041868814034387,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 16.307888919021934,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 16.56921855499968,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 16.83428298216313,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 17.099941904190928,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 17.36095887608826,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 17.625736638205126,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 17.8919178720098,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 18.157368610147387,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 18.418087603058666,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 18.68287466117181,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 18.94939065212384,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 19.217370522208512,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 19.47981631802395,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 19.74084140220657,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 20.00460909609683,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 20.268976083025336,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 20.53401108412072,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 20.799971154192463,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 21.061090792063624,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 21.326080127153546,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 21.59189567808062,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 21.84893051115796,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 22.113750532036647,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 22.379868359072134,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 22.640991720138118,
+          "tree_rss_mib": 375.5625
+        },
+        {
+          "t": 22.90369569999166,
+          "tree_rss_mib": 380.5625
+        },
+        {
+          "t": 23.160482386127114,
+          "tree_rss_mib": 380.5625
+        },
+        {
+          "t": 23.425462702987716,
+          "tree_rss_mib": 380.5625
+        },
+        {
+          "t": 23.683785340981558,
+          "tree_rss_mib": 380.5625
+        },
+        {
+          "t": 23.948614437133074,
+          "tree_rss_mib": 497.640625
+        },
+        {
+          "t": 24.205987138208002,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 24.46540517709218,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 24.72941211098805,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 24.98940823902376,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 25.246403090190142,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 25.503887012135237,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 25.760872271144763,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 26.018811635207385,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 26.28540755319409,
+          "tree_rss_mib": 498.640625
+        },
+        {
+          "t": 26.54540155106224,
+          "tree_rss_mib": 338.5625
+        },
+        {
+          "t": 26.82596878404729,
+          "tree_rss_mib": 353.5625
+        },
+        {
+          "t": 27.09190011303872,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 27.356300119077787,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 27.621381695149466,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 27.88255064911209,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 28.145318906987086,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 28.410474759992212,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 28.68137916806154,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 28.942088403040543,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 29.20785134518519,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 29.47234224015847,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 29.737368353176862,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 30.003849550150335,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 30.264977874001488,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 30.529374974081293,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 30.79281250620261,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 31.057815194129944,
+          "tree_rss_mib": 374.5625
+        },
+        {
+          "t": 31.323921911185607,
+          "tree_rss_mib": 12.140625
+        },
+        {
+          "t": 31.580201287055388,
+          "tree_rss_mib": 12.140625
+        }
+      ],
+      "peak_sampled_tree_rss_mib": 498.640625,
+      "interpretation": "Exit 75 is controlled overload, not successful continuous dictation. No WER on incomplete audio."
+    },
+    "product-pi-whisper-beam1-live": {
+      "exit_code": 75,
+      "wall_s": 31.880494537996128,
+      "timeout": false,
+      "buffer_seconds": 6,
+      "physical_microphone": false,
+      "max_audio_seconds": 120.0,
+      "samples": [
+        {
+          "t": 0.0003062200266867876,
+          "tree_rss_mib": 6.59375
+        },
+        {
+          "t": 0.25752698304131627,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 0.5141930659301579,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 0.7706876299344003,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 1.0270229179877788,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 1.2833090950734913,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 1.539578994968906,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 1.7957908210810274,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 2.0520050909835845,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 2.3084670261014253,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 2.564783092122525,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 2.8210916579701006,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 3.0775824829470366,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 3.334026196040213,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 3.590404927963391,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 3.846655105939135,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 4.103265392128378,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 4.359523477032781,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 4.619154762011021,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 4.878704492934048,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 5.138223167974502,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 5.397768306080252,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 5.657324795145541,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 5.91681545204483,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 6.176589681068435,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 6.436337947146967,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 6.695974714122713,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 6.955568537116051,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 7.215283488156274,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 7.474849737016484,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 7.73437385703437,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 7.993875069078058,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 8.253335393033922,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 8.51285677193664,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 8.772397187072784,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 9.032000713981688,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 9.291610165964812,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 9.551066434942186,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 9.81060092500411,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 10.070162710966542,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 10.329823959153146,
+          "tree_rss_mib": 35.578125
+        },
+        {
+          "t": 10.589621836086735,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 10.849435362033546,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 11.10907322098501,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 11.368601877940819,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 11.62826386699453,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 11.887794950045645,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 12.147296033101156,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 12.406746078981087,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 12.666389086982235,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 12.925629690056667,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 13.185277346055955,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 13.444830317981541,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 13.704399696085602,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 13.963884076103568,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 14.223307993030176,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 14.482830020133406,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 14.742401102092117,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 15.002018128987402,
+          "tree_rss_mib": 36.078125
+        },
+        {
+          "t": 15.261510749114677,
+          "tree_rss_mib": 104.28125
+        },
+        {
+          "t": 15.52691675699316,
+          "tree_rss_mib": 354.65625
+        },
+        {
+          "t": 15.787659221095964,
+          "tree_rss_mib": 360.15625
+        },
+        {
+          "t": 16.053525225957856,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 16.31459955801256,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 16.5793832000345,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 16.844063767930493,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 17.109487424138933,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 17.37065719999373,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 17.635434248950332,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 17.901500900974497,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 18.163556708022952,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 18.430929481051862,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 18.70946957101114,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 18.974718247074634,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 19.241476190974936,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 19.50278120697476,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 19.76805130811408,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 20.033380354056135,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 20.294438797980547,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 20.559583844151348,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 20.825434701051563,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 21.086566644953564,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 21.351685025030747,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 21.617460346082225,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 21.878664806950837,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 22.144184591947123,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 22.41092724003829,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 22.671754870098084,
+          "tree_rss_mib": 376.15625
+        },
+        {
+          "t": 22.93746533896774,
+          "tree_rss_mib": 380.15625
+        },
+        {
+          "t": 23.2023075921461,
+          "tree_rss_mib": 380.15625
+        },
+        {
+          "t": 23.462916002143174,
+          "tree_rss_mib": 380.15625
+        },
+        {
+          "t": 23.723681410076097,
+          "tree_rss_mib": 380.15625
+        },
+        {
+          "t": 23.982549905078486,
+          "tree_rss_mib": 383.15625
+        },
+        {
+          "t": 24.24787432095036,
+          "tree_rss_mib": 383.15625
+        },
+        {
+          "t": 24.508006419055164,
+          "tree_rss_mib": 36.578125
+        },
+        {
+          "t": 24.766927099088207,
+          "tree_rss_mib": 351.75
+        },
+        {
+          "t": 25.03344102599658,
+          "tree_rss_mib": 353.75
+        },
+        {
+          "t": 25.2951470031403,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 25.56148072797805,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 25.822655430063605,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 26.088378658983856,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 26.346354104112834,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 26.611518410034478,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 26.87756126606837,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 27.138741098111495,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 27.403904071077704,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 27.669459542026743,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 27.934923253953457,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 28.197494928957894,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 28.458682279102504,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 28.723472125129774,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 28.98954636999406,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 29.257546121021733,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 29.518393269972876,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 29.783572354121134,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 30.050095262937248,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 30.314926460152492,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 30.575875664129853,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 30.841471339110285,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 31.106936753960326,
+          "tree_rss_mib": 375.25
+        },
+        {
+          "t": 31.368081382941455,
+          "tree_rss_mib": 12.140625
+        },
+        {
+          "t": 31.624452061019838,
+          "tree_rss_mib": 12.140625
+        }
+      ],
+      "peak_sampled_tree_rss_mib": 383.15625,
+      "interpretation": "Exit 75 is controlled overload, not successful continuous dictation. No WER on incomplete audio."
+    },
+    "product-mac-final-smoke": {
+      "engine": "geist",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "8bb189dddaae28182407b28de539da463b7520e45de647d74c71ee3f6f4a018c",
+        "model": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "tower": "d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77",
+        "mel": "6af20c65cbfcd1ee65551bf6337a015e6a8a49f3752bcd01769eaf4f36659f76"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 1.4164622079988476,
+          "feed_start_s": 1.4165019579959335,
+          "feed_finished_s": 7.881800832998124,
+          "exit_code": 0,
+          "wall_s": 7.961363082999014,
+          "peak_rss_mib": 6343.421875,
+          "cpu_s": 56.20039,
+          "audio_s": 17.94,
+          "wall_rtf": 0.4437772064102014,
+          "processing_s": 6.544900875000167,
+          "output_times_s": [
+            7.8773372909927275
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.05555555555555555
+        },
+        {
+          "ready_s": 1.0170415000029607,
+          "feed_start_s": 1.0170690420054598,
+          "feed_finished_s": 6.769009750001715,
+          "exit_code": 0,
+          "wall_s": 6.83886195901141,
+          "peak_rss_mib": 6318.609375,
+          "cpu_s": 50.835389,
+          "audio_s": 11.16,
+          "wall_rtf": 0.612801250807474,
+          "processing_s": 5.82182045900845,
+          "output_times_s": [
+            6.768969000011566
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        }
+      ],
+      "groups": {
+        "de-read-clean": {
+          "clips": 2,
+          "errors": 3,
+          "reference_words": 39,
+          "substitutions": 1,
+          "deletions": 2,
+          "insertions": 0,
+          "audio_s": 29.1,
+          "wall_s": 14.800225042010425,
+          "failed": 0,
+          "wer": 0.07692307692307693,
+          "wall_rtf": 0.5085987986945163
+        }
+      }
+    },
+    "product-pi-final-smoke": {
+      "engine": "geist",
+      "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+      "threads": 4,
+      "paced": false,
+      "environment": {},
+      "files": {
+        "binary": "487ec429b609e5789ddbec7ef2b2944dd636118b25b139711ab2c9c8233810c4",
+        "model": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "tower": "d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77",
+        "mel": "6af20c65cbfcd1ee65551bf6337a015e6a8a49f3752bcd01769eaf4f36659f76"
+      },
+      "manifest_sha256": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff",
+      "normalization": "NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting",
+      "cache_policy": "fresh process per fixture; hashes read before runs; warm OS caches",
+      "runs": [
+        {
+          "ready_s": 3.534235717030242,
+          "feed_start_s": 3.534825101029128,
+          "feed_finished_s": 3.582005785079673,
+          "exit_code": 0,
+          "wall_s": 20.037026758072898,
+          "peak_rss_mib": 2737.9375,
+          "cpu_s": 49.727481999999995,
+          "audio_s": 17.94,
+          "wall_rtf": 1.1168911236384,
+          "processing_s": 16.502791041042656,
+          "output_times_s": [
+            19.995576482033357
+          ],
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+          "errors": 10,
+          "substitutions": 6,
+          "deletions": 3,
+          "insertions": 1,
+          "reference_words": 18,
+          "wer": 0.5555555555555556
+        },
+        {
+          "ready_s": 2.17339611495845,
+          "feed_start_s": 2.173433706862852,
+          "feed_finished_s": 2.185383507050574,
+          "exit_code": 0,
+          "wall_s": 15.45343533786945,
+          "peak_rss_mib": 2850.328125,
+          "cpu_s": 40.031388,
+          "audio_s": 11.16,
+          "wall_rtf": 1.3847164281245028,
+          "processing_s": 13.280039222911,
+          "output_times_s": [
+            15.410855531925336
+          ],
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.09523809523809523
+        }
+      ],
+      "groups": {
+        "de-read-clean": {
+          "clips": 2,
+          "errors": 12,
+          "reference_words": 39,
+          "substitutions": 7,
+          "deletions": 4,
+          "insertions": 1,
+          "audio_s": 29.1,
+          "wall_s": 35.49046209594235,
+          "failed": 0,
+          "wer": 0.3076923076923077,
+          "wall_rtf": 1.219603508451627
+        }
+      }
+    }
+  }
+}

@@ -59,3 +59,38 @@ their medians to ASR figures and claim a measured end-to-end desktop latency.
 ## Deutsche Qualitätsreihe
 
 Siehe [Qualitätsbericht](../doc/QUALITY-2026-09-05.md) und `prepare_quality.py`, `quality.py`, `pi_sweep.py`. Rohkorpus und vollständige Gesprächs-Hypothesen bleiben unter ignoriertem `build/`; `summarize_quality.py` exportiert ausschließlich Messwerte.
+
+## Produktstand und Vergleichsbackend (6. September 2026)
+
+[Umsetzung und neue Messwerte](../doc/IMPLEMENTATION-2026-09-06.md) beschreiben
+bestehende Tests, fehlende Abnahmen und die Grenzen des Pilots.
+
+`quality.py --engine whisper` verwendet den separaten Benchmark-Adapter
+`whisper_stream.py`. Er benötigt ein lokal gebautes `whisper-cli` vom Commit
+`52a939a2a762224e255d366c1182b2af4dd1a032` und das offizielle
+`ggml-small-q5_1.bin` mit SHA-256
+`ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb`.
+`GEIST_WHISPER_CLI` bestimmt den ausführbaren Pfad. `GEIST_WHISPER_BEAM_SIZE=1`
+aktiviert den einzeln gemessenen Vergleich zu Standard 5. Modell und Audio werden
+nicht vom Test in Git übernommen. Der Adapter lädt das Modell pro Segment neu;
+er ist kein residenter Produktionsbackend.
+
+```sh
+python3 benchmarks/quality.py --engine whisper \
+  --binary benchmarks/whisper_stream.py --model /path/ggml-small-q5_1.bin \
+  --model-sha256 ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb \
+  --manifest build/speech-corpus/manifest.json --groups de-read-clean \
+  --output build/whisper-quality.json
+python3 benchmarks/check_gates.py build/whisper-quality.json
+```
+
+`check_gates.py` bricht bei fehlenden Gruppen, unzureichender Clipzahl,
+Laufzeitfehlern oder überschrittenen WER-Zielen mit Exit 1 ab. Ein reiner
+Clean-Lauf kann das vollständige Gate daher nicht bestehen. Diese Pilot-Grenzen
+ersetzen weder ein unabhängiges Testset noch eine Produktfreigabe.
+
+`live_pipeline.py` speist WAV-Audio zeitgetreu durch den echten Capture-Supervisor
+und misst unter Linux den RSS des Prozessbaums. `--max-audio-seconds` begrenzt
+gezielt einen Testausschnitt. Exit 75 des Produkts wird als **kontrollierte
+Überlast**, nicht als erfolgreiche Erkennung, dokumentiert. `--timeout` bleibt
+eine separate technische Zeitgrenze. Keine physische Mikrofonaufnahme.

@@ -104,12 +104,37 @@ else
     [ -x "$STAGE/bin/diktat" ] && [ -x "$STAGE/bin/geist-diktat" ] || {
         echo "geist-diktat: incomplete release; previous installation preserved" >&2; exit 1;
     }
-    if [ -e "$DEST" ] || [ -L "$DEST" ]; then
-        BACKUP="$STAGE.previous"
-        mv "$DEST" "$BACKUP"
-    fi
-    mv "$STAGE" "$DEST"
+    command -v python3 >/dev/null || { echo "Python 3 is required for safe installation and runtime" >&2; exit 1; }
+    CANDIDATE="$STAGE"
+    echo "transaction directory: $CANDIDATE (retained after interruption)"
+    # Do not let a shell trap delete the old version after an atomic exchange.
+    # On an interrupted/failed transaction the candidate is retained for recovery.
     STAGE=''
+    python3 - "$CANDIDATE" "$DEST" <<'PYTHON'
+import ctypes, os, platform, sys
+source,dest=map(os.fsencode,sys.argv[1:])
+libc=ctypes.CDLL(None,use_errno=True)
+exists=os.path.lexists(dest)
+try:
+    if platform.system()=='Darwin':
+        rename=libc.renamex_np
+        rename.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_uint]
+        result=rename(source,dest,2 if exists else 4) # SWAP / EXCL
+    elif platform.system()=='Linux':
+        rename=libc.renameat2
+        rename.argtypes=[ctypes.c_int,ctypes.c_char_p,ctypes.c_int,ctypes.c_char_p,ctypes.c_uint]
+        result=rename(-100,source,-100,dest,2 if exists else 1) # EXCHANGE / NOREPLACE
+    else:
+        raise OSError('atomic installation is unsupported on this platform')
+    if result:raise OSError(ctypes.get_errno(),os.strerror(ctypes.get_errno()))
+except (OSError,AttributeError) as error:
+    print('geist-diktat: atomic installation failed; existing version preserved: '+str(error),file=sys.stderr)
+    raise SystemExit(1)
+PYTHON
+    if [ -e "$CANDIDATE" ] || [ -L "$CANDIDATE" ]; then
+        BACKUP="$CANDIDATE"
+        if mv "$CANDIDATE" "$CANDIDATE.previous"; then BACKUP="$CANDIDATE.previous"; fi
+    fi
     [ -z "$BACKUP" ] || echo "previous installation retained: $BACKUP"
     echo "add to PATH: export PATH=\"$DEST/bin:\$PATH\""
 fi
@@ -121,8 +146,8 @@ if [ "$OS" = macos ]; then
     echo "  brew install sox      # mic capture (ffmpeg also works)"
     echo "  geist-diktat run      # transcript lines on stdout"
     echo
-    echo "No IBus on macOS: 'run' gives you the transcript stream to pipe;"
-    echo "there is no typing-into-the-focused-app path here."
+    echo "For Vim/Neovim: geist-diktat editor-install all"
+    echo "The native macOS menu-bar app is a separate development build."
 else
     echo "  geist-diktat doctor   # then add the IBus input source in Settings"
     echo "                        # under Settings -> Keyboard (listed under German)"

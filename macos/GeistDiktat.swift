@@ -113,7 +113,12 @@ final class DictationApp: NSObject, NSApplicationDelegate {
     func start(_ arguments: [String], recording: Bool) {
         generation += 1; let session = generation
         stream = TranscriptStream()
-        let child = Process(); child.executableURL = launcher; child.arguments = arguments
+        let child = Process(); child.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        let runner = Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/runtime/share/geist-diktat/command_runner.py")
+        child.arguments = ["python3", runner.path, "--", launcher.path] + arguments
+        var environment = ProcessInfo.processInfo.environment
+        environment["PATH"] = "/opt/homebrew/bin:/usr/local/bin:" + (environment["PATH"] ?? "/usr/bin:/bin:/usr/sbin:/sbin")
+        child.environment = environment
         let output = Pipe(); let errors = Pipe(); child.standardOutput = output; child.standardError = errors
         child.standardInput = FileHandle.nullDevice
         output.fileHandleForReading.readabilityHandler = { handle in
@@ -156,7 +161,7 @@ final class DictationApp: NSObject, NSApplicationDelegate {
         do {
             try child.run(); process = child
             item.button?.title = recording ? "Diktat ●" : "Diktat …"
-            action.title = "Stoppen"; status.title = recording ? "Aufnahme läuft · Ctrl-Option-Leertaste stoppt" : "Einrichtung / Diagnose läuft"
+            action.title = "Stoppen"; status.title = recording ? "Aufnahme gestartet · Ctrl-Option-Leertaste stoppt" : "Einrichtung / Diagnose läuft"
         } catch { status.title = "Start fehlgeschlagen: \(error.localizedDescription)" }
     }
     func stop() {

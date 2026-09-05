@@ -198,6 +198,8 @@ static void pipeline_stop(GeistEngine *e) {
             kill(-pid, SIGKILL); kill(pid, SIGKILL);
             while (waitpid(pid, &status, 0) < 0 && errno == EINTR) {}
         }
+        /* Reaping the leader alone does not kill a stubborn descendant. */
+        kill(-pid, SIGKILL);
         g_spawn_close_pid(pid);
     }
     update_state(e, "diktat: aus");

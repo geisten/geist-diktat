@@ -36,3 +36,11 @@ class QualityMetrics(unittest.TestCase):
         self.assertEqual(words("E-Mail d'Chind"),['e','mail','d','chind'])
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+class ReleaseGates(unittest.TestCase):
+    def test_missing_failed_or_insufficient_data_cannot_pass(self):
+        from check_gates import evaluate
+        policy={'groups':{'g':{'min_clips':12,'max_wer':.1}}}
+        for g in ({},{'clips':12,'failed':1,'wer':0},{'clips':11,'failed':0,'wer':0},{'clips':12,'failed':0,'wer':None}):
+            self.assertFalse(evaluate({'groups':{'g':g}},policy)['passed'])
+        self.assertTrue(evaluate({'groups':{'g':{'clips':12,'failed':0,'wer':.1}}},policy)['passed'])

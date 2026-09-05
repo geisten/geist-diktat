@@ -8,7 +8,7 @@ OUTPUT="$PWD/build/ubuntu-package"
 mkdir -p "$OUTPUT"
 trap 'rm -rf "$STAGE"' EXIT
 # Use an independent build tree so the native Pi benchmark binary is retained.
-cp -a geistlib src ibus packaging README.md LICENSE "$STAGE/"
+cp -a geistlib src ibus packaging runtime lua plugin autoload README.md LICENSE "$STAGE/"
 mkdir -p "$STAGE/scripts"
 test ! -d scripts || cp -a scripts/. "$STAGE/scripts/"
 cp Makefile "$STAGE/Makefile"
@@ -43,4 +43,8 @@ command -v arecord
 command -v curl
 test -f /usr/share/ibus/component/geist-diktat.xml
 test -x /usr/libexec/ibus-engine-geist-diktat
+test -f /usr/share/geist-diktat/diktat_runtime.py
+test -f /usr/share/geist-diktat/editor/autoload/geist_diktat.vim
+HOME="$STAGE/home" XDG_DATA_HOME="$STAGE/home/.local/share" geist-diktat editor-install all
+test -f "$STAGE/home/.vim/pack/geist/start/geist-diktat/plugin/geist-diktat.vim"
 echo 'PASS: source build, deb metadata, apt install and installed launcher/engine sanity'

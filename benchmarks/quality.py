@@ -85,7 +85,7 @@ def main():
     if args.limit:fixtures=fixtures[:args.limit]
     if not fixtures:ap.error('no matching fixtures')
     report=dict(engine=args.engine,platform=platform.platform(),threads=args.threads,paced=args.paced,
-        environment={k:v for k,v in os.environ.items() if k.startswith('GEIST_AUDIO_') or k=='OMP_WAIT_POLICY'},
+        environment={k:v for k,v in os.environ.items() if k.startswith('GEIST_AUDIO_') or k in ('OMP_WAIT_POLICY','GEIST_WHISPER_BEAM_SIZE')},
         files=hashes,manifest_sha256=digest(args.manifest),
         normalization='NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting',
         cache_policy='fresh process per fixture; hashes read before runs; warm OS caches',runs=[])

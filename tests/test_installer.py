@@ -13,7 +13,7 @@ class Installer(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.root=Path(self.tmp.name); self.bin=self.root/'bin'; self.bin.mkdir()
-        for name in ['mktemp','rm','mkdir','cat','cut','sed','head','sh','sha256sum','shasum','mv','chmod','rmdir']:
+        for name in ['mktemp','rm','mkdir','cat','cut','sed','head','sh','sha256sum','shasum','mv','chmod','rmdir','python3']:
             path=shutil.which(name)
             if path: (self.bin/name).symlink_to(path)
         self.env=dict(os.environ,PATH=str(self.bin),HOME=str(self.root/'home'),
@@ -94,8 +94,8 @@ esac''')
     def test_commit_failure_rolls_back(self):
         previous=self.root/'home/.local/geist-diktat';previous.mkdir(parents=True)
         (previous/'working').write_text('old')
-        (self.bin/'mv').unlink()
-        self.script('mv', 'case "$1" in *.previous) exec /bin/mv "$@";; esac\ncase "$2" in */geist-diktat) exit 9;; esac\nexec /bin/mv "$@"')
+        (self.bin/'python3').unlink()
+        self.script('python3','exit 9')
         p=self.run_install();self.assertNotEqual(p.returncode,0)
         self.assertEqual((previous/'working').read_text(),'old')
 

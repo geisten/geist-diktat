@@ -97,7 +97,7 @@ cat > "$STAGE/DEBIAN/postinst" <<'EOF'
 set -e
 if [ "$1" = configure ]; then
     echo "geist-diktat: per user, run 'geist-diktat setup' (downloads ~3.7 GB)."
-    echo "Then run 'ibus restart' and add the input source 'geist-diktat"
+    echo "If needed, sign out and back in; add the input source 'geist-diktat"
     echo "(Diktat)' under Settings -> Keyboard (listed under German)."
 fi
 EOF

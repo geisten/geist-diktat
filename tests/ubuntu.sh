@@ -11,6 +11,8 @@ gcc-14 -std=c2x -O1 -g $(pkg-config --cflags ibus-1.0) tests/ibus_lifecycle.c \
     $(pkg-config --libs ibus-1.0) -o build/ibus-lifecycle || exit 1
 build/ibus-lifecycle > tests/results/ubuntu-ibus-lifecycle.log 2>&1
 lifecycle=$?
+gcc-14 -std=c2x -O1 -g $(pkg-config --cflags ibus-1.0) tests/ibus_privacy.c \
+    $(pkg-config --libs ibus-1.0) -o build/ibus-privacy || exit 1
 sh tests/ibus_isolated.sh > tests/results/ubuntu-ibus-integration.log 2>&1
 integration=$?
 gcc-14 $(pkg-config --cflags gtk+-3.0) tests/gtk_entry.c $(pkg-config --libs gtk+-3.0) -o build/gtk-entry || exit 1

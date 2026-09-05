@@ -77,3 +77,16 @@ For real model tests and performance measurements see
 ## Erweiterung: Sprachqualität und gemessene Abdeckung
 
 `sh tests/coverage.sh` exportiert LLVM-Zeilen-/Zweigabdeckung des tatsächlichen C-Cores, auch wenn Regressionen rot bleiben. `test_quality.py` prüft die WER-Metrik, `test_core.py` zusätzlich 30:20 Minuten/1.400 Äußerungen im Fake-Engine-Stresstest und die x86-Backendauswahl. Das ist keine Abdeckung des neuronalen Engine-Codes. Echte deutsche, Dialekt-, Rausch- und Gesprächsdaten werden getrennt durch `benchmarks/quality.py` ausgewertet. Details: [Qualitätsbericht](../doc/QUALITY-2026-09-05.md).
+
+## Implementierter Produktstand
+
+Zusätzliche Tests prüfen inzwischen den begrenzten Recorder-/Decoder-Supervisor,
+verzögerte Capture-Fehler, störrische Nachfahren, Installationsfehler, atomare
+Verzeichniswechsel, Installation in leerem HOME, den zeilenweisen argv-Adapter,
+reale Vim-Prozesse mit Unicode und 100 Start/Stop-Zyklen. Unter Ubuntu prüfen
+echte IBus-Objekte außerdem Passwort/PIN/Private-Felder und Fokus-/Disable-Wechsel.
+Die Prozesse dieser Tests gehören ausschließlich zum Testlauf.
+
+Die bisherigen historischen Auditberichte bleiben unverändert. Aktuelle Zahlen
+und weiterhin offene Produkt-Abnahmen stehen in
+[IMPLEMENTATION-2026-09-06.md](../doc/IMPLEMENTATION-2026-09-06.md).

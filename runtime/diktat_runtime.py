@@ -85,12 +85,19 @@ def supervise(capture, decoder, buffer_seconds=6):
             # command may have spawned descendants which still hold the pipe.
             try:os.killpg(p.pid,signal.SIGTERM)
             except ProcessLookupError:pass
+        # Allow both leaders and descendants a fixed, bounded TERM grace.
+        # Avoid signal-0 probes: some macOS process policies reject those
+        # even when terminating our own group is permitted.
+        deadline=time.monotonic()+.5
         for p in children:
-            try:p.wait(timeout=.5)
-            except subprocess.TimeoutExpired:
-                try:os.killpg(p.pid,signal.SIGKILL)
-                except ProcessLookupError:pass
-                p.wait()
+            try:p.wait(timeout=max(0,deadline-time.monotonic()))
+            except subprocess.TimeoutExpired:pass
+        time.sleep(max(0,deadline-time.monotonic()))
+        for p in children:
+            # A reaped group leader does not imply its descendants exited.
+            try:os.killpg(p.pid,signal.SIGKILL)
+            except ProcessLookupError:pass
+            p.wait()
         for s,handler in previous.items():signal.signal(s,handler)
 
 

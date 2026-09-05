@@ -1,92 +1,110 @@
 # geist-diktat
 
-System-wide **local** dictation for Linux — one static binary on the
-[geist](https://github.com/geisten/geistlib) engine. No cloud, no Python
-stack, no Whisper pipeline: Gemma 4 E2B hears directly (measured on this
-engine: **4.2 % WER English** / **7.1 % German**, LibriSpeech / FLEURS —
-methodology in geistlib's `benchmark/results/PI5-audio.md`).
+Lokales Diktieren mit dem C-Core der [geist-Engine](https://github.com/geisten/geistlib)
+und Gemma 4 E2B. Der Core verarbeitet PCM-Audio und liefert UTF-8-Transkriptzeilen.
+Der Launcher verwendet Python 3 aus der Standardbibliothek zur Aufnahmeüberwachung,
+Fehlerweitergabe und Begrenzung des Audiopuffers. Audiodaten werden nicht hochgeladen.
 
-A streaming energy VAD segments your speech while you talk; each
-utterance becomes one line of clean, punctuated text on stdout. Typing
-into the focused window is composition, not configuration:
+**Entwicklungsstand:** Diese Änderungen sind noch keine Produktfreigabe. Ältere
+GitHub-Releases enthalten die neuen Adapter und Diagnosebefehle noch nicht.
+Die gemessene deutsche Pilot-WER beträgt beim Geist-Pfad 16,0 % auf macOS im
+ursprünglichen Audit und erneut 20,7 % auf dem Pi5. Rauschen und lange Gespräche
+bleiben Freigabeblocker. [Messmethodik und Grenzen](doc/QUALITY-2026-09-05.md),
+[Umsetzungsplan](doc/PRODUCT-PLAN.md),
+[Implementierung und neue Test-/Vergleichsergebnisse](doc/IMPLEMENTATION-2026-09-06.md).
 
-```sh
-arecord -f S16_LE -r 16000 -c 1 -t raw | ./diktat model.gguf | wtype -   # wlroots
-arecord ... | ./diktat model.gguf | while IFS= read -r l; do ydotool type -- "$l "; done  # GNOME
-```
+## Ubuntu / Linux
 
-## Install (Ubuntu, .deb)
-
-```sh
-# amd64; use _arm64.deb on ARM (Pi 5, ARM servers)
-curl -fLO https://github.com/geisten/geist-diktat/releases/latest/download/geist-diktat_amd64.deb
-sudo apt install ./geist-diktat_amd64.deb
-geist-diktat setup                 # per-user model download (~3.7 GB, SHA-pinned)
-```
-
-Non-Debian distros: grab the `linux-{x86_64,aarch64}.tar.gz` from the
-same release — unpack anywhere, `bin/geist-diktat` works in place.
-
-## macOS (Apple Silicon)
+Nach Installation eines passenden .deb aus diesem Quellstand:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/geisten/geist-diktat/main/install.sh | sh
-brew install sox        # mic capture; ffmpeg works too
-geist-diktat setup      # model (~3.7 GB, SHA-pinned)
-geist-diktat run        # transcript lines on stdout
+geist-diktat setup                 # Modelle herunterladen und SHA-256 prüfen
+geist-diktat doctor --verify       # Dateien, Programme und Prüfsummen prüfen
+geist-diktat editor-install all    # optional: Vim und Neovim
+geist-diktat run                   # Mikrofon -> Transkriptzeilen
 ```
 
-The core is the same engine and the same model. What macOS does **not**
-get is the typing path: there is no IBus, so `run` gives you the
-transcript stream to pipe wherever you want. `GEIST_DIKTAT_CAPTURE`
-overrides the capture command when the default mic is not the right one.
+Das .deb benötigt IBus für systemweite Texteingabe. Bei Bedarf ab- und wieder
+anmelden und die Eingabequelle **geist-diktat (Diktat)** hinzufügen. Aufnahme
+startet im aktivierten, fokussierten Eingabekontext; Fokusverlust und Abschalten
+stoppen sie. Passwort-, PIN- und als privat gekennzeichnete Felder starten keine
+Aufnahme. GTK3 und Qt5 sind unter isoliertem Xorg/Xvfb getestet; daraus folgt
+keine Freigabe sämtlicher Wayland-, Browser- oder sandboxierter Anwendungen.
 
-Intel Macs are not built — geistlib's mac target compiles the `cpu_neon`
-backend. Build from source with a scalar backend if you need one.
+Für einen ausdrücklich gewählten, mit `wtype` kompatiblen Wayland-Compositor:
 
-Then dictate: run `ibus restart`, add the input source *geist-diktat
-(Diktat)* (GNOME Settings → Keyboard → Input Sources, listed under
-German), and switch to it with `Super+Space`. Selecting the source starts
-the mic; switching away stops it. Committed text arrives through the
-standard input-method protocol — no root, no uinput, and every IBus-aware
-app (GTK, Qt, Electron, VTE terminals) receives it.
+```sh
+# In Bash sorgt pipefail für die Weitergabe beider Pipeline-Fehler.
+set -o pipefail
+geist-diktat run | geist-diktat type wtype --
+```
 
-Prefer to wire the typing yourself? `geist-diktat run` prints transcript
-lines on stdout; compose them as in the snippet above.
+Der Adapter übergibt jede fertige Zeile als ein Argument und wartet nicht auf
+EOF der gesamten Aufnahmesitzung. Für Fokus- und Schutzfeldregeln siehe
+[Einbettungsvertrag](doc/EMBEDDING.md).
 
-## Build from source
+## Vim und Neovim
+
+Nach `geist-diktat editor-install all` den Editor neu starten. `:DiktatToggle`
+startet/stoppt; `:DiktatStart` und `:DiktatStop` sind ebenfalls verfügbar.
+Eine persönliche Taste lässt sich über `<Plug>(DiktatToggle)` zuweisen:
+
+```vim
+nmap <F8> <Plug>(DiktatToggle)
+imap <F8> <Plug>(DiktatToggle)
+```
+
+Die Installation verändert keine vimrc/init.lua. Die Adapter verarbeiten
+fragmentierte UTF-8-Ausgabe asynchron und behandeln Diktat als Text, auch im
+Normalmodus. Alte Sitzungs-Callbacks können nicht in eine neue Sitzung schreiben.
+
+## macOS / Apple Silicon
+
+Der CLI-Launcher benötigt Python 3 und `sox` oder `ffmpeg` zur Aufnahme.
+`GEIST_DIKTAT_CAPTURE` erlaubt eine eigene vertrauenswürdige Recorder-Konfiguration.
+Die native Menüleisten-App lässt sich aus einem gebauten Core erzeugen:
+
+```sh
+make GEIST_STATIC_OMP=1
+sh macos/build-app.sh
+open 'build/Geist Diktat.app'
+```
+
+Sie bietet Einrichtung, Diagnose, Start/Stop mit Ctrl-Option-Leertaste,
+Transkriptvorschau, Kopieren und optionales Einfügen über Bedienungshilfen.
+Die App ist ein Entwicklungsprototyp, standardmäßig nur ad hoc signiert und
+nicht notarisiert. Mikrofon- und Bedienungshilfenrechte sind interaktiv nötig;
+eine vollständige TextEdit-/Browser-/Terminal-Abnahme steht aus. Intel-Macs
+werden in diesem Projekt weiterhin nicht als Release-Ziel gebaut.
+
+## Aus Quellen bauen und testen
 
 ```sh
 git clone https://github.com/geisten/geist-diktat
 cd geist-diktat
-make                    # clones + builds the pinned geistlib, then diktat
-make setup              # model (~3.1 GB) + audio tower (~590 MB), SHA-pinned
-arecord -q -f S16_LE -r 16000 -c 1 -t raw | \
-  ./diktat geistlib/gguf_artifacts/gemma4-e2b-Q4_K_M.gguf   # transcript lines on stdout
-sh packaging/build-deb.sh   # roll your own .deb (Linux)
+make                       # gepinnte Engine synchronisieren und Core bauen
+make setup                 # Modelle für den direkten Core-Test herunterladen
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+sh tests/coverage.sh        # LLVM-Coverage des Core mit kontrollierter Engine
 ```
 
-Needs ~4 GB RAM (Gemma 4 E2B Q4_K_M); runs on any x86-64 desktop and on
-a Raspberry Pi 5. `GEIST_DIKTAT_PROMPT` overrides the transcription
-instruction; the default handles English and German without
-configuration.
+Unter Linux werden GCC 14, libibus-1.0-dev und die in
+[tests/ubuntu.Dockerfile](tests/ubuntu.Dockerfile) aufgeführten Testabhängigkeiten
+verwendet. `make ibus` baut die Integration; `sh packaging/build-deb.sh` erzeugt
+das .deb. macOS-Tarballs: `sh packaging/build-tarball.sh` nach einem Build mit
+statisch eingebundenem OpenMP. Linux-Tarballs benötigen einen statischen musl-Build.
 
-## Status / roadmap
+Die Messungen auf dem 4-GiB-Pi5 zeigen rund 2,9 GiB Spitzen-RSS für den Core;
+auf dem Mac liegt der FP32-Audiopfad bei rund 6,3 GiB. Eine kleine Modell-Datei
+ist keine Zusage entsprechend niedrigen Laufzeitspeichers. Der begrenzte
+Launcher stoppt bei Überlast sichtbar mit Exit 75; kontinuierliches Diktieren
+ist auf dem Pi5 noch nicht freigegeben.
 
-- [x] dictation core (`diktat`, from geistlib's example) — #1
-- [ ] `.deb` package: two-command install — #2
-- [ ] IBus engine: dictation as an input source in every app, no root — #3
-- [ ] Neovim plugin: `:Diktat`, mode-aware insertion via job-control — #4
+[Tests](tests/README.md), [Benchmarks](benchmarks/README.md),
+[Einbettung und tägliche Bedienung](doc/EMBEDDING.md).
 
-Working name `geist-diktat`; product-name candidate: `geistschreiber`.
+## Lizenz
 
-## License
-
-Apache-2.0, same as the engine.
-
-## Integration und Diagnose
-
-`geist-diktat doctor --verify` prüft die Installation.
-`geist-diktat editor-install all` installiert die asynchronen Vim-/Neovim-Adapter.
-[Prozessvertrag, Shortcuts, Linux-Einbettung und macOS-App](doc/EMBEDDING.md)
-beschreiben den aktuellen Entwicklungsstand und seine Grenzen.
+Apache-2.0. Der experimentelle whisper.cpp-Vergleich in `benchmarks/` ist ein
+separat zu bauender Vergleichsbackend und gehört nicht zum standardmäßig
+ausgelieferten Erkennungspfad.

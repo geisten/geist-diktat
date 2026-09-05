@@ -23,6 +23,7 @@ dbus-run-session -- sh -ec '
     OUT=$(timeout 15 ./ibus-test-client)
     printf "%s\n" "$OUT"
     test "$OUT" = "$IBUS_TEST_EXPECTED"
+    if [ -x ./build/ibus-privacy ]; then ./build/ibus-privacy; fi
     ibus exit
 '
 echo 'PASS: isolated IBus registration and Unicode commit'

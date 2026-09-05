@@ -1,5 +1,8 @@
 # Reihenfolge bis zum alltagstauglichen Produkt
 
+Umsetzungsstand vom 6. September: [Implementierung, Tests und offene Abnahmetore](IMPLEMENTATION-2026-09-06.md).
+Der folgende ursprüngliche Plan bleibt als Abnahmegrundlage bestehen.
+
 Stand: 5. September 2026. Dies ist ein umsetzbarer Arbeitsplan mit Abnahmetoren,
 keine Zusage einer bereits vorhandenen Produktreife. Issues sind echte Aufgaben
 im Repository. Die Messwerte und ihre Grenzen stehen im ergänzenden Qualitätsbericht.

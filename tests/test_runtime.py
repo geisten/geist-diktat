@@ -57,6 +57,25 @@ class Runtime(unittest.TestCase):
                     with self.assertRaises(ProcessLookupError):os.kill(child,0)
             finally:
                 if p.poll() is None:p.kill();p.wait()
+    def test_descendant_ignoring_term_is_killed_after_leader_exits(self):
+        import shlex
+        with tempfile.TemporaryDirectory() as d:
+            pidfile=Path(d)/'pid'
+            code="import os,signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);open("+repr(str(pidfile))+",'w').write(str(os.getpid()));time.sleep(60)"
+            capture=shlex.quote(sys.executable)+' -c '+shlex.quote(code)+' & wait'
+            p=subprocess.Popen(self.command(capture,'import sys;sys.stdin.buffer.read()'),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            try:
+                end=time.monotonic()+3
+                while not pidfile.exists() and time.monotonic()<end:time.sleep(.01)
+                self.assertTrue(pidfile.exists());child=int(pidfile.read_text())
+                p.terminate();p.communicate(timeout=3)
+                state=Path('/proc')/str(child)/'stat'
+                if state.exists():self.assertEqual(state.read_text().split()[2],'Z')
+                else:
+                    with self.assertRaises(ProcessLookupError):os.kill(child,0)
+            finally:
+                if p.poll() is None:p.kill();p.wait()
+
 
 class LineSink(unittest.TestCase):
     def test_streaming_literal_arguments(self):
@@ -72,3 +91,16 @@ class LineSink(unittest.TestCase):
     def test_oversize_line_rejected(self):
         p=subprocess.run([sys.executable,str(ROOT/'runtime/line_sink.py'),'--','cat'],input=b'x'*65537,capture_output=True)
         self.assertNotEqual(p.returncode,0)
+
+class CommandRunner(unittest.TestCase):
+    def test_success_and_error_status(self):
+        for code in (0,17):
+            p=subprocess.run([sys.executable,str(ROOT/'runtime/command_runner.py'),'--',sys.executable,'-c','raise SystemExit('+str(code)+')'],capture_output=True,timeout=3)
+            self.assertEqual(p.returncode,code,p.stderr)
+    def test_term_bounds_a_stubborn_command(self):
+        p=subprocess.Popen([sys.executable,str(ROOT/'runtime/command_runner.py'),'--',sys.executable,'-c','import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);print("ready",flush=True);time.sleep(60)'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        try:
+            self.assertEqual(p.stdout.readline(),b'ready\n');p.terminate();p.communicate(timeout=4)
+            self.assertEqual(p.returncode,143)
+        finally:
+            if p.poll() is None:p.kill();p.wait()

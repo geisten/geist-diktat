@@ -20,10 +20,13 @@ def recognize(pcm,model):
     with wave.open(wav,'wb') as f:
         f.setnchannels(1);f.setsampwidth(2);f.setframerate(16000);f.writeframes(pcm)
     cli=os.environ.get('GEIST_WHISPER_CLI','whisper-cli')
-    r=subprocess.run([cli,'-m',model,'-f','-','-l','de','-nt','-np','-ng','-t',os.environ.get('OMP_NUM_THREADS','4')],
+    beam=int(os.environ.get('GEIST_WHISPER_BEAM_SIZE','5'))
+    if not 1<=beam<=8:raise ValueError('beam size must be 1..8')
+    r=subprocess.run([cli,'-m',model,'-f','-','-l','de','-of','geist-console-only','-nt','-np','-ng','-bs',str(beam),'-t',os.environ.get('OMP_NUM_THREADS','4')],
                      input=wav.getvalue(),capture_output=True,timeout=180)
     if r.returncode:
         sys.stderr.buffer.write(r.stderr);raise RuntimeError('whisper-cli failed: '+str(r.returncode))
+    if b'without any other' in r.stderr:raise RuntimeError('whisper output configuration did not produce a transcript stream')
     text=' '.join(r.stdout.decode('utf-8').split())
     if text:print(text,flush=True)
 
