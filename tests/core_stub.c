@@ -11,6 +11,7 @@ static struct geist_backend backend;
 static struct geist_model model;
 static struct geist_session session;
 static int begins, ends, pushes, polls, decoded, resets, destroyed, loads;
+static int selected_x86;
 static size_t samples;
 static int fail(const char *name) {
     const char *s = getenv("STUB_FAIL");
@@ -21,7 +22,10 @@ const char *geist_last_create_error(void) { return "injected failure"; }
 const char *geist_session_errmsg(const struct geist_session *s) { (void)s; return "injected failure"; }
 enum geist_status geist_backend_create(const char *name, const struct geist_backend_opts *o,
         const struct geist_allocator *a, struct geist_backend **out) {
-    (void)name; (void)o; (void)a; *out = &backend; return STATUS("backend");
+    (void)o; (void)a;
+    if (fail("x86-host") && strcmp(name,"cpu_neon")==0) return GEIST_E_INVALID_ARG;
+    selected_x86 = strcmp(name,"cpu_x86")==0;
+    *out = &backend; return STATUS("backend");
 }
 void geist_backend_destroy(struct geist_backend *b) { (void)b; destroyed++; }
 enum geist_status geist_model_load(const char *p, struct geist_backend *b, struct geist_model **out) {
@@ -78,7 +82,7 @@ int main(int argc, char **argv) {
         return 0;
     }
     int rc=diktat_main(argc, argv);
-    fprintf(stderr,"STATS begins=%d ends=%d pushes=%d polls=%d samples=%zu decoded=%d resets=%d destroyed=%d loads=%d\n",
-        begins, ends, pushes, polls, samples, decoded, resets, destroyed, loads);
+    fprintf(stderr,"STATS begins=%d ends=%d pushes=%d polls=%d samples=%zu decoded=%d resets=%d destroyed=%d loads=%d selected_x86=%d\n",
+        begins, ends, pushes, polls, samples, decoded, resets, destroyed, loads,selected_x86);
     return rc;
 }

@@ -62,6 +62,11 @@ class Core(unittest.TestCase):
         self.assertEqual(s['begins'],0)
         self.assertEqual(p.stdout,b'')
 
+    def test_x86_host_selects_available_accelerated_backend(self):
+        p,s=self.run_core(fail='x86-host')
+        self.assertEqual(p.returncode,0)
+        self.assertEqual(s['selected_x86'],1,'x86 host falls back to scalar despite available cpu_x86')
+
     def test_open_requires_three_consecutive_frames(self):
         p,s=self.run_core(pcm(2,1)*10)
         self.assertEqual(s['begins'],0)
@@ -91,6 +96,23 @@ class Core(unittest.TestCase):
         p,s=self.run_core(pcm()*3)
         self.assertEqual(s['ends'],3)
         self.assertEqual(len(p.stdout.splitlines()),3)
+
+    def test_thirty_minutes_use_one_model_and_preserve_all_turns(self):
+        # 1400 * 1.3 s = 30 min 20 s of PCM. Unpaced, fake recognition:
+        # lifecycle/segmentation stress only, not a real ASR conversation test.
+        p,s=self.run_core(pcm()*1400)
+        self.assertEqual(p.returncode,0)
+        self.assertEqual((s['loads'],s['begins'],s['ends']),(1,1400,1400))
+        self.assertEqual(s['samples'],1400*65*320)
+        self.assertEqual(len(p.stdout.splitlines()),1400)
+        self.assertEqual(s['destroyed'],3)
+
+    def test_full_scale_pcm_does_not_overflow_rms(self):
+        for amplitude in (-32768,32767):
+            with self.subTest(amplitude=amplitude):
+                p,s=self.run_core(pcm(amplitude=amplitude))
+                self.assertEqual(p.returncode,0)
+                self.assertEqual(s['ends'],1)
 
     def test_short_pause_keeps_one_utterance(self):
         p,s=self.run_core(pcm(25,39)+pcm())
