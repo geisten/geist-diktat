@@ -36,15 +36,16 @@ export GEIST_MEL_CONSTANTS_PATH="${GEIST_MEL_CONSTANTS_PATH:-$MEL}"
 # device is machine-specific (an avfoundation index cannot be guessed).
 capture() {
     if [ -n "${GEIST_DIKTAT_CAPTURE:-}" ]; then
-        eval "exec $GEIST_DIKTAT_CAPTURE"
+        eval "$GEIST_DIKTAT_CAPTURE"
+        return
     fi
     case "$(uname -s)" in
     Darwin)
         # sox -d is the default input device — no index to guess.
         if command -v sox >/dev/null; then
-            exec sox -q -d -t raw -r 16000 -e signed -b 16 -c 1 -
+            sox -q -d -t raw -r 16000 -e signed -b 16 -c 1 -
         elif command -v ffmpeg >/dev/null; then
-            exec ffmpeg -loglevel quiet -f avfoundation -i :default \
+            ffmpeg -loglevel quiet -f avfoundation -i :default \
                 -ar 16000 -ac 1 -f s16le -
         fi
         echo "no capture tool — brew install sox (or ffmpeg)" >&2
@@ -55,7 +56,7 @@ capture() {
             echo "arecord not found (apt install alsa-utils)" >&2
             exit 1
         }
-        exec arecord -q -f S16_LE -r 16000 -c 1 -t raw
+        arecord -q -f S16_LE -r 16000 -c 1 -t raw
         ;;
     esac
 }
@@ -93,7 +94,27 @@ setup) setup ;;
 run)
     shift
     [ -f "$MODEL" ] || { echo "model missing — run: geist-diktat setup" >&2; exit 1; }
-    capture | exec "$PREFIX/bin/diktat" "$MODEL" "$@"
+    # A dead mic reaches diktat as EOF and diktat exits 0 on EOF, so the
+    # pipeline reported success while nothing was ever transcribed — the
+    # worst kind of failure for a dictation tool. POSIX sh has no
+    # `pipefail`, so capture parks its status in a file we read afterwards.
+    st=$(mktemp) || exit 1
+    trap 'rm -f "$st"' EXIT
+    # ( capture ): GEIST_DIKTAT_CAPTURE is eval'd, so a command like `exit 17`
+    # would otherwise take the whole pipeline half down with it. And the
+    # status must be read via `||`, not a following line — `set -e` (line 15)
+    # kills the subshell on a non-zero capture before any next line runs.
+    # Nothing is written when capture succeeds; an empty file reads as 0.
+    rc=0
+    { ( capture ) || echo "$?" >"$st"; } | "$PREFIX/bin/diktat" "$MODEL" "$@" || rc=$?
+    cst=$(cat "$st" 2>/dev/null) || cst=0
+    # 141 is SIGPIPE: diktat exited first and closed the pipe, which is the
+    # normal way a run ends. Anything else means the mic died on its own.
+    if [ "${cst:-0}" != 0 ] && [ "$cst" != 141 ]; then
+        echo "geist-diktat: audio capture failed (exit $cst)" >&2
+        [ "$rc" = 0 ] && rc=1
+    fi
+    exit "$rc"
     ;;
 *)
     echo "usage: geist-diktat setup | run [rms-threshold]" >&2
