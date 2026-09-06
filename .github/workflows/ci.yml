@@ -42,10 +42,21 @@ jobs:
       - name: build + package (alpine 3.21, musl-static)
         run: |
           docker run --rm -v "$PWD:/w" -w /w alpine:3.21 sh -ec '
-            apk add --no-cache build-base linux-headers git >/dev/null
+            # GNU tar: the busybox one lacks the determinism flags used by
+            # build-tarball.sh. Keep apostrophes out of this block — the whole
+            # script is one single-quoted argument to sh -ec.
+            apk add --no-cache build-base linux-headers git tar >/dev/null
             git config --global --add safe.directory /w
             make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
             make tarball
+            # Packaged twice from the same binary: nothing that varies per run
+            # (mtimes, uid/gid, file order, the gzip header) may reach the
+            # archive. Only the packaging repeats — a second full compile would
+            # double the job to re-prove a step that did not change.
+            cp geist-diktat_*_linux-*.tar.gz /tmp/first.tar.gz
+            make tarball
+            cmp /tmp/first.tar.gz geist-diktat_*_linux-*.tar.gz
+            echo "reproducible: byte-identical across two packaging runs"
           '
       # On the glibc host: a static binary that only runs where it was built
       # would defeat the point. build-tarball.sh already asserted no dynamic

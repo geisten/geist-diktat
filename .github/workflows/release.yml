@@ -84,7 +84,10 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/w" -w /w \
             -e VERSION=${{ steps.v.outputs.version }} alpine:3.21 sh -ec '
-            apk add --no-cache build-base linux-headers git >/dev/null
+            # GNU tar: the busybox one lacks the determinism flags used by
+            # build-tarball.sh. Keep apostrophes out of this block — the whole
+            # script is one single-quoted argument to sh -ec.
+            apk add --no-cache build-base linux-headers git tar >/dev/null
             git config --global --add safe.directory /w
             make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
             make tarball

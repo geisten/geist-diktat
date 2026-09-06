@@ -60,5 +60,20 @@ linux)
     ;;
 esac
 
-tar -C build -czf "$NAME.tar.gz" "$NAME"
-echo "built: $NAME.tar.gz"
+# Reproducible: the same commit must produce the same bytes, so nothing that
+# varies per build may reach the archive.
+#   - mtimes come from SOURCE_DATE_EPOCH (the commit date by default), stamped
+#     onto the staged tree because bsdtar has no --mtime.
+#   - ownership is zeroed; the builder's uid/name must not be recorded.
+#   - the file list is sorted here rather than with --sort=name, which is
+#     GNU-only. Everything else below is accepted by both GNU tar and bsdtar.
+#   - gzip -n keeps the source name and timestamp out of the header.
+SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(git log -1 --pretty=%ct 2>/dev/null || echo 315532800)}"
+STAMP=$(date -u -d "@$SOURCE_DATE_EPOCH" +%Y%m%d%H%M.%S 2>/dev/null ||
+        date -u -r "$SOURCE_DATE_EPOCH" +%Y%m%d%H%M.%S)
+find "$STAGE" -exec touch -t "$STAMP" {} +
+
+(cd build && find "$NAME" | LC_ALL=C sort |
+    tar --format=ustar --numeric-owner --owner=0 --group=0 -cf - -T -) |
+    gzip -n > "$NAME.tar.gz"
+echo "built: $NAME.tar.gz  (SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH)"
