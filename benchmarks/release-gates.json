@@ -28,6 +28,9 @@
       "required_report_hashes": [
         "whisper_cli_sha256"
       ]
+    },
+    "whisper-resident": {
+      "required_files": []
     }
   }
 }

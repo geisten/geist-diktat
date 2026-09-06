@@ -60,7 +60,7 @@ def aggregate(results):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--manifest',type=Path,required=True)
-    ap.add_argument('--engine',choices=['geist','whisper'],default='geist')
+    ap.add_argument('--engine',choices=['geist','whisper','whisper-resident'],default='geist')
     ap.add_argument('--model-sha256')
     for name in ('binary','model','tower','mel','output'):
         ap.add_argument('--'+name,type=Path,required=name not in ('tower','mel'))
@@ -75,7 +75,7 @@ def main():
     hashes={name:digest(getattr(args,name)) for name in ('binary','model','tower','mel') if getattr(args,name) is not None}
     expected = dict(model='740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8',
                     tower='d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77')
-    if args.engine=='whisper':
+    if args.engine in ('whisper','whisper-resident'):
         if not args.model_sha256:ap.error('--model-sha256 required for alternative engine')
         expected={'model':args.model_sha256}
     if args.engine=='geist' and (args.tower is None or args.mel is None):ap.error('Geist requires --tower and --mel')
@@ -100,6 +100,10 @@ def main():
         if not cli:ap.error('GEIST_WHISPER_CLI / whisper-cli missing')
         report['whisper_cli_sha256']=digest(cli)
         report['resource_scope']='wait4 child usage; descendant maximum RSS is not summed; adapter reloads CPU model per segment'
+    if args.engine=='whisper-resident':
+        report['whisper_source_commit']='52a939a2a762224e255d366c1182b2af4dd1a032'
+        report['decoder']=dict(language='de',beam_size=int(os.environ.get('GEIST_WHISPER_BEAM_SIZE','5')),no_context=True,temperature=0,temperature_inc=.2)
+        report['resource_scope']='one resident CPU model per fixture process; wait4 RSS of recognizer; no descendant decoder'
     args.output.parent.mkdir(parents=True,exist_ok=True)
     for fixture in fixtures:
         path=args.manifest.parent/fixture['wav']

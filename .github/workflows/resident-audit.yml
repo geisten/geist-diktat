@@ -1,0 +1,66 @@
+name: resident-audit
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  resident-cpu:
+    runs-on: [self-hosted, amd-desktop]
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pinned resident CPU candidate
+        run: sh scripts/build-whisper.sh
+      - name: Controlled resident frontend contracts with sanitizers
+        run: python3 -m unittest discover -s tests -p 'test_whisper_resident.py' -v
+      - name: Verify or fetch pinned small Q5_1 model
+        run: python3 scripts/fetch-whisper-model.py
+      - name: Prepare German development pilot
+        run: python3 benchmarks/prepare_quality.py --fleurs-only
+      - name: Clear only this audit's previous results
+        run: python3 -c "import shutil; shutil.rmtree('build/resident-results', ignore_errors=True); shutil.rmtree('resident-metrics', ignore_errors=True)"
+      - name: Measure real German quality with both beam settings
+        run: |
+          for beam in 1 5; do
+            GEIST_WHISPER_BEAM_SIZE=$beam python3 benchmarks/quality.py \
+              --engine whisper-resident --manifest build/speech-corpus/manifest.json \
+              --binary build/whisper-resident/diktat-whisper --model build/ggml-small-q5_1.bin \
+              --model-sha256 ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb \
+              --groups de-read-clean,de-noise-10db --timeout 240 \
+              --output build/resident-results/beam-$beam.json || exit 1
+          done
+      - name: Paced multi-utterance session through the real supervisor
+        run: |
+          GEIST_WHISPER_BEAM_SIZE=1 python3 benchmarks/resident_session.py \
+            --manifest build/speech-corpus/manifest.json --binary build/whisper-resident/diktat-whisper \
+            --model build/ggml-small-q5_1.bin --output build/resident-results/session.json
+      - name: Evaluate candidate quality without changing the release default
+        if: always()
+        env:
+          CANDIDATE_COMMIT: ${{ github.sha }}
+        run: |
+          result=0
+          for beam in 1 5; do
+            python3 benchmarks/check_gates.py build/resident-results/beam-$beam.json \
+              --expected-commit "$CANDIDATE_COMMIT" --output resident-metrics/beam-$beam-gates.json || result=1
+          done
+          exit "$result"
+      - name: Export numerical evidence only
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          out=Path('resident-metrics');out.mkdir(exist_ok=True)
+          for p in Path('build/resident-results').glob('*.json'):
+              d=json.loads(p.read_text())
+              for row in d.get('runs',[]):
+                  row.pop('transcript',None);row.pop('stderr',None)
+              (out/p.name).write_text(json.dumps(d,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resident-cpu-metrics
+          path: resident-metrics/
+          retention-days: 30

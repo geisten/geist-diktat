@@ -9,6 +9,8 @@ on:
       - 'plugin/**'
       - 'autoload/**'
       - 'runtime/**'
+      - 'whisper/**'
+      - '.github/workflows/resident-audit.yml'
       - 'macos/**'
       - 'packaging/**'
       - 'install.sh'
