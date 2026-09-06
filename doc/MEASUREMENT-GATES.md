@@ -51,7 +51,10 @@ nicht der noch zu entwickelnde öffentliche Zustands-/Ergebnisvertrag. Die kontr
 Dateiquelle gibt jeden vollständigen 20-ms-Block erst an dessen zeitlichem Ende frei.
 
 Ohne diese Variable werden keine Tracedateien angelegt. Python- und C-Komponenten
-verwenden dieselbe lokale monotone Uhr. Prozesse von verschiedenen Rechnern oder
+verwenden dieselbe lokale monotone Uhr: Linux `CLOCK_MONOTONIC`, unter macOS
+nach der M2-Korrektur `mach_absolute_time` wie in Python.
+Der neue plattformübergreifende Test prüft die gemeinsame Zeitbasis. Ältere
+Mac-Traces dürfen nicht für C/Python-übergreifende Latenzen verwendet werden. Prozesse von verschiedenen Rechnern oder
 getrennte Sitzungen dürfen nicht in einer Zeitachse vermischt werden. Die zusätzliche
 Datei-I/O kann Messungen beeinflussen; Tracing und normale Durchsatzmessungen getrennt
 kennzeichnen. Ungültige/unvollständige Traces gelten nicht als bestandene Abnahme.

@@ -1,6 +1,6 @@
 # Produktfreigabe: Stand und Reihenfolge
 
-Stand: **6. September 2026**. Aktuell getesteter Code: `9968feacc575d99c4876f8b98b631f9bc8b1436f` (Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
+Stand: **7. September 2026**. Aktuell getesteter Code: `46a2845` (M1-Evidenz `9968fea`, Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
 
 **Ziel ist die erste öffentliche Ubuntu-GNOME-Beta.** Ihre Blocker sind zuverlässiges Desktop-Diktat, deutsche Qualität für Alltags- und technische Texte, die fünf verbindlichen Anwendungen, geführter Erststart und der externe Zeitgewinn-Nachweis. Die Stabilitätsbasis ist umgesetzt; die Beta ist noch nicht freigegeben. Pi5, macOS und zusätzliche Desktop-Profile liegen außerhalb des kritischen Pfads. Breite DACH-Tests bleiben im Plan, Dialektunterstützung wird zunächst ausdrücklich experimentell ausgewiesen.
 
@@ -50,8 +50,8 @@ für Überlegenheit gegenüber anderen Diktatprodukten.
 | ✅ | Vim/Neovim #19, #20, #24, #27–29 | Asynchrone Adapter, UTF-8-Framing, Sitzungswechsel, begrenzte Ausgabequeue, native Paketinstallation | Breite interaktive Modus-/Fokusmatrix unter M4 |
 | ✅ | IBus-Lifecycle #23 | Reaping, Stop/Neustart, EOF/HUP, 100 Wechsel | Weitere Desktop-Sitzungen unter M4 |
 | ✅ | Pipeline #33 | Wörtliche zeilenweise UTF-8-Übergabe ohne Shell-Auswertung | Verfügbarkeit der Senke pro Desktop |
-| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und gehostetes Ubuntu x64/ARM64 je 100 Fälle auf `9968fea`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
-| 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, standardmäßig 6 s Queue, Überlast Exit 75; Whisper-/Beam-Vergleich | Kontinuierlicher Lesepfad und ausreichend schneller residenter Decoder fehlen |
+| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und gehostetes Ubuntu x64/ARM64 je 117 Fälle auf `46a2845`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
+| 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, 6 s Supervisor-Queue und Überlast Exit 75; residenter Whisper-CPU-Kandidat mit begrenztem Leser implementiert | Reale Ubuntu-Modellauswahl und 30/60-Minuten-Abnahme; Pi5-Folgeprofil ungeprüft |
 | 🟡 | Sprache #38, #39 | 47 Pilot-Fixtures; WER-, Rausch-, Schweizer Dialekt- und Gesprächsmessungen; lokaler Gate-Checker | Unabhängiges DACH-Set und bestandene Qualitätsgates fehlen |
 | 🟡 | Vertrag / Status #34, #35 | PCM16/UTF-8/Exitcode-Vertrag v1; IBus-Fokus-/Schutzfeldregeln | Zustandsereignisse, Teil-/Endergebnisse und globale Stop-Abnahme |
 | 🟡 | Ubuntu-Apps #31 | Echte IBus-/GTK3-/Qt5-Prüfungen unter privatem D-Bus/Xvfb | GNOME Wayland/Xorg, KDE, moderne Toolkits und Sandbox-Apps |
@@ -62,7 +62,9 @@ Der historische [GitHub-Lauf 34020085582](https://github.com/geisten/geist-dikta
 
 **Historischer Stand dieses CI-Laufs:** Er maß WER ohne Gate-Aufruf. Mit `d274352` ist die verpflichtende Prüfung samt 10-dB-Gruppe implementiert; der tagbasierte Veröffentlichungsweg prüft erfolgreiche Sprachevidenz für denselben Commit. Die neue Messinstrumentierung ist in [MEASUREMENT-GATES.md](MEASUREMENT-GATES.md) beschrieben. Ein grüner Entwicklungs-Pilot allein bedeutet weiterhin keine vollständige Produktfreigabe.
 
-Der aktuelle [Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/runs/34054971819) auf `9968fea` besteht beide Vertragsjobs mit je 100 Fällen und den Textfeld-Latenzprobes. Core-Coverage: **98,18 % Zeilen, 73,76 % Zweige, 100 % Funktionen**. Der Sprachjob ist wegen **15,99 % sauberer und 35,38 % 10-dB-WER** korrekt rot. Die [numerische Evidenz](../benchmarks/reports/m1-2026-09-06/index.json) ist dauerhaft archiviert. M1 bleibt wegen der ausstehenden realen App-/Mikrofon-/Dauermessungen teilweise offen.
+Der [M1-Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/runs/34054971819) auf `9968fea` besteht beide Vertragsjobs mit je 100 Fällen und den Textfeld-Latenzprobes. Core-Coverage: **98,18 % Zeilen, 73,76 % Zweige, 100 % Funktionen**. Der Sprachjob ist wegen **15,99 % sauberer und 35,38 % 10-dB-WER** korrekt rot. Die [numerische Evidenz](../benchmarks/reports/m1-2026-09-06/index.json) ist dauerhaft archiviert. M1 bleibt wegen der ausstehenden realen App-/Mikrofon-/Dauermessungen teilweise offen.
+
+M2: [Lauf 34062909992](https://github.com/geisten/geist-diktat/actions/runs/34062909992) bestätigt je **117 Tests** auf Ubuntu x64/ARM64. Der residente Beam-5-Kandidat besteht beide Pilot-WER-Gates sowie seine dreiminütige Dateisitzung und den realen Stop-Test. Der Gesamtworkflow bleibt wegen Geist und des schwächeren Beam-1-Vergleichs rot. [Details](RESIDENT-ASR.md) und [dauerhafte Evidenz](../benchmarks/reports/m2-2026-09-07/index.json).
 
 ## Messungen, die die Priorität bestimmen
 
@@ -72,10 +74,12 @@ Der aktuelle [Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/
 | Pi5 Whisper small Q5_1: Beam 5 mit 8,84 % WER / RTF 1,10; Beam 1 mit 9,52 % / RTF 0,95 / 348 MiB | Bester bisher gemessener Pi-Kandidat; noch ohne Zeitreserve |
 | Zeitgetreues Gespräch: Geist nach 34,18 s, Whisper nach ca. 31,9 s mit Exit 75 | Überlastbehandlung besteht; kontinuierliches Diktat fällt durch |
 | Ubuntu-x64-Agent Geist: 15,99 % WER, RTF 0,388, ca. 6,09 GiB RSS | Durchsatz im Dateipilot gut; sauberes WER-Ziel verfehlt |
-| Mac Whisper: 8,84 % saubere WER, 26,15 % bei 10 dB | Sauberer Pilot besteht; Rauschziel von 25 % verfehlt |
+| Ubuntu residenter Whisper Beam 5: 8,84 % sauber / 24,62 % bei 10 dB, RTF 0,173, 466 MiB RSS | Besteht beide Entwicklungsgates; Kandidat für die Produktintegration |
+| Beam-5-Dateisitzungen auf Ubuntu/Mac: 193,56 s vollständig, ein Modellladen, 8,84 % WER | Residenter Pfad nachgewiesen; 30/60 Minuten, Mikrofon und Einfügelatenz offen |
+| Historischer Mac-Whisper-Adapter: 8,84 % saubere WER, 26,15 % bei 10 dB | Sauberer Pilot besteht; Rauschziel von 25 % verfehlt |
 | SwissDial Whisper: 57,59 % gegen Hochdeutsch / 77,64 % gegen Dialektschreibung | Zwei verschiedene Referenzaufgaben; keine breite DACH-Freigabe |
 
-Saubere Piloten: zwölf Aufnahmen, 294 Wörter; Rauschen: sechs Inhalte je Stufe. Pi-Zeiten enthalten Prozessstart; Whisper lädt bisher pro Segment neu. Mac-Vergleichszeiten standen unter Konkurrenzlast und sind keine Geschwindigkeitsbasis. Alle Sprachtests verwendeten Dateien. Der 30-Minuten-Test mit kontrollierter Engine ist ausschließlich ein Lifecycle-Test. Keine dieser Zahlen zertifiziert Alltagsqualität.
+Saubere Piloten: zwölf Aufnahmen, 294 Wörter; Rauschen: sechs Inhalte je Stufe. Pi-Zeiten enthalten Prozessstart; der historische Whisper-Vergleichsadapter lädt pro Segment neu. Der neue residente Kandidat lädt einmal je Sitzung. Die früheren Mac-Vergleichszeiten standen unter Konkurrenzlast und sind keine Geschwindigkeitsbasis. Alle Sprachtests verwendeten Dateien. Der 30-Minuten-Test mit kontrollierter Engine ist ausschließlich ein Lifecycle-Test. Keine dieser Zahlen zertifiziert Alltagsqualität.
 
 ## Reihenfolge und Abnahmetore
 
@@ -89,7 +93,7 @@ Kritischer Pfad: **M1 Messung → M2 Ubuntu-Decoder → M4 fünf Anwendungen →
 
 Evidenz: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md), [CI-Lauf](https://github.com/geisten/geist-diktat/actions/runs/34020085582).
 
-### M1 — Freigabe messbar machen: 🟡 höchste nächste Priorität
+### M1 — Freigabe messbar machen: 🟡 technische Basis teilweise umgesetzt
 
 Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://github.com/geisten/geist-diktat/issues/36), [#38](https://github.com/geisten/geist-diktat/issues/38).
 
@@ -104,20 +108,24 @@ Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://
 
 **Tor:** Ein absichtlich schlechter oder unvollständiger Report blockiert den Release-Job. Latenz ist bis zur Texteingabe messbar. Hosting-CI bleibt für Verträge zuständig, der eigene Ubuntu-Agent für reale CPU-ASR. Pi5 sowie physische Desktop-/Mikrofonprüfungen bleiben eigene Abnahmen.
 
-### M2 — Residenten ASR-Pfad für Ubuntu auswählen: 🟡 Freigabeblocker
+### M2 — Residenten Ubuntu-Kandidaten produktisieren: 🟡 Freigabeblocker
 
 Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://github.com/geisten/geist-diktat/issues/37), [#34](https://github.com/geisten/geist-diktat/issues/34).
 
-- [x] Geist und quantisiertes Whisper auf identischem deutschen Pilot verglichen.
-- [ ] Zuerst residenten whisper.cpp-Kontext für das Ubuntu-Desktopprofil im eigenen Adapter entwickeln: einmal laden, kontinuierlich Audio übernehmen, begrenzte Arbeitspuffer, geordneter Stop. Geist hält sein Modell bereits während einer Sitzung; dort segmentweisen Decode-Stillstand und Lesepfad untersuchen.
+- [x] Geist und quantisiertes Whisper auf identischem deutschen Pilot verglichen. Residentes small Q5_1 **Beam 5** als Ubuntu-Entwicklungskandidat ausgewählt: im abschließenden Lauf `34062909992` 8,84 % saubere / 24,62 % 10-dB-WER; Beam 1 verfehlt mit 32,31 % das Rauschziel. Dies ist noch keine Auswahl anhand unabhängiger Freigabedaten.
+- [x] Residenten whisper.cpp-CPU-Kandidaten implementiert: einmaliges Modellladen je Sitzung, ein begrenzter separater Leser, 28-s-Audiofenster, vorhandener PCM-/Textvertrag. 16 zusätzliche Frontend-Verträge mit Sanitizern bestanden. Normaler EOF räumt geordnet auf; ausdrücklicher Stop beendet den isolierten Prozess sofort, unabhängig von Engine-Callbacks. [Details und Messungen](RESIDENT-ASR.md).
+- [ ] Den ausgewählten Entwicklungskandidaten in Launcher, Doctor, Modellprofile sowie Pakete integrieren. Modell bleibt bisher nur während einer Sitzung geladen, nicht über mehrere Shortcut-Starts hinweg. Geist hält sein Modell ebenfalls während einer Sitzung; dessen Decode-Stillstand bleibt separat zu untersuchen.
 - [ ] Additiven Ereignismodus mit `session_id`, Audiozeit, `partial`, `final`, `state`, `error` definieren; v1-Zeilenausgabe kompatibel lassen. Nur stabile Endergebnisse automatisch einfügen. Alte Sitzungen dürfen keinen Text nachliefern.
 - [ ] VAD-Endpunkte, kürzere Fenster und begrenzte Überlappung einzeln vergleichen. Kontext-Neuberechnung kann mehr Zeit kosten; doppelte Wörter und verlorene Satzanfänge erhalten Regressionen.
 - [ ] Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8 vergleichen; den Standard anhand Qualität, Einfügelatenz, Speicher und Stabilität wählen. Den ersten Kandidaten mit bestandenen Toren produktisieren; eine vollständige Modellrangliste ist keine Release-Voraussetzung.
 - [ ] Parakeet v3 und Qwen3-ASR als weitere Kandidaten prüfen, wenn die ersten Pfade die Tore verfehlen oder eine konkrete verbleibende Qualitätslücke besteht; vorher Sprach-/Runtime-/Speicherprüfung.
 - [ ] 30/60 Minuten zeitgetreue Dateien **und physische Aufnahme** auf dem Ubuntu-Zielprofil mit dokumentierter Last und Geräteprofil. Das ist ein Belastungstest des Diktats, kein Versprechen einer eigenständigen Gesprächstranskriptionsfunktion.
+- [x] Beam-5-Dateisitzung mit 193,56 s menschlicher Lesesprache auf Ubuntu und macOS bestanden: jeweils ein Modellladevorgang, vollständige Byte-/Samplebilanz, 8,84 % WER. Reales Decoder-Stop-Einzelexperiment unter 1 s auf beiden Plattformen. Das schließt weder 30/60 Minuten noch physische Geräte ein.
 - [ ] Die dokumentierte Prozessschnittstelle mit einem minimalen externen Referenzclient abnehmen: Audiozufuhr, finale Texte, Zustandsereignisse, Start/Stop und Fehler. Eigene Editor-/IBus-Adapter müssen denselben Vertrag nutzen.
 
-**Technische Abnahmekriterien für das Ubuntu-Profil:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Das sind Anforderungen, keine erzielten Werte. Die bisherigen Pi5-Zielwerte werden im separaten Folgeprofil weitergeführt.
+**Nächste Umsetzung:** Den ausgewählten Beam-5-Prozess in Modellprofil, Launcher/Doctor und Pakete integrieren; Zustands-/Sitzungsereignisse und reale App-Einfügung abnehmen. Den bisherigen Drei-Minuten-Nachweis anschließend auf 30/60 Minuten und physische Aufnahme erweitern.
+
+**Technische Abnahmekriterien für das Ubuntu-Profil:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Diese vollständige Abnahme steht noch aus; die erreichten Pilot-Teilwerte sind oben separat ausgewiesen. Die bisherigen Pi5-Zielwerte werden im separaten Folgeprofil weitergeführt.
 
 **Bei Nichtbestehen:** Der Ubuntu-Beta-Start wartet; Qualität und Zeitgewinn werden nicht für einen Termin abgeschwächt. Größere Puffer ersetzen das Tor nicht. Pi5 bleibt davon unabhängig experimentell. Lokale Verarbeitung bleibt Standard; kein stiller Cloud-Fallback.
 

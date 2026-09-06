@@ -110,3 +110,11 @@ Mikrofon- und Bedienungshilfenrechte müssen interaktiv erteilt werden.
 separaten Datei. Der v1-Textvertrag auf stdout bleibt unverändert. Details und
 Grenzen stehen in [MEASUREMENT-GATES.md](MEASUREMENT-GATES.md). Diese Diagnose ist
 kein öffentlicher Ergebnis-/Statusmodus und keine Mikrofonberechtigungsprüfung.
+
+## Experimenteller residenter CPU-Kandidat
+
+[RESIDENT-ASR.md](RESIDENT-ASR.md) beschreibt den zusätzlichen Whisper-Prozess,
+seinen Build und die Verwendung hinter demselben Aufnahme-Supervisor. Sein
+PCM16-/UTF-8-Vertrag passt zum bestehenden lokalen Prozesspfad. Die automatische
+Backend-Auswahl und Paketintegration sind noch offen; daraus folgt noch keine
+Freigabe der fünf Beta-Anwendungen.

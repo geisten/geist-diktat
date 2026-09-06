@@ -1,0 +1,135 @@
+{
+  "source_commit": "46a284555c7fe9666442625b311b26e7900a3f14",
+  "workflow_run_id": 34062909992,
+  "workflow_url": "https://github.com/geisten/geist-diktat/actions/runs/34062909992",
+  "workflow_conclusion": "failure",
+  "reason": "Geist default fails both WER gates; comparison beam 1 fails noise. Selected beam 5 passes its speech gates, paced session and real stop test.",
+  "selected_development_candidate": {
+    "engine": "whisper-resident",
+    "model": "small Q5_1",
+    "beam_size": 5,
+    "threads": 4,
+    "whisper_source_commit": "52a939a2a762224e255d366c1182b2af4dd1a032"
+  },
+  "local_macos": {
+    "unittest_cases": 117,
+    "passed": true,
+    "seconds": 46.938
+  },
+  "contracts": {
+    "x64": {
+      "passed": true,
+      "unittest_cases": 117,
+      "geist_core_coverage": {
+        "branches": {
+          "count": 202,
+          "covered": 149,
+          "notcovered": 53,
+          "percent": 73.76237623762376
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 220,
+          "covered": 216,
+          "percent": 98.18181818181819
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 266,
+          "covered": 246,
+          "notcovered": 20,
+          "percent": 92.4812030075188
+        }
+      }
+    },
+    "arm": {
+      "passed": true,
+      "unittest_cases": 117,
+      "geist_core_coverage": {
+        "branches": {
+          "count": 202,
+          "covered": 149,
+          "notcovered": 53,
+          "percent": 73.76237623762376
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 220,
+          "covered": 216,
+          "percent": 98.18181818181819
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 266,
+          "covered": 246,
+          "notcovered": 20,
+          "percent": 92.4812030075188
+        }
+      }
+    }
+  },
+  "historical_stop_failure": {
+    "source_commit": "29150bf",
+    "file": "historical-macos-callback-stop-failure.json",
+    "interpretation": "First callback-only candidate exceeded 1s; fixed by immediate process-level explicit Stop in de70e27."
+  },
+  "full_product_approval": false,
+  "limitations": [
+    "Development pilot only; no held-out release corpus",
+    "Read-speech concatenation, not natural conversation or physical microphone",
+    "No new Pi5 ASR measurement",
+    "No certification of five GNOME applications, 30/60-minute use or one-click setup",
+    "Core coverage totals refer to existing Geist C core, not full Whisper engine"
+  ],
+  "files_sha256": {
+    "annotations.json": "99fdbf2813bffe69da4a34bb4019fef88a85a851e6702861c7470c40d98adfd2",
+    "arm-gtk-latency-trace.jsonl": "1c475158baba794e51cdb5af66f4f148b9729995a43cfab9fcbca9d1fe58ce4c",
+    "arm-gtk-latency.json": "dfe8b9ba0f2d6445ccf56800ce80c26e812d079dad41b49c4461afc4b04543c5",
+    "arm-qt-latency-trace.jsonl": "c2fe708ff04b5114d95416d3ac99f288f950e0f76fd1df08f3192f3c8b186fd6",
+    "arm-qt-latency.json": "bea8c712c1dca35b1eef95f49c14d7840250b7381fcebdef45fb50fdb6875938",
+    "geist-gates.json": "4432dbb85a39fa6b07d2b6bdfd1b3eaa5954f06c4114f84796d3b37ca2b7fd77",
+    "geist-quality.json": "30dd8e0f6364c866a4df6589f3da6cbdfb46896d1345489ffdbabb4cbbc38a82",
+    "historical-macos-callback-stop-failure.json": "04a1a5a980d183431af79550118b76fe8170f54c93a43dae8bff5d7fbd1d9871",
+    "macos-beam5-session.json": "1b55d97da51d9a1069cfaac7ae3e8b4f944de4359a9563a0ae45b2bcc1e622e0",
+    "macos-stop.json": "bccff910180bce7a3894d90e0e84c5fb2112a19c934f9c576201f2c361f8e8a4",
+    "ubuntu-beam-1-gates.json": "7684d342f5b1d41848aff55bd29cbf9948cd14de70ba9e29d4871dda27f1fe9c",
+    "ubuntu-beam-1.json": "9403ef335465e975c8301c192e960619f83f26dcca7c64094328eadf130461b6",
+    "ubuntu-beam-5-gates.json": "cd4290a0be311e799964df9a87bbf45e24b45c3c6c086468923ffc15573e013d",
+    "ubuntu-beam-5.json": "bd4137f46d062fd4021d288e46dd3bdad302859f7c91be48935a3fc0c417843d",
+    "ubuntu-session.json": "018caf790c7ad01b0a8aa7bba0152949afe8e9b3e1e64996830f4a0aa966b281",
+    "ubuntu-stop.json": "13328f7560a95c71f6afd6e62102abc790108bf5fa6b24eb1683e33be0b2b8d9",
+    "x64-gtk-latency-trace.jsonl": "cafb17d5bdab0aec70f45c0c7598ff6811b316bf4323b3f5cffcb06469582d3d",
+    "x64-gtk-latency.json": "28837c39015ed8bc2c7034912b4076bea951490040fa5934576ad18a588ea6ae",
+    "x64-qt-latency-trace.jsonl": "b2d465fd34dde5fbc13d310e608ada65078543001df17a72e7a20981f9a72b53",
+    "x64-qt-latency.json": "6921e932f5034bcfd33785cc8b8734b49ff0791063a32ca56144e0d6a4af5b4d",
+    "workflow.json": "0531437368ea1b663cb2263eca9c987e3fb123eb9b9c5fc5a3a8da741e159381"
+  }
+}

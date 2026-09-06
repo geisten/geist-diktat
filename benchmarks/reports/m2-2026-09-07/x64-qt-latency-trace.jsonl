@@ -1,0 +1,13 @@
+{"schema":1,"component":"core","event":"model_load_start","pid":5672,"monotonic_ns":515865498443,"utterance":0,"output_seq":0,"audio_end_sample":0}
+{"schema":1,"component":"core","event":"model_ready","pid":5672,"monotonic_ns":515865525194,"utterance":0,"output_seq":0,"audio_end_sample":0}
+{"schema":1,"component":"runtime","event":"capture_started","pid":5665,"monotonic_ns":515865506509}
+{"schema":1,"component":"capture","event":"audio_origin","pid":5676,"monotonic_ns":515889027145,"origin_ns":515888996711}
+{"schema":1,"component":"capture","event":"source_summary","pid":5676,"monotonic_ns":517189128807,"sent_bytes":41600,"max_lateness_ns":173045,"failed":false}
+{"schema":1,"component":"core","event":"decode_start","pid":5672,"monotonic_ns":517189335207,"utterance":1,"output_seq":0,"audio_end_sample":8000}
+{"schema":1,"component":"core","event":"output_ready","pid":5672,"monotonic_ns":517189376275,"utterance":1,"output_seq":1,"audio_end_sample":8000}
+{"schema":1,"component":"core","event":"output_emitted","pid":5672,"monotonic_ns":517189397733,"utterance":1,"output_seq":1,"audio_end_sample":8000}
+{"schema":1,"component":"core","event":"decode_end","pid":5672,"monotonic_ns":517189402708,"utterance":1,"output_seq":1,"audio_end_sample":8000}
+{"schema":1,"component":"ibus","event":"commit_requested","pid":5661,"monotonic_ns":517189530851,"utterance":0,"output_seq":1,"audio_end_sample":0}
+{"schema":1,"component":"qt","event":"app_observed","pid":5652,"monotonic_ns":517190487124,"utterance":0,"output_seq":1,"audio_end_sample":0}
+{"schema":1,"component":"core","event":"input_summary","pid":5672,"monotonic_ns":517239439899,"utterance":1,"output_seq":1,"audio_end_sample":20800}
+{"schema":1,"component":"runtime","event":"input_summary","pid":5665,"monotonic_ns":517745951683,"received_bytes":41600,"delivered_bytes":41600,"peak_queue_bytes":640,"max_write_block_ns":26788,"max_queue_age_ns":61007,"unconfirmed_bytes":0,"failed":false}

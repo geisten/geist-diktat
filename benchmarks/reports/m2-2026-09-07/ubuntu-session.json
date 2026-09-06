@@ -1,0 +1,69 @@
+{
+  "source_commit": "46a284555c7fe9666442625b311b26e7900a3f14",
+  "scope": "paced concatenated human read-speech, 1s between clips; no physical microphone or natural conversation",
+  "passed": true,
+  "transport_complete": true,
+  "full_product_approval": false,
+  "exit_code": 0,
+  "timeout": false,
+  "wall_s": 194.37868591304868,
+  "audio_s": 193.56,
+  "rounds": 1,
+  "model_loads": 1,
+  "decoder": {
+    "engine": "whisper-resident",
+    "threads": 4,
+    "beam_size": 5
+  },
+  "output_lines": 19,
+  "runtime": {
+    "schema": 1,
+    "component": "runtime",
+    "event": "input_summary",
+    "pid": 2040448,
+    "monotonic_ns": 1239039198452200,
+    "received_bytes": 6193920,
+    "delivered_bytes": 6193920,
+    "peak_queue_bytes": 640,
+    "max_write_block_ns": 33012,
+    "max_queue_age_ns": 84153,
+    "unconfirmed_bytes": 0,
+    "failed": false
+  },
+  "core": {
+    "schema": 1,
+    "component": "core",
+    "event": "input_summary",
+    "pid": 2040449,
+    "monotonic_ns": 1239038655460016,
+    "utterance": 19,
+    "output_seq": 19,
+    "audio_end_sample": 3096960
+  },
+  "capture": {
+    "schema": 1,
+    "component": "capture",
+    "event": "source_summary",
+    "pid": 2040453,
+    "monotonic_ns": 1239038605300719,
+    "sent_bytes": 6193920,
+    "max_lateness_ns": 946276,
+    "failed": false
+  },
+  "peak_sampled_tree_rss_mib": 494.30078125,
+  "rss_sample_interval_s": 0.25,
+  "files": {
+    "binary": "d2073bee4bc2ee80dc06ea68f420404eaf1598f70632ec7bbd188595b7612744",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "manifest": "ed177b7402ed34ff5189e3feca965babac6487c50cd41bdea2af01554f8857f6"
+  },
+  "session_wav_sha256": "09a9c9341343e192d8d662d3b4157e8a12fec0b8a331ba281604f81c7c36d684",
+  "quality": {
+    "errors": 26,
+    "substitutions": 16,
+    "deletions": 8,
+    "insertions": 2,
+    "reference_words": 294,
+    "wer": 0.08843537414965986
+  }
+}

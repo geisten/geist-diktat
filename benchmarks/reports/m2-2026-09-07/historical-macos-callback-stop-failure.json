@@ -1,0 +1,14 @@
+{
+  "passed": false,
+  "scope": "SIGTERM after observed decode_start; real CPU model; excludes loading, GUI and physical capture",
+  "decode_started": true,
+  "forced_kill": true,
+  "stop_s": 1.0066684580233414,
+  "exit_code": -9,
+  "output_bytes_after_stop": 0,
+  "files": {
+    "binary": "fd3195148952fb2cd215e2f5fa93587c0746d73ef73070045bc48d050c1c7f69",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "wav": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085"
+  }
+}

@@ -30,8 +30,29 @@ Verpflichtende saubere und 10-dB-Sprachgates sowie eine Prüfung desselben Commi
 vor Veröffentlichung sind aktiv. Der aktuelle Geist-Pilot ergibt 15,99 % und
 35,38 % WER; deshalb scheitert der Sprachjob jetzt korrekt an beiden Grenzen.
 Numerische [Reports und Traces](../benchmarks/reports/m1-2026-09-06/index.json)
-sind dauerhaft archiviert. Der Plan bleibt teilweise offen; besonders der
-residente ASR-Pfad und die realen Produktabnahmen sind damit nicht erledigt.
+sind dauerhaft archiviert. M1 schloss den residenten ASR-Pfad und die realen Produktabnahmen noch nicht ab;
+der nachfolgende M2-Abschnitt beschreibt den inzwischen implementierten Kandidaten.
+
+## M2-Fortschritt am 7. September: residenter CPU-Kandidat auf `46a2845`
+
+Ein eigener [Whisper-Prozess](RESIDENT-ASR.md) hält Modell und Kontext über mehrere
+VAD-Segmente in derselben Sitzung. Die begrenzte Audiozufuhr und bestehende
+Prozessschnittstelle bleiben erhalten. 16 neue Frontend-Tests und ein plattformübergreifender Uhrentest erhöhen die
+Gesamtsuite auf **117 bestandene Fälle** auf macOS und Ubuntu x64/ARM64.
+Die bestehenden IBus-/GTK-/Qt-Prüfungen bestehen ebenfalls. Die historische
+Core-Coverage von 98,18 % bezieht sich weiterhin auf `src/diktat.c`; sie ist keine
+Prozentangabe für den neuen C++-Frontend-Code oder die Whisper-Engine.
+
+Der reale Stop-Test fand beim ersten Kandidaten einen zu spät abgefragten
+Engine-Abbruchcallback. Der korrigierte isolierte Prozess beendet sich bei
+SIGTERM/SIGINT sofort; reguläres EOF gibt den Kontext geordnet frei. Auf dem Mac
+betrug die gemessene Stopzeit im realen Decode rund 9 ms ohne nachträgliche Ausgabe.
+Der [Kandidatenbericht](RESIDENT-ASR.md) dokumentiert die erfolgreiche
+Beam-5-Pilotabnahme: 8,84 % saubere / 24,62 % 10-dB-WER, vollständige 193,56-s-
+Sitzungen auf Ubuntu und Mac sowie einen Decoder-Stop unter 1 s auf beiden.
+Beam 1 verfehlt das Rauschziel und ist deshalb nicht der gewählte Ubuntu-Kandidat.
+Modellwahl im Produkt, Zustandsereignisse, 30/60 Minuten Dauerbetrieb und die
+physische Desktop-Abnahme bleiben offen.
 
 ## Bestätigter erster Freigabeumfang nach dem Grilling-Interview
 
