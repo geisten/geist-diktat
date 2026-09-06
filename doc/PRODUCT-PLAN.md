@@ -1,6 +1,6 @@
 # Produktfreigabe: Stand und Reihenfolge
 
-Stand: **6. September 2026**. Implementierungsbasis: `5e27010c461a6cff4ba830af52bf78df94cc7213`, Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
+Stand: **6. September 2026**. Aktuell getesteter Code: `9968feacc575d99c4876f8b98b631f9bc8b1436f` (Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
 
 **Ziel ist die erste öffentliche Ubuntu-GNOME-Beta.** Ihre Blocker sind zuverlässiges Desktop-Diktat, deutsche Qualität für Alltags- und technische Texte, die fünf verbindlichen Anwendungen, geführter Erststart und der externe Zeitgewinn-Nachweis. Die Stabilitätsbasis ist umgesetzt; die Beta ist noch nicht freigegeben. Pi5, macOS und zusätzliche Desktop-Profile liegen außerhalb des kritischen Pfads. Breite DACH-Tests bleiben im Plan, Dialektunterstützung wird zunächst ausdrücklich experimentell ausgewiesen.
 
@@ -50,7 +50,7 @@ für Überlegenheit gegenüber anderen Diktatprodukten.
 | ✅ | Vim/Neovim #19, #20, #24, #27–29 | Asynchrone Adapter, UTF-8-Framing, Sitzungswechsel, begrenzte Ausgabequeue, native Paketinstallation | Breite interaktive Modus-/Fokusmatrix unter M4 |
 | ✅ | IBus-Lifecycle #23 | Reaping, Stop/Neustart, EOF/HUP, 100 Wechsel | Weitere Desktop-Sitzungen unter M4 |
 | ✅ | Pipeline #33 | Wörtliche zeilenweise UTF-8-Übergabe ohne Shell-Auswertung | Verfügbarkeit der Senke pro Desktop |
-| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und Pi-Ubuntu-Container je 77 Fälle; gehostetes Ubuntu x64/ARM64 je 77 Fälle; echter x64-ASR-Pilot | Kein Nachweis für GUI, physische Mikrofone oder Dauer-ASR |
+| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und gehostetes Ubuntu x64/ARM64 je 100 Fälle auf `9968fea`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
 | 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, standardmäßig 6 s Queue, Überlast Exit 75; Whisper-/Beam-Vergleich | Kontinuierlicher Lesepfad und ausreichend schneller residenter Decoder fehlen |
 | 🟡 | Sprache #38, #39 | 47 Pilot-Fixtures; WER-, Rausch-, Schweizer Dialekt- und Gesprächsmessungen; lokaler Gate-Checker | Unabhängiges DACH-Set und bestandene Qualitätsgates fehlen |
 | 🟡 | Vertrag / Status #34, #35 | PCM16/UTF-8/Exitcode-Vertrag v1; IBus-Fokus-/Schutzfeldregeln | Zustandsereignisse, Teil-/Endergebnisse und globale Stop-Abnahme |
@@ -58,9 +58,11 @@ für Überlegenheit gegenüber anderen Diktatprodukten.
 | 🟡 | Erststart #30 | Doctor, SHA-geprüfte Modelldownloads, Setup, Editorinstallation | Mikrofonwahl, Fortschritt/Wiederaufnahme, Recovery, Nutzertests |
 | 🟡 | macOS #32 | Swift-Menüleisten-App, Hotkey, Vorschau/Kopieren, optionales AX-Einfügen; Build/ad-hoc-Signatur grün | Native Capture-/Abhängigkeitslösung, GUI/TCC, Developer-ID/Notarisierung |
 
-Der [GitHub-Lauf 34020085582](https://github.com/geisten/geist-diktat/actions/runs/34020085582) ist auf genau diesem Implementierungsstand vollständig grün. Ubuntu-Core-Coverage: **98,08 % Zeilen, 73,50 % Zweige, 100 % Funktionen**, mit kontrollierter Engine. Das erfasst keine Modell-, Treiber- oder vollständige Produktabdeckung.
+Der historische [GitHub-Lauf 34020085582](https://github.com/geisten/geist-diktat/actions/runs/34020085582) auf `5e27010` war vollständig grün. Ubuntu-Core-Coverage: **98,08 % Zeilen, 73,50 % Zweige, 100 % Funktionen**, mit kontrollierter Engine. Das erfasst keine Modell-, Treiber- oder vollständige Produktabdeckung.
 
-**Der Workflow misst WER, ruft `check_gates.py` aber bislang nicht auf.** Ein grüner Lauf bedeutet deshalb noch keine bestandene Qualitätsfreigabe.
+**Historischer Stand dieses CI-Laufs:** Er maß WER ohne Gate-Aufruf. Mit `d274352` ist die verpflichtende Prüfung samt 10-dB-Gruppe implementiert; der tagbasierte Veröffentlichungsweg prüft erfolgreiche Sprachevidenz für denselben Commit. Die neue Messinstrumentierung ist in [MEASUREMENT-GATES.md](MEASUREMENT-GATES.md) beschrieben. Ein grüner Entwicklungs-Pilot allein bedeutet weiterhin keine vollständige Produktfreigabe.
+
+Der aktuelle [Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/runs/34054971819) auf `9968fea` besteht beide Vertragsjobs mit je 100 Fällen und den Textfeld-Latenzprobes. Core-Coverage: **98,18 % Zeilen, 73,76 % Zweige, 100 % Funktionen**. Der Sprachjob ist wegen **15,99 % sauberer und 35,38 % 10-dB-WER** korrekt rot. Die [numerische Evidenz](../benchmarks/reports/m1-2026-09-06/index.json) ist dauerhaft archiviert. M1 bleibt wegen der ausstehenden realen App-/Mikrofon-/Dauermessungen teilweise offen.
 
 ## Messungen, die die Priorität bestimmen
 
@@ -92,10 +94,13 @@ Evidenz: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md), [CI-Lauf](http
 Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://github.com/geisten/geist-diktat/issues/36), [#38](https://github.com/geisten/geist-diktat/issues/38).
 
 - [x] Pilotmanifest, numerische Reports, gepinnte Modelle/Engines, Gate-Checker vorhanden.
-- [ ] Gesonderten Release-Qualitätsjob für das ausgewählte Ubuntu-Profil mit sauberer Sprache **und** Rauschen anlegen; Checker verpflichtend ausführen. Fehlende Gruppen/Referenzen oder fehlgeschlagene Clips verhindern die Freigabe.
-- [ ] Modell, Build, Hardware, Decoderparameter und Korpusrevision pro Plattform speichern. Numerische Release-Evidenz dauerhaft archivieren; bisherige Actions-Aufbewahrung: 30 Tage.
-- [ ] Zeitpunkte für Audioblock, Sprachende, Decoderstart/-ende, stabiles Ergebnis und tatsächliche Einfügung erfassen. Modellladen, Encoder, Decoder und Warteschlangen separat messen; kalte und warme Starts trennen.
-- [ ] Live-Harness zählt empfangene/verarbeitete/als verworfen gemeldete Frames, maximalen Lesestillstand, Queue-Alter/-Tiefe, Stop-Zeit und Prozessbaum-RSS. Auch Betriebssystem-Pipes berücksichtigen.
+- [x] Ubuntu-Sprachjob um 10-dB-Rauschen und verpflichtenden Checker ergänzt; fehlende/fehlerhafte Clips, widersprüchliche Summen und falsche Commit-Zuordnung blockieren. Veröffentlichungsjob verlangt erfolgreiche Sprachevidenz für denselben Commit (`d274352`).
+- [x] Numerische Evidenz des M1-Laufs dauerhaft mit Hashindex archiviert: Commit, Binary-/Modell-/Korpushashes, Einzelwerte, Gate-Ergebnisse, Textfeldtraces und Core-Coverage.
+- [ ] Hardwaremodell, vollständige Decoderparameter und reale Auslieferungsartefakte für jedes zugesagte Release-Profil ergänzen. Die archivierten Entwicklungsmessungen ersetzen diese Zuordnung nicht.
+- [x] Numerische Traces für Modellladen/-bereitschaft, Decode-Phasen, Ausgabe, IBus-Übergabe und beobachtete GTK-/Qt-Textfeldänderung implementiert. Latenzanalyse verlangt unabhängige Sprachendpunkte; v1-Textausgabe bleibt unverändert.
+- [ ] Aufzeichnung auf die fünf Beta-Anwendungen und echte Mikrofone erweitern; Engine-interne Encoder-/Decoderanteile, kalte/warme Starts und ausreichend viele Äußerungen prüfen.
+- [x] Byte-/Samplebilanz von Quelle, Supervisor und Core sowie Queue-Spitze/-Alter und blockierte Schreibzeit ergänzt; unvollständige/abgebrochene Audiozufuhr besteht die Latenzprüfung nicht.
+- [ ] Prozessbaum-RSS, Stop-Zeit und langfristigen Rückstand im realen Dauerbetrieb vollständig erfassen. Trace-Probes mit kontrollierter Engine sind keine Dauer-ASR-Abnahme.
 
 **Tor:** Ein absichtlich schlechter oder unvollständiger Report blockiert den Release-Job. Latenz ist bis zur Texteingabe messbar. Hosting-CI bleibt für Verträge zuständig, der eigene Ubuntu-Agent für reale CPU-ASR. Pi5 sowie physische Desktop-/Mikrofonprüfungen bleiben eigene Abnahmen.
 

@@ -1,0 +1,44 @@
+{
+  "complete": true,
+  "scope": "controlled file playback to observed application; not physical-microphone certification",
+  "annotation_source": "independently supplied sample endpoints",
+  "samples": 1,
+  "p95_method": "nearest rank",
+  "p95_insertion_s": 0.801304927,
+  "measurements": [
+    {
+      "output_seq": 1,
+      "speech_to_output_ready_s": 0.800308502,
+      "speech_to_insertion_s": 0.801304927,
+      "output_ready_to_insertion_s": 0.000996425
+    }
+  ],
+  "runtime": {
+    "schema": 1,
+    "component": "runtime",
+    "event": "input_summary",
+    "pid": 5659,
+    "monotonic_ns": 203997129164,
+    "received_bytes": 41600,
+    "delivered_bytes": 41600,
+    "peak_queue_bytes": 640,
+    "max_write_block_ns": 17303,
+    "max_queue_age_ns": 67210,
+    "unconfirmed_bytes": 0,
+    "failed": false
+  },
+  "capture": {
+    "schema": 1,
+    "component": "capture",
+    "event": "source_summary",
+    "pid": 5670,
+    "monotonic_ns": 203443891927,
+    "sent_bytes": 41600,
+    "max_lateness_ns": 159753,
+    "failed": false
+  },
+  "full_product_approval": false,
+  "passed": true,
+  "trace_sha256": "b8cb7e5d8c6e9a5637c70778b78d5a6db653f700829924fa2610e35d51378719",
+  "annotations_sha256": "99fdbf2813bffe69da4a34bb4019fef88a85a851e6702861c7470c40d98adfd2"
+}

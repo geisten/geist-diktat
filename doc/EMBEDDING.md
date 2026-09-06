@@ -103,3 +103,10 @@ Python 3. Es gibt noch keine zertifizierte TextEdit-/Browser-/Terminal-Matrix.
 Ohne `GEIST_SIGN_IDENTITY` wird ausschließlich ad hoc signiert. Dies ist kein
 notarisiertes Vertriebspaket und noch kein nachgewiesener One-Click-Erststart.
 Mikrofon- und Bedienungshilfenrechte müssen interaktiv erteilt werden.
+
+## Interne Diagnose für kontrollierte Messungen
+
+`GEIST_DIKTAT_TRACE` aktiviert optional numerische Zeit-/Pufferereignisse in einer
+separaten Datei. Der v1-Textvertrag auf stdout bleibt unverändert. Details und
+Grenzen stehen in [MEASUREMENT-GATES.md](MEASUREMENT-GATES.md). Diese Diagnose ist
+kein öffentlicher Ergebnis-/Statusmodus und keine Mikrofonberechtigungsprüfung.

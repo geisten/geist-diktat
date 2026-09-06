@@ -19,6 +19,20 @@ Der aktualisierte [Produktplan](PRODUCT-PLAN.md) trennt erledigte Arbeiten von
 verbleibenden Freigabetoren; die [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md)
 begründet die nächsten Architektur- und Modellvergleiche.
 
+## M1-Fortschritt auf `9968fea`
+
+Die [Mess- und Gate-Erweiterung](MEASUREMENT-GATES.md) ist implementiert und gepusht.
+Im [Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/runs/34054971819)
+bestehen Ubuntu x64/ARM64 jeweils 100 Fälle einschließlich der zusätzlichen
+isolierten Textfeldprüfungen; lokal auf macOS ebenfalls 100. Core-Coverage auf
+Ubuntu: 98,18 % Zeilen und 73,76 % Zweige, weiterhin mit kontrollierter Engine.
+Verpflichtende saubere und 10-dB-Sprachgates sowie eine Prüfung desselben Commits
+vor Veröffentlichung sind aktiv. Der aktuelle Geist-Pilot ergibt 15,99 % und
+35,38 % WER; deshalb scheitert der Sprachjob jetzt korrekt an beiden Grenzen.
+Numerische [Reports und Traces](../benchmarks/reports/m1-2026-09-06/index.json)
+sind dauerhaft archiviert. Der Plan bleibt teilweise offen; besonders der
+residente ASR-Pfad und die realen Produktabnahmen sind damit nicht erledigt.
+
 ## Bestätigter erster Freigabeumfang nach dem Grilling-Interview
 
 Der [Produktplan](PRODUCT-PLAN.md) priorisiert jetzt die **öffentliche Ubuntu-GNOME-Beta**:
@@ -61,7 +75,7 @@ bei Unterbrechung kann sie noch unter dem angezeigten `.geist-diktat.*`-Stagingn
 liegen. Nicht unterstützte Dateisysteme/Plattformen brechen mit erhaltener Vorversion
 ab. Eine nach SIGKILL verbliebene Installationssperre muss manuell geprüft werden.
 
-## Tests und Artefakte
+## Tests und Artefakte des Ausgangsstands `5e27010`
 
 - macOS: **77 Python-unittest-Fälle bestanden**, darunter 26 Core-Fälle mit ASan/UBSan;
   zusätzliche Einzelprüfungen innerhalb dieser Fälle sind nicht als eigene Tests gezählt.
@@ -169,11 +183,13 @@ abgebrochene Gesprächsfragmente als reguläre Erkennungsleistung ausgegeben.
 
 ## Technische Restarbeiten aus der Messung (Priorität gemäß aktuellem Produktplan)
 
-1. **Erledigt:** Branch gepusht; `quality-audit` auf dem Implementierungsstand
-   erfolgreich ausgeführt (gehostetes x64/ARM64 und manueller CPU-Agent).
-   **Neu offen:** Release-Qualitätsjob muss den vorhandenen WER-Gate-Checker
-   verpflichtend ausführen und neben sauberer Sprache auch Rauschen prüfen.
-   Der bisherige grüne Workflow misst WER, erzwingt aber keine WER-Grenze.
+1. **Erledigt:** Branch gepusht; verpflichtende WER-Grenzen für saubere Sprache
+   und 10-dB-Rauschen ergänzt. Der Veröffentlichungsjob verlangt erfolgreiche
+   Sprachevidenz für denselben Commit. Numerische Traces verfolgen die Aufnahme
+   bis zur beobachteten Textfeldänderung. Details und Grenzen stehen in
+   [MEASUREMENT-GATES.md](MEASUREMENT-GATES.md). Der historische grüne Lauf oben
+   erzwang noch keine WER-Grenze; ein roter Sprachjob mit dem aktuellen Modell
+   ist jetzt das erwartete Ergebnis des wirksamen Qualitätschecks.
 2. Für die Ubuntu-Beta zuerst den residenten Decoder, fünf zugesagte Anwendungen,
    Erststart und externen Pilot gemäß [Produktplan](PRODUCT-PLAN.md) abschließen.
    Die stabilisierten P1-Korrekturen und Editorpfade reviewen. Wiederherstellung nach unterbrochenen

@@ -1,0 +1,108 @@
+{
+  "source_commit": "9968feacc575d99c4876f8b98b631f9bc8b1436f",
+  "workflow_run_id": 34054971819,
+  "workflow_url": "https://github.com/geisten/geist-diktat/actions/runs/34054971819",
+  "workflow_conclusion": "failure",
+  "reason": "Both speech WER thresholds failed; contract jobs passed.",
+  "local_macos": {
+    "unittest_cases": 100,
+    "passed": true,
+    "seconds": 42.998
+  },
+  "contracts": {
+    "x64": {
+      "passed": true,
+      "unittest_cases": 100,
+      "coverage": {
+        "branches": {
+          "count": 202,
+          "covered": 149,
+          "notcovered": 53,
+          "percent": 73.76237623762376
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 220,
+          "covered": 216,
+          "percent": 98.18181818181819
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 266,
+          "covered": 246,
+          "notcovered": 20,
+          "percent": 92.4812030075188
+        }
+      }
+    },
+    "arm64": {
+      "passed": true,
+      "unittest_cases": 100,
+      "coverage": {
+        "branches": {
+          "count": 202,
+          "covered": 149,
+          "notcovered": 53,
+          "percent": 73.76237623762376
+        },
+        "functions": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "instantiations": {
+          "count": 4,
+          "covered": 4,
+          "percent": 100
+        },
+        "lines": {
+          "count": 220,
+          "covered": 216,
+          "percent": 98.18181818181819
+        },
+        "mcdc": {
+          "count": 0,
+          "covered": 0,
+          "notcovered": 0,
+          "percent": 0
+        },
+        "regions": {
+          "count": 266,
+          "covered": 246,
+          "notcovered": 20,
+          "percent": 92.4812030075188
+        }
+      }
+    }
+  },
+  "full_product_approval": false,
+  "scope": "Development speech pilot and synthetic single-output transport probes. No physical microphone, held-out DACH, five-application or long-running ASR approval.",
+  "files_sha256": {
+    "annotations.json": "99fdbf2813bffe69da4a34bb4019fef88a85a851e6702861c7470c40d98adfd2",
+    "arm64-gtk-latency-trace.jsonl": "57b6eceff471bf00819ae577b05e97bad698a1663d7790ee72a94400ac430f9f",
+    "arm64-gtk-latency.json": "a73c603852ff25449548d4754c3dd968fa7a4a25d21104c2f9129b6587bd0e07",
+    "arm64-qt-latency-trace.jsonl": "eb01f631f24534d2e64722a9082adae57f6c00e61eee6f552a5508ea3a151ee4",
+    "arm64-qt-latency.json": "cdee21ecce039d8aa3a8e86a3787bf881ff6a51f81995cd55bbbd973001ef747",
+    "release-rejection.json": "b50cd7b3ba277c2b5869597f63bb129945fd3745ccdc9ecd4a2d3a35b686c0e5",
+    "speech-gates.json": "4432dbb85a39fa6b07d2b6bdfd1b3eaa5954f06c4114f84796d3b37ca2b7fd77",
+    "ubuntu-agent-quality.json": "76e1fa143781c1bd10e71a7e2a123da60b9be50dc8005efff988e2adb5cc943a",
+    "x64-gtk-latency-trace.jsonl": "b8cb7e5d8c6e9a5637c70778b78d5a6db653f700829924fa2610e35d51378719",
+    "x64-gtk-latency.json": "b45462162383847472c88984f746926a2901357dd651f582868bca0a06c4d857",
+    "x64-qt-latency-trace.jsonl": "c68b6510a35029cdc16cbb910bc9f6f588a184b2dbbc7cdf20956b6f701dbd7a",
+    "x64-qt-latency.json": "26a323d2b9df75bbf1e93864eeb759d62936220d428d16c8c7a31f35ecaba9c0"
+  }
+}
