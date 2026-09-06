@@ -44,7 +44,8 @@ jobs:
           docker run --rm -v "$PWD:/w" -w /w alpine:3.21 sh -ec '
             apk add --no-cache build-base linux-headers git >/dev/null
             git config --global --add safe.directory /w
-            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static tarball
+            make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
+            make tarball
           '
       # On the glibc host: a static binary that only runs where it was built
       # would defeat the point. build-tarball.sh already asserted no dynamic

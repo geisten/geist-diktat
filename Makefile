@@ -41,7 +41,7 @@ MODE       ?= release
 # do not need an engine, so a fresh `make clean` does not clone 14 MB and an
 # ibus-only build needs no git in its container.
 # The ibus binaries compile against libibus only — no libgeist, no engine.
-NO_ENGINE := clean distclean help format test-nvim test-ibus \
+NO_ENGINE := clean distclean help format test-nvim test-ibus deb tarball \
              ibus ibus-engine-geist-diktat \
              ibus-engine-geist-diktat-test ibus-test-client
 ifneq (,$(filter-out $(NO_ENGINE),$(or $(MAKECMDGOALS),all)))
@@ -145,12 +145,16 @@ test-ubuntu:
 coverage:
 	sh tests/coverage.sh
 
-# Packaging. Both scripts assert their inputs exist, so the prerequisites
-# here are convenience, not the safety net; VERSION passes through.
-deb: diktat ibus-engine-geist-diktat
+# Packaging only packages — it does not decide how the binary was built.
+# No prerequisite on diktat and no engine sync (NO_ENGINE): re-entering the
+# build here would re-detect TARGET and pick up target-linux.mk's
+# `GEMM_PROVIDER ?= openblas`, silently packaging a differently-linked
+# binary than the build step produced. Build first, then package; both
+# scripts assert `test -x ./diktat` themselves. VERSION passes through.
+deb:
 	sh packaging/build-deb.sh
 
-tarball: diktat
+tarball:
 	sh packaging/build-tarball.sh
 
 # Same style file as the engine, so a function moved between repos does not
