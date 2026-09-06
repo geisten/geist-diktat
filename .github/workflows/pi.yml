@@ -1,0 +1,104 @@
+name: pi5
+
+# The Pi 5 is the target device, not a CI convenience: it is where the
+# real numbers come from. This is the only way to get a run onto it from
+# GitHub — dispatch-only, because the board is a personal machine and PR
+# code must never execute on it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "quality = one German WER/latency run; sweep = threads/OMP screening"
+        type: choice
+        options: [quality, sweep]
+        default: quality
+      limit:
+        description: "clips per group"
+        default: "2"
+      threads:
+        description: "inference threads"
+        default: "4"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pi5
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: [self-hosted, pi5]
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      # No TARGET/GEMM_PROVIDER override: on the board itself the
+      # auto-detected pi5 target is exactly what a user gets.
+      - name: build (also clones the pinned engine)
+        run: make
+
+      - name: fetch model + tower (idempotent, SHA-gated)
+        run: |
+          DATA="$HOME/.local/share/geist-diktat"
+          mkdir -p "$DATA"
+          if ! echo "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8  $DATA/gemma4-e2b-Q4_K_M.gguf" | sha256sum -c - 2>/dev/null; then
+            curl -fL --retry 3 -C - -o "$DATA/gemma4-e2b-Q4_K_M.gguf" \
+              "https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/main/gemma-4-E2B-it-Q4_K_M.gguf"
+            echo "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8  $DATA/gemma4-e2b-Q4_K_M.gguf" | sha256sum -c -
+          fi
+          python3 geistlib/tools/fetch_audio_tower.py -o "$DATA/audio_tower.safetensors" \
+            --sha256 d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77
+
+      - name: prepare German read-speech corpus
+        run: python3 benchmarks/prepare_quality.py --fleurs-only
+
+      # with-pi-lock serialises against the humans and other agents sharing
+      # this board — two concurrent loads once thermally crashed it.
+      - name: measure
+        run: |
+          D="$HOME/.local/share/geist-diktat"
+          mkdir -p build/speech-results
+          if [ "${{ inputs.mode }}" = sweep ]; then
+            with-pi-lock python3 benchmarks/pi_sweep.py \
+              --manifest build/speech-corpus/manifest.json --binary ./diktat \
+              --model "$D/gemma4-e2b-Q4_K_M.gguf" --tower "$D/audio_tower.safetensors" \
+              --mel geistlib/audio_test_data/mel_constants.bin \
+              --output-dir build/speech-results
+          else
+            with-pi-lock python3 benchmarks/quality.py \
+              --manifest build/speech-corpus/manifest.json --binary ./diktat \
+              --model "$D/gemma4-e2b-Q4_K_M.gguf" --tower "$D/audio_tower.safetensors" \
+              --mel geistlib/audio_test_data/mel_constants.bin \
+              --groups de-read-clean --limit "${{ inputs.limit }}" \
+              --threads "${{ inputs.threads }}" --paced --timeout 300 \
+              --output build/speech-results/pi5-quality.json
+          fi
+
+      # Thermal state decides whether a number is honest; record it next to
+      # the run rather than wondering afterwards.
+      - name: thermals
+        if: always()
+        run: vcgencmd measure_temp; vcgencmd get_throttled
+
+      - name: strip corpus audio and transcripts from the metrics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          out = Path('pi5-metrics'); out.mkdir(exist_ok=True)
+          for p in Path('build/speech-results').glob('*.json'):
+              d = json.loads(p.read_text())
+              for r in d.get('runs', []):
+                  r.pop('transcript', None); r.pop('stderr', None)
+              (out / p.name).write_text(json.dumps(d, indent=2) + '\n')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pi5-${{ inputs.mode }}-metrics
+          path: pi5-metrics/
+          retention-days: 30
