@@ -35,6 +35,17 @@ jobs:
           GEIST_WHISPER_BEAM_SIZE=1 python3 benchmarks/resident_session.py \
             --manifest build/speech-corpus/manifest.json --binary build/whisper-resident/diktat-whisper \
             --model build/ggml-small-q5_1.bin --output build/resident-results/session.json
+      - name: Stop during real model decoding
+        run: |
+          python3 - <<'PYTHON'
+          import json, subprocess
+          from pathlib import Path
+          manifest=Path('build/speech-corpus/manifest.json')
+          fixture=next(r for r in json.loads(manifest.read_text()) if r['group']=='de-read-clean')
+          subprocess.run(['python3','benchmarks/resident_stop.py','--binary','build/whisper-resident/diktat-whisper',
+            '--model','build/ggml-small-q5_1.bin','--wav',str(manifest.parent/fixture['wav']),
+            '--output','build/resident-results/stop.json'],check=True)
+          PYTHON
       - name: Evaluate candidate quality without changing the release default
         if: always()
         env:

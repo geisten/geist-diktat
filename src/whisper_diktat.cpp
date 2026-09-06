@@ -20,9 +20,10 @@
 
 namespace {
 constexpr size_t frame_samples=320, max_samples=28*16000, queue_frames=50;
-static_assert(std::atomic<int>::is_always_lock_free, "signal cancellation must be lock-free");
-std::atomic<int> cancelled{0};
-void cancel(int sig) { cancelled=sig; }
+// Some model phases do not consult the engine abort callback promptly. This
+// isolated process owns no persistent state: explicit Stop uses async-signal-safe
+// _exit; the OS releases memory/FDs/threads. Normal EOF still frees the context.
+void cancel(int sig) { _exit(128+sig); }
 int integer_env(const char *name, int fallback, int maximum) {
     const char *s=getenv(name); if (!s) return fallback;
     char *end=nullptr; errno=0; long n=strtol(s,&end,10);
@@ -43,7 +44,7 @@ class Input {
     size_t received=0, peak=0;
     void read_loop() {
         std::array<unsigned char,640> raw{}; size_t used=0;
-        while (!stopped && !cancelled) {
+        while (!stopped) {
             {
                 std::unique_lock<std::mutex> lock(mutex);
                 changed.wait_for(lock,std::chrono::milliseconds(50),[&]{return frames.size()<queue_frames || stopped.load();});
@@ -75,7 +76,7 @@ class Input {
 public:
     Input() { reader=std::thread([this]{read_loop();}); }
     ~Input() { stop(); }
-    bool aborted() const { return cancelled || failure.load()!=0; }
+    bool aborted() const { return failure.load()!=0; }
     int error() const { return failure.load(); }
     bool next(Frame &frame) {
         std::unique_lock<std::mutex> lock(mutex);
@@ -143,7 +144,7 @@ int session(whisper_context *ctx, whisper_full_params params, double threshold) 
         input.stop(); input.summary();
         diktat_trace("core","input_summary",utterance,output,total);
         if (input.error()) { fprintf(stderr,"diktat: invalid or failed PCM input\n"); return input.error(); }
-        return cancelled?128+cancelled:0;
+        return 0;
     } catch (...) { input.stop(); throw; }
 }
 }
@@ -160,7 +161,6 @@ int main(int argc,char **argv) {
         auto options=whisper_context_default_params(); options.use_gpu=false; options.flash_attn=true;
         diktat_trace("core","model_load_start",0,0,0);
         std::unique_ptr<whisper_context,decltype(&whisper_free)> ctx(whisper_init_from_file_with_params(argv[1],options),whisper_free);
-        if (cancelled) return 128+cancelled;
         if (!ctx) throw std::runtime_error("model_load failed");
         auto params=whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
         params.strategy=beam>1?WHISPER_SAMPLING_BEAM_SEARCH:WHISPER_SAMPLING_GREEDY;
@@ -172,6 +172,6 @@ int main(int argc,char **argv) {
         fprintf(stderr,"diktat: listening (resident whisper CPU; threads=%d beam=%d)\n",threads,beam); fflush(stderr);
         return session(ctx.get(),params,rms);
     } catch (const std::exception &error) {
-        fprintf(stderr,"diktat: %s\n",error.what()); return cancelled?128+cancelled:1;
+        fprintf(stderr,"diktat: %s\n",error.what()); return 1;
     }
 }
