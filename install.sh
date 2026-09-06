@@ -45,7 +45,7 @@ trap 'rm -rf "$TMP"' EXIT
 # verified hashes as a narrow migration path. Any other manifest-less release
 # still fails closed because its assets cannot match these pins.
 #
-# Releases from v0.1.3 on also carry build provenance, which answers the
+# Releases from v0.2.0 on also carry build provenance, which answers the
 # question a checksum cannot — where the bytes came from:
 #   gh attestation verify <file> --repo geisten/geist-diktat
 # Deliberately not run here: it needs gh installed and authenticated, and a
