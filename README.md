@@ -54,6 +54,22 @@ app (GTK, Qt, Electron, VTE terminals) receives it.
 Prefer to wire the typing yourself? `geist-diktat run` prints transcript
 lines on stdout; compose them as in the snippet above.
 
+## Verifying a download
+
+Every release ships `SHA256SUMS`, and `install.sh` checks each asset against
+it automatically — that catches a truncated or swapped file.
+
+To also confirm *where* a file came from, verify its build provenance. Each
+artifact is bound to this repository, its release workflow and the exact
+commit, in a public transparency log:
+
+```sh
+gh attestation verify geist-diktat_amd64.deb --repo geisten/geist-diktat
+```
+
+The tarballs are reproducible: the same commit produces byte-identical
+archives, so the checksum can be recomputed from source rather than trusted.
+
 ## Build from source
 
 ```sh

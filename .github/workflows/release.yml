@@ -160,6 +160,13 @@ jobs:
     needs: [artifacts, linux-tarball, macos-tarball]
     runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/')
+    # Scoped to this job: it is the only one that signs, so it is the only one
+    # that gets a token which can. id-token mints the OIDC identity the
+    # attestation is bound to; attestations writes it to the public log.
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -176,6 +183,18 @@ jobs:
           done
       - name: SHA256SUMS (install.sh verifies every asset against it)
         run: sha256sum geist-diktat_*.deb geist-diktat_*.tar.gz > SHA256SUMS
+      # SHA256SUMS says the bytes are intact. It cannot say where they came
+      # from — anyone can publish a file and a matching checksum. This binds
+      # each artifact to this repository, this workflow and this commit, in a
+      # public transparency log, with no signing key to hold or rotate.
+      #   gh attestation verify geist-diktat_amd64.deb --repo geisten/geist-diktat
+      - name: attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            geist-diktat_*.deb
+            geist-diktat_*.tar.gz
+            SHA256SUMS
       - name: create release with all artifacts
         env:
           GH_TOKEN: ${{ github.token }}
