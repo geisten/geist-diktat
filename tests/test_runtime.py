@@ -19,6 +19,15 @@ class Runtime(unittest.TestCase):
     def test_finite_pcm_is_delivered_exactly(self):
         p=self.run_pipeline("printf 'abcdefgh'","import sys; print(repr(sys.stdin.buffer.read()))")
         self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(p.stdout,b"b'abcdefgh'\n")
+    def test_trace_marks_decoder_spawn_failure(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'trace.jsonl'
+            p=subprocess.run([sys.executable,str(RUNTIME),'--capture','true','--',str(Path(d)/'missing-decoder')],
+                env=dict(os.environ,GEIST_DIKTAT_TRACE=str(path)),capture_output=True,timeout=3)
+            self.assertEqual(p.returncode,1,p.stderr)
+            summary=json.loads(path.read_text().splitlines()[-1])
+            self.assertTrue(summary['failed']);self.assertEqual(summary['received_bytes'],0)
+
     def test_trace_accounts_for_all_delivered_bytes(self):
         with tempfile.TemporaryDirectory() as d:
             path=Path(d)/'trace.jsonl'

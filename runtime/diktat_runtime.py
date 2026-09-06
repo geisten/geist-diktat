@@ -93,6 +93,7 @@ def supervise(capture, decoder, buffer_seconds=6):
                 break
         return fault[0] if fault else 0
     except (OSError,ValueError) as error:
+        if not fault:fault.append(1)
         print('geist-diktat: '+str(error),file=sys.stderr);return 1
     finally:
         stopped.set()

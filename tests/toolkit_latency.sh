@@ -26,7 +26,9 @@ import os,shlex,sys
 from pathlib import Path
 root=Path(os.environ['LATENCY_ROOT']);p=Path(os.environ['LATENCY_RUN'])
 capture=shlex.join([sys.executable,str(root/'benchmarks/trace_capture.py'),str(p/'audio.wav')])
-print('exec '+shlex.join([sys.executable,str(root/'runtime/diktat_runtime.py'),'--capture',capture,'--',str(p/'core'),'model.gguf']))
+# IBus can reactivate on focus changes while the test window closes. Feed the
+# annotated fixture exactly once; an extra activation is not a second session.
+print('mkdir '+shlex.quote(str(p/'started'))+' || exit 0; exec '+shlex.join([sys.executable,str(root/'runtime/diktat_runtime.py'),'--capture',capture,'--',str(p/'core'),'model.gguf']))
 PY
 )
 export GEIST_DIKTAT_CMD
