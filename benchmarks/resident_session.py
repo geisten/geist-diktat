@@ -70,6 +70,7 @@ def main():
             scope='paced concatenated human read-speech, 1s between clips; no physical microphone or natural conversation',
             passed=complete,transport_complete=complete,full_product_approval=False,exit_code=proc.returncode,timeout=timed_out,
             wall_s=time.monotonic()-start,audio_s=sample_count/16000,rounds=a.rounds,model_loads=loads,
+            decoder=dict(engine='whisper-resident',threads=4,beam_size=int(env.get('GEIST_WHISPER_BEAM_SIZE','5'))),
             output_lines=len(transcript.read_text().splitlines()),runtime=runtime,core=core,capture=source,
             peak_sampled_tree_rss_mib=max(rss) if rss else None,rss_sample_interval_s=.25,
             files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},session_wav_sha256=digest(wav))

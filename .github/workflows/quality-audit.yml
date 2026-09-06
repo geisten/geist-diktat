@@ -1,6 +1,11 @@
 name: quality-audit
 on:
   workflow_dispatch:
+    inputs:
+      run_resident:
+        description: Also compare the experimental resident candidates
+        type: boolean
+        default: false
   pull_request:
     paths:
       - 'src/**'
@@ -112,5 +117,5 @@ jobs:
   resident-candidate:
     # Reuse the candidate workflow from this branch. Manual-only: never execute
     # pull-request code on the persistent CPU agent.
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.run_resident
     uses: ./.github/workflows/resident-audit.yml

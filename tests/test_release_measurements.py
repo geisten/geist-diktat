@@ -148,3 +148,17 @@ class InsertionLatency(unittest.TestCase):
         self.assertEqual(analyze(e,self.annotations)['p95_insertion_s'],2)
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+class CrossProcessClock(unittest.TestCase):
+    def test_c_events_share_python_monotonic_epoch(self):
+        import os
+        import time
+        with tempfile.TemporaryDirectory() as temp:
+            temp=Path(temp);source=temp/'trace.c';binary=temp/'trace';trace=temp/'events.jsonl'
+            source.write_text('#define _POSIX_C_SOURCE 200809L\n#include "trace.h"\nint main(void) { diktat_trace("probe","clock",0,0,0); return 0; }\n')
+            subprocess.run([os.environ.get('CC','cc'),'-std=c17','-I'+str(ROOT/'src'),str(source),'-o',str(binary)],check=True,capture_output=True)
+            before=time.monotonic_ns()
+            subprocess.run([str(binary)],env=dict(os.environ,GEIST_DIKTAT_TRACE=str(trace)),check=True,timeout=3)
+            after=time.monotonic_ns();stamp=json.loads(trace.read_text())['monotonic_ns']
+            self.assertLessEqual(before,stamp);self.assertLessEqual(stamp,after)

@@ -32,7 +32,7 @@ jobs:
           done
       - name: Paced multi-utterance session through the real supervisor
         run: |
-          GEIST_WHISPER_BEAM_SIZE=1 python3 benchmarks/resident_session.py \
+          GEIST_WHISPER_BEAM_SIZE=5 python3 benchmarks/resident_session.py \
             --manifest build/speech-corpus/manifest.json --binary build/whisper-resident/diktat-whisper \
             --model build/ggml-small-q5_1.bin --output build/resident-results/session.json
       - name: Stop during real model decoding
