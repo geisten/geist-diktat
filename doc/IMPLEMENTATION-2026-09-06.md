@@ -11,9 +11,13 @@ DACH-Daten, breite Desktop-Abnahme und notarisiertes macOS-Deployment bleiben of
 
 Die Änderungen liegen isoliert auf `codex/product-readiness`, aufbauend auf dem
 Audit-Branch aus PR #41. Der laufende ursprüngliche Arbeitsbaum wurde nicht
-überschrieben. Die automatische Freigabeprüfung verlangt eine ausdrückliche
-Nutzerfreigabe vor dem GitHub-Push. Neue x64-Agent-Ergebnisse werden daher nicht
-als bereits vorhanden ausgegeben.
+überschrieben. Nach ausdrücklicher Nutzerfreigabe wurde der Branch gepusht.
+Der [GitHub-Lauf 34020085582](https://github.com/geisten/geist-diktat/actions/runs/34020085582)
+auf `5e27010c461a6cff4ba830af52bf78df94cc7213` ist vollständig erfolgreich:
+Ubuntu x64 und ARM64 je 77 Tests, dazu reale deutsche ASR auf dem eigenen CPU-Agenten.
+Der aktualisierte [Produktplan](PRODUCT-PLAN.md) trennt erledigte Arbeiten von
+verbleibenden Freigabetoren; die [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md)
+begründet die nächsten Architektur- und Modellvergleiche.
 
 ## Implementiert
 
@@ -32,7 +36,7 @@ als bereits vorhanden ausgegeben.
 | #32 | Swift-Menüleisten-App: Einrichtung, Diagnose, Vorschau, Kopieren, Hotkey, optionales AX-Einfügen; beaufsichtigter Prozessbaum | Build, ad-hoc-Signatur und Framing-Selbsttest grün; GUI-/Berechtigungs-/App-Matrix und Notarisierung offen |
 | #33 / #34 | Zeilenweiser argv-Adapter und dokumentierter Prozessvertrag; keine Shell-Auswertung des Transkripts | UTF-8, Sonderzeichen, große Zeilen und fehlerhafte Senken getestet |
 | #36 / #38 / #39 | Vergleichsadapter für gepinntes whisper.cpp, WER-Gates, Rausch-/Dialektvergleich und Beam-A/B | Messwerte unten; Standardbackend bleibt Geist, Qualitätsdefekte bleiben offen |
-| #40 | Backend-Reihenfolge NEON → x86 → Scalar | Auswahlvertrag grün; neue reale x64-Gegenprüfung wartet auf GitHub-Freigabe |
+| #40 | Backend-Reihenfolge NEON → x86 → Scalar | Auswahlvertrag sowie neuer realer x64-ASR-Lauf grün; Qualitätsgrenze bleibt verfehlt |
 
 Der Tarball-Installer verwendet unter macOS `renamex_np(RENAME_SWAP)` und unter
 Linux `renameat2(RENAME_EXCHANGE)`. Ein Erstinstall verwendet NOREPLACE/EXCL.
@@ -66,6 +70,21 @@ ab. Eine nach SIGKILL verbliebene Installationssperre muss manuell geprüft werd
 Der 30-Minuten-Stresstest verarbeitet 1.400 synthetische Äußerungen mit einer
 kontrollierten Engine. Er ist ein Lifecycle-Test, **kein 30-minütiger ASR- oder
 physischer Mikrofontest**. Alle Sprachaufnahmen werden aus Dateien zugespielt.
+
+## Nachgetragene GitHub-Ubuntu-Abnahme
+
+Der oben verlinkte Lauf endete am 6. September 2026 um 07:49:02 UTC erfolgreich.
+Die beiden gehosteten Ubuntu-Jobs bestanden jeweils 77 Fälle einschließlich
+isolierter IBus-/GTK-/Qt-Prüfungen. Ubuntu-Core-Coverage: **98,08 % Zeilen,
+73,50 % Zweige, 100 % Funktionen**, wiederum mit kontrollierter Engine.
+Die leichte Abweichung zur macOS-Zweigabdeckung ist kein neuer Modelltest.
+
+Der eigene Ubuntu-CPU-Agent erkannte zwölf deutsche FLEURS-Aufnahmen mit Geist/Gemma:
+294 Referenzwörter, 47 Fehler, **15,99 % WER**. 181,56 s Audio benötigten insgesamt
+70,44 s, entsprechend **RTF 0,388** einschließlich Prozessstart. Maximales RSS:
+6.232,96 MiB, also rund **6,09 GiB**. Das saubere Pilotziel ≤10 % bleibt verfehlt.
+Dateizuspielung mit frischen Prozessen/warmem OS-Cache ist keine physische
+Daueraufnahme und keine gemessene Einfügelatenz.
 
 ## Neue Pi5-Messwerte
 
@@ -135,10 +154,11 @@ abgebrochene Gesprächsfragmente als reguläre Erkennungsleistung ausgegeben.
 
 ## Nächste Schritte zur Produktfreigabe
 
-1. Nach expliziter GitHub-Freigabe den lokalen Branch pushen und die vorhandene
-   `quality-audit`-Workflow auf diesem Stand ausführen: gehostetes x64/ARM64 plus
-   ausschließlich manuell gestarteter CPU-Test auf `amd-desktop`. Keine fremde
-   Desktop-/IBus-Sitzung wird verändert.
+1. **Erledigt:** Branch gepusht; `quality-audit` auf dem Implementierungsstand
+   erfolgreich ausgeführt (gehostetes x64/ARM64 und manueller CPU-Agent).
+   **Neu offen:** Release-Qualitätsjob muss den vorhandenen WER-Gate-Checker
+   verpflichtend ausführen und neben sauberer Sprache auch Rauschen prüfen.
+   Der bisherige grüne Workflow misst WER, erzwingt aber keine WER-Grenze.
 2. Die stabilisierten P1-Korrekturen und Editorpfade reviewen. Wiederherstellung nach unterbrochenen
    Installationen sowie breite Vim-/Neovim-Modus-/Fokusmatrix ergänzen.
 3. Pi5: residenten ASR-Prozess, kürzere/überlappende Segmente und kleinere

@@ -1,121 +1,134 @@
-# Reihenfolge bis zum alltagstauglichen Produkt
+# Produktfreigabe: Stand und Reihenfolge
 
-Umsetzungsstand vom 6. September: [Implementierung, Tests und offene Abnahmetore](IMPLEMENTATION-2026-09-06.md).
-Der folgende ursprüngliche Plan bleibt als Abnahmegrundlage bestehen.
+Stand: **6. September 2026**. Implementierungsbasis: `5e27010c461a6cff4ba830af52bf78df94cc7213`, Branch `codex/product-readiness`. Dieser Plan ersetzt die Reihenfolge vom 5. September.
 
-Stand: 5. September 2026. Dies ist ein umsetzbarer Arbeitsplan mit Abnahmetoren,
-keine Zusage einer bereits vorhandenen Produktreife. Issues sind echte Aufgaben
-im Repository. Die Messwerte und ihre Grenzen stehen im ergänzenden Qualitätsbericht.
+**Noch kein allgemeines Produktrelease.** Die Stabilitätsbasis steht. Die größten Blocker bleiben kontinuierliches Pi5-Diktat, Qualität unter Rauschen, breite DACH-Abdeckung sowie Desktop- und Erststart-Abnahme. Empfohlen ist eine gestufte Freigabe pro geprüftem Plattform-/Sprachprofil; das Ziel einer breiten DACH-Unterstützung bleibt bestehen.
 
-## 1. Datenverlust und falschen Erfolg beseitigen — Freigabeblocker
+✅ = implementiert und im genannten Umfang getestet; 🟡 = teilweise umgesetzt; ⬜ = offen. Umsetzung auf dem Branch bedeutet nicht Merge, Veröffentlichung oder Feldabnahme. Die GitHub-Issues #16–40 waren bei der heutigen Abfrage weiterhin offen.
 
-Zuerst [EOF/Teilframes #16](https://github.com/geisten/geist-diktat/issues/16),
-[Engine-Fehlerstatus #17](https://github.com/geisten/geist-diktat/issues/17) und
-[Capture-Fehlerstatus #18](https://github.com/geisten/geist-diktat/issues/18).
-Für den Ubuntu-x64-Pfad zusätzlich die [Backend-Auswahl #40](https://github.com/geisten/geist-diktat/issues/40) korrigieren. Parallel fachlich unabhängig: [atomarer Installer #21](https://github.com/geisten/geist-diktat/issues/21)
-und [sichere Engine-Migration #22](https://github.com/geisten/geist-diktat/issues/22).
-Unicode und Eingabegrenzen [#25](https://github.com/geisten/geist-diktat/issues/25)/
-[#26](https://github.com/geisten/geist-diktat/issues/26) gehören in dieselbe Stabilitätsphase.
+Messungen: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md). Architekturentscheidung, Alternativen und aktuelle Primärquellen: [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md).
 
-**Abnahme:** vorhandene Regressionsfälle auf macOS, Pi5 und Ubuntu x64/ARM64
-bestehen, keine erwarteten Fehler verstecken; Abbruch/Offline/defektes Archiv
-lassen die Vorversion nutzbar. Ein Recorderfehler zeigt einen Fehler statt „listening“.
-Erst danach weitere automatische Texteinspeisung freigeben.
+## Bereits umgesetzt
 
-## 2. Deutsche Transkriptionsqualität belastbar machen
+| Status | Bereich / Issues | Nachgewiesene Umsetzung | Verbleibende Abnahme |
+|---|---|---|---|
+| ✅ | Core #16, #17, #25, #26, #40 | EOF/Teilframes, Fehlerstatus, UTF-8 über Token-Grenzen, RMS-Validierung, NEON/x86/Scalar-Auswahl | Regressionen bei Backendänderungen erhalten |
+| ✅ | Installationssicherheit #21, #22 | Validiertes Staging, atomarer Austausch, Vorversion, Lock; vorhandene Engine-Checkouts erhalten | Komfortable Wiederherstellung unter M5 |
+| ✅ | Aufnahmefehler #18 | Capture-/Decoder-Fehler sichtbar; eigene Prozessgruppen kontrolliert beendet | Physische Geräte-/Berechtigungsabnahme unter M4 |
+| ✅ | Vim/Neovim #19, #20, #24, #27–29 | Asynchrone Adapter, UTF-8-Framing, Sitzungswechsel, begrenzte Ausgabequeue, native Paketinstallation | Breite interaktive Modus-/Fokusmatrix unter M4 |
+| ✅ | IBus-Lifecycle #23 | Reaping, Stop/Neustart, EOF/HUP, 100 Wechsel | Weitere Desktop-Sitzungen unter M4 |
+| ✅ | Pipeline #33 | Wörtliche zeilenweise UTF-8-Übergabe ohne Shell-Auswertung | Verfügbarkeit der Senke pro Desktop |
+| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und Pi-Ubuntu-Container je 77 Fälle; gehostetes Ubuntu x64/ARM64 je 77 Fälle; echter x64-ASR-Pilot | Kein Nachweis für GUI, physische Mikrofone oder Dauer-ASR |
+| 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, standardmäßig 6 s Queue, Überlast Exit 75; Whisper-/Beam-Vergleich | Kontinuierlicher Lesepfad und ausreichend schneller residenter Decoder fehlen |
+| 🟡 | Sprache #38, #39 | 47 Pilot-Fixtures; WER-, Rausch-, Schweizer Dialekt- und Gesprächsmessungen; lokaler Gate-Checker | Unabhängiges DACH-Set und bestandene Qualitätsgates fehlen |
+| 🟡 | Vertrag / Status #34, #35 | PCM16/UTF-8/Exitcode-Vertrag v1; IBus-Fokus-/Schutzfeldregeln | Zustandsereignisse, Teil-/Endergebnisse und globale Stop-Abnahme |
+| 🟡 | Ubuntu-Apps #31 | Echte IBus-/GTK3-/Qt5-Prüfungen unter privatem D-Bus/Xvfb | GNOME Wayland/Xorg, KDE, moderne Toolkits und Sandbox-Apps |
+| 🟡 | Erststart #30 | Doctor, SHA-geprüfte Modelldownloads, Setup, Editorinstallation | Mikrofonwahl, Fortschritt/Wiederaufnahme, Recovery, Nutzertests |
+| 🟡 | macOS #32 | Swift-Menüleisten-App, Hotkey, Vorschau/Kopieren, optionales AX-Einfügen; Build/ad-hoc-Signatur grün | Native Capture-/Abhängigkeitslösung, GUI/TCC, Developer-ID/Notarisierung |
 
-[Qualitätskorpus #38](https://github.com/geisten/geist-diktat/issues/38) und
-[ungesprochener Text unter Rauschen #39](https://github.com/geisten/geist-diktat/issues/39)
-haben Produktpriorität vor einer hübscheren Installation. Die aktuellen Pilot-WERs
-reichen für die Behauptung „zuverlässiges deutsches Alltagsdiktat“ noch nicht.
+Der [GitHub-Lauf 34020085582](https://github.com/geisten/geist-diktat/actions/runs/34020085582) ist auf genau diesem Implementierungsstand vollständig grün. Ubuntu-Core-Coverage: **98,08 % Zeilen, 73,50 % Zweige, 100 % Funktionen**, mit kontrollierter Engine. Das erfasst keine Modell-, Treiber- oder vollständige Produktabdeckung.
 
-Den Pilot um spontane Alltagssprache, Namen, Zahlen, Komposita, Code-Switching,
-österreichische und deutsche Regionaldialekte, verschiedene Mikrofone und echte
-Umgebungsgeräusche erweitern. Mindestens mehrere unabhängige Sprecher pro Variante;
-Testdaten fest einfrieren und von Optimierungsdaten trennen. Nutzungsrechte zuerst
-klären; menschliche Referenzen nicht durch Modell-Outputs ersetzen.
+**Der Workflow misst WER, ruft `check_gates.py` aber bislang nicht auf.** Ein grüner Lauf bedeutet deshalb noch keine bestandene Qualitätsfreigabe.
 
-**Abnahme:** vorher vereinbarte und auf einem unabhängigen Testset gemessene WER-
-und Halluzinationsgrenzen. Als zu validierende Produktziele: sauberes Hochdeutsch
-≤10 % WER, 10-dB-Rauschbedingung ≤25 %, keine unmarkierten langen erfundenen Antworten
-im festgelegten Negativtestset. Das sind Zielwerte, keine erreichten Ergebnisse
-oder allgemeingültigen Branchenstandards. Dialekt-ASR und Übersetzung ins
-Hochdeutsche separat bewerten. Auf demselben Korpus mindestens whisper.cpp als
-Vergleich ausführen, bevor Überlegenheitsbehauptungen entstehen.
+## Messungen, die die Priorität bestimmen
 
-## 3. Pi5 für kontinuierliche Nutzung qualifizieren
+| Befund | Konsequenz |
+|---|---|
+| Pi5 Geist: 20,75 % WER, RTF 1,53, 2.894 MiB Spitzen-RSS | Standardpfad verfehlt Qualitäts- und Durchsatzziel |
+| Pi5 Whisper small Q5_1: Beam 5 mit 8,84 % WER / RTF 1,10; Beam 1 mit 9,52 % / RTF 0,95 / 348 MiB | Bester bisher gemessener Pi-Kandidat; noch ohne Zeitreserve |
+| Zeitgetreues Gespräch: Geist nach 34,18 s, Whisper nach ca. 31,9 s mit Exit 75 | Überlastbehandlung besteht; kontinuierliches Diktat fällt durch |
+| Ubuntu-x64-Agent Geist: 15,99 % WER, RTF 0,388, ca. 6,09 GiB RSS | Durchsatz im Dateipilot gut; sauberes WER-Ziel verfehlt |
+| Mac Whisper: 8,84 % saubere WER, 26,15 % bei 10 dB | Sauberer Pilot besteht; Rauschziel von 25 % verfehlt |
+| SwissDial Whisper: 57,59 % gegen Hochdeutsch / 77,64 % gegen Dialektschreibung | Zwei verschiedene Referenzaufgaben; keine breite DACH-Freigabe |
 
-[Pi5-Optimierung #36](https://github.com/geisten/geist-diktat/issues/36) und
-[Capture/Decoder-Entkopplung #37](https://github.com/geisten/geist-diktat/issues/37).
-Zuerst Profiling und reproduzierbare Messungen, danach jeweils nur einen Parameter
-ändern. Vier Threads sind schneller als ein Thread; ein niedrigerer WER einzelner
-Zwei-Thread-Läufe ist noch keine stabile Optimierung. Der Streaming-Worker läuft
-über `audio_begin` bereits; ein zusätzliches `GEIST_AUDIO_STREAM=1` ist kein
-belegter Turbo.
+Saubere Piloten: zwölf Aufnahmen, 294 Wörter; Rauschen: sechs Inhalte je Stufe. Pi-Zeiten enthalten Prozessstart; Whisper lädt bisher pro Segment neu. Mac-Vergleichszeiten standen unter Konkurrenzlast und sind keine Geschwindigkeitsbasis. Alle Sprachtests verwendeten Dateien. Der 30-Minuten-Test mit kontrollierter Engine ist ausschließlich ein Lifecycle-Test. Keine dieser Zahlen zertifiziert Alltagsqualität.
 
-**Abnahme:** 30- und 60-minütige reale Gespräche und Diktate mit physischer Aufnahme,
-kein stiller Frameverlust, kein wachsender Rückstand, begrenzte Puffer, kontrollierter
-Überlastzustand und verlässlicher Stop. Vorgeschlagene Latenzziele: p95 ≤3 s nach
-Äußerungsende, Durchsatz-RTF ≤0,8 als Reserve. RSS/Swap und Temperatur kontinuierlich
-messen; die 4-GiB-Variante getrennt freigeben. Falls der Modellpfad das nicht erreicht,
-kleineres Modell bzw. anderen ASR-Backend vergleichen statt nur Threadzahlen zu drehen.
+## Reihenfolge und Abnahmetore
 
-## 4. Einen zuverlässigen Editor-Pfad fertigstellen
+M1 und die Datenbeschaffung für M3 können sofort beginnen. M2 braucht die Messinstrumentierung; M4 den stabilen Ereignisvertrag aus M2. M5 baut auf den geprüften Aufnahme-/Einfügepfaden auf. M6 prüft die konkreten Release-Artefakte. Fortschritt wird an Ergebnissen gemessen; belastbare Termine erfordern zuerst den Backend-Prototyp und verfügbare Sprecher.
 
-Neovim zuerst: [Framing #19](https://github.com/geisten/geist-diktat/issues/19),
-[Sitzungsrennen #20](https://github.com/geisten/geist-diktat/issues/20),
-[Queue/Fehler #24](https://github.com/geisten/geist-diktat/issues/24),
-[plattformfähiger Standardstart #27](https://github.com/geisten/geist-diktat/issues/27).
-Anschließend [Vim-Adapter #28](https://github.com/geisten/geist-diktat/issues/28)
-und [Plugin-Installation #29](https://github.com/geisten/geist-diktat/issues/29).
+### M0 — Stabilitätsbasis sichern: ✅ umgesetzt, Integration noch offen
 
-**Abnahme:** Installation in leerem HOME, ein dokumentierter Shortcut, echte
-zeitlich fragmentierte UTF-8-Ausgabe, 100 Toggle-Zyklen, Modus-/Buffer-/Fokuswechsel,
-Undo und Fehleranzeige. Keine diktierte Zeichenfolge darf im Vim-Normalmodus als
-Editorbefehl ausgeführt werden. Einen laufenden Audio-Prozess nicht mit blockierendem
-`:read !…` integrieren.
+- [x] Korrekturen, Adapter, Installer und Tests implementiert und gepusht.
+- [x] GitHub-Ubuntu x64/ARM64 und manuellen CPU-Agent-Lauf erfolgreich ausgeführt.
+- [ ] Änderungen reviewen und in den vorgesehenen Release-Branch integrieren. Issues erst nach passender Abnahme schließen; noch keinen Release-Tag setzen.
 
-## 5. Ubuntu-Desktop als erste systemweite Plattform abschließen
+Evidenz: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md), [CI-Lauf](https://github.com/geisten/geist-diktat/actions/runs/34020085582).
 
-[IBus-Lifecycle #23](https://github.com/geisten/geist-diktat/issues/23),
-[Desktop-/App-Matrix #31](https://github.com/geisten/geist-diktat/issues/31),
-[Pipeline-Beispiele #33](https://github.com/geisten/geist-diktat/issues/33),
-[Einbettungsvertrag #34](https://github.com/geisten/geist-diktat/issues/34) und
-[Hörstatus/Fokusregeln #35](https://github.com/geisten/geist-diktat/issues/35).
-GTK3/Qt5 unter Xvfb sind bereits geprüft. Daraus folgt keine Freigabe für
-GNOME Wayland, KDE oder sandboxierte Anwendungen.
+### M1 — Freigabe messbar machen: 🟡 höchste nächste Priorität
 
-**Abnahme:** explizite Matrix für GNOME Wayland/Xorg, KDE, GTK3/4, Qt5/6,
-Firefox/Chromium, Electron, LibreOffice und Flatpak/Snap. Globaler Shortcut,
-Input-Source-Registrierung, geschützte Felder, Gerätewechsel und Session-Neustart
-funktionieren oder werden als nicht unterstützt erkennbar angezeigt. Der private
-CI-D-Bus darf nie die laufende Desktop-Sitzung eines Runners ersetzen.
+Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://github.com/geisten/geist-diktat/issues/36), [#38](https://github.com/geisten/geist-diktat/issues/38).
 
-## 6. Erst dann den One-Click-Erststart fertigstellen
+- [x] Pilotmanifest, numerische Reports, gepinnte Modelle/Engines, Gate-Checker vorhanden.
+- [ ] Gesonderten Release-Qualitätsjob mit sauberer Sprache **und** Rauschen anlegen; Checker verpflichtend ausführen. Fehlende Gruppen/Referenzen oder fehlgeschlagene Clips verhindern die Freigabe.
+- [ ] Modell, Build, Hardware, Decoderparameter und Korpusrevision pro Plattform speichern. Numerische Release-Evidenz dauerhaft archivieren; bisherige Actions-Aufbewahrung: 30 Tage.
+- [ ] Zeitpunkte für Audioblock, Sprachende, Decoderstart/-ende, stabiles Ergebnis und tatsächliche Einfügung erfassen. Modellladen, Encoder, Decoder und Warteschlangen separat messen; kalte und warme Starts trennen.
+- [ ] Live-Harness zählt empfangene/verarbeitete/als verworfen gemeldete Frames, maximalen Lesestillstand, Queue-Alter/-Tiefe, Stop-Zeit und Prozessbaum-RSS. Auch Betriebssystem-Pipes berücksichtigen.
 
-[Setup/Doctor #30](https://github.com/geisten/geist-diktat/issues/30) bündelt die
-vorher stabilisierten Teile: passende Installation, überprüfte Modell-Dateien,
-Downloadfortschritt/Wiederaufnahme, Mikrofonwahl, Eingabequelle, Editorpfade,
-konkrete Fehlerhilfe und ein sichtbares Testdiktat.
+**Tor:** Ein absichtlich schlechter oder unvollständiger Report blockiert den Release-Job. Latenz ist bis zur Texteingabe messbar. Hosting-CI bleibt für Verträge zuständig, der eigene Ubuntu-Agent für reale CPU-ASR. Pi5 sowie physische Desktop-/Mikrofonprüfungen bleiben eigene Abnahmen.
 
-**Abnahme:** fünf Personen ohne Entwicklerkontext erreichen auf frisch vorbereiteten
-Systemen ohne Terminal-Diagnose ihren ersten korrekt eingefügten Satz. Anzahl
-Klicks, nötige Berechtigungsdialoge und Zeit bis zum ersten Diktat dokumentieren.
-Betriebssystem-Berechtigungen ehrlich als notwendige Schritte ausweisen.
-„Ein Shortcut im täglichen Betrieb“ und „One-Click-Installation“ bleiben zwei
-verschiedene messbare Versprechen. Update/Rollback/Deinstallation gehören dazu.
+### M2 — Residenten ASR-Pfad und Plattformprofile auswählen: 🟡 Freigabeblocker
 
-## 7. macOS-Systemintegration und kontrollierte Beta
+Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://github.com/geisten/geist-diktat/issues/37), [#34](https://github.com/geisten/geist-diktat/issues/34).
 
-[macOS-Integration #32](https://github.com/geisten/geist-diktat/issues/32) baut auf
-stabiler Prozessschnittstelle und Qualitätsprüfung auf: Hotkey, Mikrofonstatus,
-geführte Berechtigungen, signierte/notarisierte Auslieferung, TextEdit/Browser/
-Terminal-Tests und explizite Regeln für Secure Input. CLI-Support allein erfüllt
-diese Aufgabe nicht.
+- [x] Geist und quantisiertes Whisper auf identischem deutschen Pilot verglichen.
+- [ ] Zuerst residenten whisper.cpp-Kontext im eigenen Adapter entwickeln: einmal laden, kontinuierlich Audio übernehmen, begrenzte Arbeitspuffer, geordneter Stop. Geist hält sein Modell bereits während einer Sitzung; dort segmentweisen Decode-Stillstand und Lesepfad untersuchen.
+- [ ] Additiven Ereignismodus mit `session_id`, Audiozeit, `partial`, `final`, `state`, `error` definieren; v1-Zeilenausgabe kompatibel lassen. Nur stabile Endergebnisse automatisch einfügen. Alte Sitzungen dürfen keinen Text nachliefern.
+- [ ] VAD-Endpunkte, kürzere Fenster und begrenzte Überlappung einzeln vergleichen. Kontext-Neuberechnung kann mehr Zeit kosten; doppelte Wörter und verlorene Satzanfänge erhalten Regressionen.
+- [ ] Pi5: small Q5_1 Beam 1 resident, anschließend mehrsprachiges base als kleineren Kandidaten vergleichen; 1/2/3/4 Threads, Quantisierung und BLAS getrennt messen. Keine englischen `.en`-Modelle für Deutsch einsetzen.
+- [ ] Mac: Whisper mit Metal, optional Core-ML-Encoder vergleichen. Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8. Parakeet v3 und Qwen3-ASR nach Sprach-/Runtime-/Speicherprüfung als Herausforderer aufnehmen; Details in der SOTA-Analyse.
+- [ ] Anschließend 30/60 Minuten zeitgetreue Dateien **und physische Aufnahme** pro beanspruchter Plattform mit dokumentierter Kühlung, Last und Geräteprofil.
 
-Beta erst nach bestandenen Toren 1–6 auf den freigegebenen Linux-Umgebungen und
-entsprechenden macOS-Toren. Release-Notes enthalten unterstützte Apps, bekannte
-Grenzen und die gemessenen Qualitätswerte. Der heutige belastbare Mehrwert ist
-die lokale, komponierbare C-/Prozessarchitektur mit gezielter Editor-/IBus-Anbindung.
-Bessere Erkennung, weniger RAM oder einfacher Erststart gegenüber etablierten
-Produkten sind aktuell nicht nachgewiesen.
+**Vorgeschlagene Produktziele:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Pi5/4 GiB: Prozessbaum-RSS als Ziel ≤1,5 GiB, kein fortschreitender Swap-I/O und keine Drosselung im freigegebenen Kühlprofil. Das sind zu validierende Anforderungen, keine erzielten Werte.
+
+**Bei Nichtbestehen:** Pi5 bleibt experimentell; eine bestandene Desktop-Konfiguration kann separat in die Beta. Größere Puffer oder Übertakten ersetzen das Tor nicht. Beschleuniger-Hardware erst nach belegter Modell-/Operatorunterstützung als eigenes Profil planen. Lokale Verarbeitung bleibt Standard; kein stiller Cloud-Fallback.
+
+### M3 — Deutsche Qualität und breite DACH-Abdeckung: 🟡 Beschaffung sofort starten
+
+Issues: [#38](https://github.com/geisten/geist-diktat/issues/38), [#39](https://github.com/geisten/geist-diktat/issues/39).
+
+- [x] Deutsche Lesesprache, simuliertes Rauschen, Schweizer Varianten und ein natürliches längeres Gespräch im Pilot untersucht.
+- [ ] Rechtegeklärtes, menschlich referenziertes Set: spontane Diktate, Dialoge, Selbstkorrekturen, Namen, Zahlen, Negationen, Komposita und Code-Switching.
+- [ ] DACH-Matrix mit regionaler Expertise festlegen: deutsche Regionalgruppen, österreichische und Schweizer Varianten. Startumfang mindestens fünf unabhängige Sprecher und 30 Minuten bewertbare Sprache je beanspruchter Gruppe; Standardsprache mindestens zwei Stunden/20 Sprecher. Das Mindestdesign garantiert noch keine statistische Repräsentativität.
+- [ ] Sprecher, Ursprungsaufnahmen, parallele Inhalte und deren Rauschvarianten gemeinsam einem Split zuordnen. Entwicklungs- und versiegeltes Freigabeset trennen. Vorhandene Piloten nur zur Entwicklung verwenden.
+- [ ] Headset, Laptop-/USB-Mikrofon, Entfernung, Raumhall, Tastatur, Lüfter und Hintergrundsprache tatsächlich aufnehmen; 20/10/5-dB-Simulationen ergänzend erhalten.
+- [ ] RMS gegen Silero-VAD prüfen; Entrauschung anschließend separat als A/B-Versuch. Saubere Sprache und leise Satzanfänge dürfen nicht systematisch schlechter werden.
+- [ ] WER mit festgelegter Normalisierung, CER, Namen-/Zahlen-/Negationsfehler, ungesprochene Wörter und Korrekturaufwand ausweisen. Dialektschreibung und Übertragung ins Hochdeutsche getrennt referenzieren und bewerten.
+
+**Tor:** Sauberes Standarddeutsch ≤10 % WER, 10 dB ≤25 % auf dem unabhängigen Set; Sprecher-basierte Konfidenzintervalle und schlechteste Gruppen mitberichten. Als vorgeschlagenes DACH-Ziel ≤25 % normalisierte WER pro beanspruchter Dialektgruppe und Referenzaufgabe vorab festschreiben; Machbarkeit zunächst am Entwicklungsset prüfen. Keine stille Lockerung nach Einsicht in Freigabedaten. Mindestens eine Stunde Stille/Nichtsprachgeräusche ohne automatisch eingefügten Text; zusätzlich keine erfundenen Sätze in manuell geprüften Sprach-/Rauschfällen. Das ist kein Versprechen einer Halluzinationsrate von null im Alltag.
+
+Bei Nichterreichen keine Freigabe der betroffenen Sprachgruppe. Explizite Nutzerkorrekturen können später ein rechtegeklärtes Anpassungsset bilden; Fine-Tuning erst nach Fehleranalyse und mit getrenntem Nachweis auf ungesehenen Sprechern.
+
+### M4 — Einbettung in echte Anwendungen: 🟡
+
+Issues: #19, #20, #23, #24, #27–29, [#31](https://github.com/geisten/geist-diktat/issues/31), [#32](https://github.com/geisten/geist-diktat/issues/32), [#33](https://github.com/geisten/geist-diktat/issues/33), [#34](https://github.com/geisten/geist-diktat/issues/34), [#35](https://github.com/geisten/geist-diktat/issues/35).
+
+- [x] Echte Vim-/Neovim-Prozesse, Unicode, 100 Wechsel, IBus-Lifecycle, GTK3-/Qt5-Felder und Schutzfeldregeln getestet.
+- [ ] Zuerst Vim/Neovim und Ubuntu 24.04 GNOME Wayland vollständig abnehmen; anschließend Xorg und KDE separat. Jede Matrixzelle erhält OS-, Desktop-, Toolkit-/App-Version, Datum und Ergebnis.
+- [ ] GTK3/4, Qt5/6, Firefox/Chromium, Electron, LibreOffice, Flatpak/Snap: Cursor/Selektion, Modus/Buffer/Fokus, Undo, IME-Wechsel, Passwort/PIN, globaler Stop, Gerätewechsel, Sperren/Entsperren und Session-Neustart prüfen.
+- [ ] Ubuntu bevorzugt IBus-Text-Commit; globalen Shortcut über verfügbares Portal integrieren. Fehlende Fähigkeiten im Doctor anzeigen. `wtype` bleibt eine bedingte Senke, keine universelle Wayland-Lösung.
+- [ ] macOS: native Audioaufnahme und Gerätewechsel ergänzen; festgehaltenes Einfügeziel, Secure Input und Berechtigungswiderruf in TextEdit, Browsern, Terminal und Editoren tatsächlich testen. Nicht einfügbaren Text in Vorschau erhalten.
+
+**Tor:** Alle zugesagten Zellen bestehen; geschützte/unklare Ziele erhalten keinen Text. Nicht unterstützte Pfade erkennbar deaktivieren. Globaler Stop wirkt auch während Decoder-Stillstand. Headless-CI allein schließt dieses Tor nicht.
+
+### M5 — Erststart und Betrieb ohne Entwicklerwerkzeuge: 🟡
+
+Issues: [#21](https://github.com/geisten/geist-diktat/issues/21), [#29](https://github.com/geisten/geist-diktat/issues/29), [#30](https://github.com/geisten/geist-diktat/issues/30), [#32](https://github.com/geisten/geist-diktat/issues/32).
+
+- [x] Pakete, Editorinstallation, Diagnose, geprüfte Downloads und macOS-App-Prototyp vorhanden.
+- [ ] Modellprofil vorschlagen; Downloadgröße, Fortschritt, Wiederaufnahme und Speichermangel verständlich behandeln. Mikrofon wählen, Pegel/echte Aufnahme prüfen, Testdiktat einfügen, Shortcut zuordnen.
+- [ ] Abhängigkeiten vollständig liefern: macOS ohne Homebrew/externes Python/SoX starten können; native Capture-Lösung bzw. mitgelieferte Runtime prüfen. Ubuntu-Paketabhängigkeiten und Eingabequellenregistrierung abnehmen.
+- [ ] Update, Rollback, abgebrochenes Setup, verbliebener Lock und Deinstallation über einen verständlichen Bedienpfad. Pakettexte an tatsächliche Architektur anpassen.
+- [ ] Fünf Personen ohne Entwicklerkontext je freizugebender Desktop-Plattform auf frischen Systemen beobachten: Klicks, Berechtigungen, Downloadzeit, aktive Einrichtungszeit und Zeit bis zum ersten korrekt eingefügten Satz dokumentieren.
+
+**Tor:** Alle fünf erreichen das Testdiktat ohne Terminal-Diagnose oder Entwicklerhilfe. Keine fehlenden Laufzeitabhängigkeiten; kaputter Download/Offline/Update lässt sich geführt beheben. Alltag: ein Shortcut. Erstinstallation: geführter Ablauf mit erforderlichen OS-Dialogen. Erst Messergebnisse rechtfertigen ein „One-Click“-Versprechen.
+
+### M6 — Release-Kandidat und gestufte Beta: ⬜
+
+- [ ] M1–M5 für jedes veröffentlichte Profil bestehen; DACH-/Pi5-/App-Claims nur für jeweils abgenommene Gruppen. Experimentelle Profile klar kennzeichnen.
+- [ ] macOS Developer-ID/Hardened Runtime/Notarisierung/Stapling und Gatekeeper-Test auf frischem System. Beim letzten lokalen Check gab es keine gültigen Codesigning-Identitäten; deren Bereitstellung bleibt externer Meilenstein.
+- [ ] Versionierte signierte Artefakte, Prüfsummen, Modell-/Abhängigkeitslizenzen, Build-Provenienz und Rückkehr zur Vorversion bereitstellen.
+- [ ] Gates mit exakt ausgelieferten Binaries/Modellen wiederholen; Supportmatrix, Grenzen und numerische Evidenz dauerhaft veröffentlichen.
+- [ ] Begrenzte Alltagsbeta: Abbrüche, falsche Einfügeziele, Korrekturaufwand und erfolgreiche Sitzungen auswerten; Sprachinhalte nur nach ausdrücklicher Zustimmung erfassen. Offene P1 schließen, verbleibende P2 pro freigegebenem Profil bewerten und dokumentieren.
+
+**Freigabeumfang:** Zuerst bestandene Editor-/Ubuntu-/Mac-Profile, Pi5 und weitere Dialekt-/Desktopprofile nach eigenen Toren. Eine allgemeine Freigabe für den gesamten ursprünglichen Anspruch folgt erst nach allen zugehörigen Abnahmen. Belegter Mehrwert heute: lokale Verarbeitung und gezielte Editor-/IBus-Komposition. Zielmehrwert: zuverlässiges tägliches Diktat mit geringem Korrekturaufwand und transparenter Kontrolle. Eine generelle SOTA-Erkennungsüberlegenheit oder bessere Bedienbarkeit gegenüber etablierten Produkten ist noch nicht nachgewiesen.
