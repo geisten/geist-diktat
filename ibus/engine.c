@@ -41,7 +41,7 @@
 /* Classic GObject boilerplate — G_DECLARE_FINAL_TYPE needs autoptr
  * support on the parent type, which libibus does not define for
  * IBusEngine. */
-typedef struct _GeistEngine GeistEngine;
+typedef struct _GeistEngine      GeistEngine;
 typedef struct _GeistEngineClass GeistEngineClass;
 
 #define GEIST_TYPE_ENGINE (geist_engine_get_type())
@@ -54,10 +54,10 @@ struct _GeistEngineClass {
 };
 
 struct _GeistEngine {
-    IBusEngine parent;
-    GPid       pid;   /* pipeline process group leader; 0 = not running */
-    guint      watch; /* GIOChannel source id */
-    GIOChannel *out;
+    IBusEngine    parent;
+    GPid          pid;   /* pipeline process group leader; 0 = not running */
+    guint         watch; /* GIOChannel source id */
+    GIOChannel   *out;
     IBusPropList *props;
     IBusProperty *state_prop;
 };
@@ -101,12 +101,14 @@ static gchar *pipeline_cmd(void) {
     gchar *tower   = g_build_filename(data, "audio_tower.safetensors", NULL);
     gchar *q_model = g_shell_quote(model);
     gchar *q_tower = g_shell_quote(tower);
-    gchar *cmd     = g_strdup_printf(
-            "arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
-            "GEIST_AUDIO_MODEL_PATH=%s "
-            "GEIST_MEL_CONSTANTS_PATH=/usr/share/geist-diktat/mel_constants.bin "
-            "/usr/bin/diktat %s %.0f",
-            q_tower, q_model, pipeline_rms());
+    gchar *cmd =
+            g_strdup_printf("arecord -q -f S16_LE -r 16000 -c 1 -t raw | "
+                            "GEIST_AUDIO_MODEL_PATH=%s "
+                            "GEIST_MEL_CONSTANTS_PATH=/usr/share/geist-diktat/mel_constants.bin "
+                            "/usr/bin/diktat %s %.0f",
+                            q_tower,
+                            q_model,
+                            pipeline_rms());
     g_free(q_tower);
     g_free(q_model);
     g_free(tower);
@@ -135,8 +137,7 @@ static gboolean on_pipeline_line(GIOChannel *ch, GIOCondition cond, gpointer dat
             g_strchomp(line);
             if (line[0] != '\0') {
                 gchar *with_space = g_strconcat(line, " ", NULL);
-                ibus_engine_commit_text(IBUS_ENGINE(e),
-                                        ibus_text_new_from_string(with_space));
+                ibus_engine_commit_text(IBUS_ENGINE(e), ibus_text_new_from_string(with_space));
                 g_free(with_space);
             }
             g_free(line);
@@ -162,13 +163,21 @@ static void pipeline_start(GeistEngine *e) {
     if (e->pid != 0) {
         return;
     }
-    gchar *cmd    = pipeline_cmd();
-    gchar *argv[] = {"/bin/sh", "-c", cmd, NULL};
-    gint   out_fd = -1;
-    GError *err   = NULL;
-    if (!g_spawn_async_with_pipes(NULL, argv, NULL,
+    gchar  *cmd    = pipeline_cmd();
+    gchar  *argv[] = {"/bin/sh", "-c", cmd, NULL};
+    gint    out_fd = -1;
+    GError *err    = NULL;
+    if (!g_spawn_async_with_pipes(NULL,
+                                  argv,
+                                  NULL,
                                   G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD,
-                                  child_setpgid, NULL, &e->pid, NULL, &out_fd, NULL, &err)) {
+                                  child_setpgid,
+                                  NULL,
+                                  &e->pid,
+                                  NULL,
+                                  &out_fd,
+                                  NULL,
+                                  &err)) {
         g_warning("geist-diktat: pipeline spawn failed: %s", err->message);
         g_clear_error(&err);
         e->pid = 0;
@@ -230,24 +239,29 @@ static void geist_engine_destroy(IBusObject *object) {
 
 static void geist_engine_init(GeistEngine *e) {
     g_active_engine = e;
-    e->pid        = 0;
-    e->watch      = 0;
-    e->out        = NULL;
-    e->state_prop = ibus_property_new("diktat-state", PROP_TYPE_NORMAL,
-                                      ibus_text_new_from_string("diktat"), NULL,
-                                      ibus_text_new_from_string("geist-diktat state"), FALSE,
-                                      TRUE, PROP_STATE_UNCHECKED, NULL);
-    e->props      = ibus_prop_list_new();
+    e->pid          = 0;
+    e->watch        = 0;
+    e->out          = NULL;
+    e->state_prop   = ibus_property_new("diktat-state",
+                                        PROP_TYPE_NORMAL,
+                                        ibus_text_new_from_string("diktat"),
+                                        NULL,
+                                        ibus_text_new_from_string("geist-diktat state"),
+                                        FALSE,
+                                        TRUE,
+                                        PROP_STATE_UNCHECKED,
+                                        NULL);
+    e->props        = ibus_prop_list_new();
     g_object_ref_sink(e->state_prop);
     g_object_ref_sink(e->props);
     ibus_prop_list_append(e->props, e->state_prop);
 }
 
 static void geist_engine_class_init(GeistEngineClass *klass) {
-    IBusEngineClass *ec         = IBUS_ENGINE_CLASS(klass);
-    ec->enable                  = geist_engine_enable;
-    ec->disable                 = geist_engine_disable;
-    ec->focus_in                = geist_engine_focus_in;
+    IBusEngineClass *ec               = IBUS_ENGINE_CLASS(klass);
+    ec->enable                        = geist_engine_enable;
+    ec->disable                       = geist_engine_disable;
+    ec->focus_in                      = geist_engine_focus_in;
     IBUS_OBJECT_CLASS(klass)->destroy = geist_engine_destroy;
 }
 
@@ -301,16 +315,24 @@ int main(int argc, char **argv) {
             return 1;
         }
     } else {
-        IBusComponent *component = ibus_component_new(
-                BUS_NAME, "geist dictation engine", "0.1.0", "Apache-2.0",
-                "geisten.net", "https://github.com/geisten/geist-diktat",
-                "/usr/libexec/ibus-engine-geist-diktat --ibus", "geist-diktat");
-        ibus_component_add_engine(
-                component,
-                ibus_engine_desc_new(ENGINE_NAME, "geist-diktat (Diktat)",
-                                     "local speech-to-text into the focused app", "de",
-                                     "Apache-2.0", "geisten.net",
-                                     "audio-input-microphone", "default"));
+        IBusComponent *component =
+                ibus_component_new(BUS_NAME,
+                                   "geist dictation engine",
+                                   "0.1.0",
+                                   "Apache-2.0",
+                                   "geisten.net",
+                                   "https://github.com/geisten/geist-diktat",
+                                   "/usr/libexec/ibus-engine-geist-diktat --ibus",
+                                   "geist-diktat");
+        ibus_component_add_engine(component,
+                                  ibus_engine_desc_new(ENGINE_NAME,
+                                                       "geist-diktat (Diktat)",
+                                                       "local speech-to-text into the focused app",
+                                                       "de",
+                                                       "Apache-2.0",
+                                                       "geisten.net",
+                                                       "audio-input-microphone",
+                                                       "default"));
         ibus_bus_register_component(bus, component);
     }
 

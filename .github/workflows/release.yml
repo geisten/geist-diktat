@@ -34,34 +34,15 @@ jobs:
           fi
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q lintian
-      # arm64 builds in debian:12 with clang-19: the Pi world runs RasPiOS
-      # bookworm (glibc 2.36); ubuntu-24.04 binaries link libmvec +
-      # GLIBC_2.38+ symbols and die there (measured on a Pi 5). amd64
-      # stays on the runner's gcc-14 (clang-19 backend-crashes on the
-      # x86 VNNI kernels; x86 desktops run ubuntu 24.04+ / debian 13+).
-      - name: build (arm64 -> debian:12 + clang-19; amd64 -> gcc-14)
+      - name: build (packaging/build-linux.sh — shared with ci.yml)
         run: |
-          if [ "$(uname -m)" = aarch64 ]; then
-            docker run --rm -v "$PWD:/w" -w /w debian:12 bash -ec '
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update -q >/dev/null
-              # git + ca-certificates: the engine is cloned by the build itself
-              # now (GEIST_REF), and this build runs inside the container.
-              apt-get install -y -q clang-19 libomp-19-dev libibus-1.0-dev make pkg-config \
-                                    git ca-certificates >/dev/null
-              make CC=clang-19 TARGET=linux GEMM_PROVIDER=native
-              make CC=clang-19 GEMM_PROVIDER=native ibus-engine-geist-diktat
-            '
-          else
-            sudo apt-get install -y -q gcc-14 libibus-1.0-dev
-            make CC=gcc-14 TARGET=linux GEMM_PROVIDER=native
-            make CC=gcc-14 GEMM_PROVIDER=native ibus-engine-geist-diktat
-          fi
+          [ "$(uname -m)" = aarch64 ] || sudo apt-get install -y -q gcc-14 libibus-1.0-dev
+          sh packaging/build-linux.sh
       # .deb only. The tarball is built musl-static in linux-tarball below:
       # the .deb may depend on the distro's libs (it needs libibus anyway), the
       # tarball is the "any distro" artifact and must not.
       - name: package (.deb)
-        run: VERSION=${{ steps.v.outputs.version }} sh packaging/build-deb.sh
+        run: make VERSION=${{ steps.v.outputs.version }} deb
       - name: lintian
         run: lintian --fail-on error geist-diktat_*.deb
       - name: install sanity against the release artifact
@@ -106,7 +87,7 @@ jobs:
             apk add --no-cache build-base linux-headers git >/dev/null
             git config --global --add safe.directory /w
             make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
-            sh packaging/build-tarball.sh
+            make tarball
           '
       # Unpacked on the glibc host, deliberately: a musl-static binary has to
       # run somewhere it was not built.
@@ -160,9 +141,9 @@ jobs:
       - name: build (static libomp)
         run: make GEIST_STATIC_OMP=1
       - name: smoke test (fixture-gated half skips without the model)
-        run: sh tests/smoke.sh
+        run: make test
       - name: package
-        run: VERSION=${{ steps.v.outputs.version }} sh packaging/build-tarball.sh
+        run: make VERSION=${{ steps.v.outputs.version }} tarball
       - name: tarball sanity (wrapper resolves its unpacked prefix)
         run: |
           mkdir -p /tmp/tb && tar -C /tmp/tb -xzf geist-diktat_*_macos-*.tar.gz
