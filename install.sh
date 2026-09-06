@@ -83,9 +83,15 @@ else
     echo "no apt found — unpacking the $OS tarball to $DEST ..."
     curl -fL --retry 3 -o "$TMP/$TAR" "$BASE/$TAR"
     verify "$TMP/$TAR" "$TAR"
-    rm -rf "$DEST"
-    mkdir -p "$DEST"
-    tar -C "$DEST" --strip-components=1 -xzf "$TMP/$TAR"
+    # Unpack first, swap second: extracting over a wiped $DEST left the
+    # user with no installation at all whenever tar failed (bad download,
+    # full disk). $TMP is on the same filesystem only by luck, so copy
+    # into place rather than rename, but not before tar has succeeded.
+    mkdir -p "$TMP/new"
+    tar -C "$TMP/new" --strip-components=1 -xzf "$TMP/$TAR"
+    mkdir -p "$DEST"          # creates the parent dirs...
+    rm -rf "$DEST"            # ...but $DEST itself is the tree we replace
+    mv "$TMP/new" "$DEST"
     echo "add to PATH: export PATH=\"$DEST/bin:\$PATH\""
 fi
 

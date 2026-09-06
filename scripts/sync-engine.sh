@@ -14,10 +14,20 @@ set -eu
 
 : "${GEIST_REPO:?}" "${GEIST_REF:?}" "${GEISTLIB:?}"
 
-if [ ! -d "$GEISTLIB/.git" ]; then
+# Never rm -rf a $GEISTLIB we did not create: the engine tree is where the
+# fetched model and audio tower land (gguf_artifacts/, audio_bench/ —
+# gigabytes), and the old code deleted it *before* a clone that can fail,
+# leaving neither. The submodule migration that needed that path is long
+# done; anything else in there is the user's, and `make distclean` is the
+# explicit way to drop it.
+if [ ! -e "$GEISTLIB" ]; then
     echo "engine: cloning $GEIST_REPO -> $GEISTLIB"
-    rm -rf "$GEISTLIB"
     git clone --quiet "$GEIST_REPO" "$GEISTLIB"
+elif [ ! -d "$GEISTLIB/.git" ]; then
+    echo "engine: $GEISTLIB exists but is not a git checkout." >&2
+    echo "engine: it may hold fetched models — move it aside yourself," >&2
+    echo "engine: or run 'make distclean', then build again." >&2
+    exit 1
 fi
 
 # Resolve the pin locally; only reach the network when the ref is unknown.
