@@ -84,7 +84,8 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/w" -w /w \
             -e VERSION=${{ steps.v.outputs.version }} alpine:3.21 sh -ec '
-            apk add --no-cache build-base linux-headers git >/dev/null
+            # tar: busybox's lacks the determinism flags build-tarball.sh uses.
+            apk add --no-cache build-base linux-headers git tar >/dev/null
             git config --global --add safe.directory /w
             make TARGET=linux CC=gcc GEMM_PROVIDER=native EXTRA_LDFLAGS=-static
             make tarball

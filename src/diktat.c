@@ -55,26 +55,68 @@ static struct {
     const char   *instr;
 } cfg;
 
+/* Byte length of the UTF-8 sequence starting at c. A stray continuation
+ * byte reports 1 and is dropped as a control byte below. */
+static size_t utf8_len(unsigned char c) {
+    if (c < 0x80)
+        return 1;
+    if ((c & 0xE0) == 0xC0)
+        return 2;
+    if ((c & 0xF0) == 0xE0)
+        return 3;
+    if ((c & 0xF8) == 0xF0)
+        return 4;
+    return 1;
+}
+
 /* Append one decoded piece to line[], SentencePiece-normalized: U+2581 and
- * newlines become spaces, control bytes are dropped. */
+ * newlines become spaces, control bytes are dropped.
+ *
+ * Characters are copied whole or not at all. Byte-at-a-time copying let the
+ * REPLY_CAP cut land inside a multi-byte character, so a reply that happened
+ * to fill the buffer emitted invalid UTF-8 — and the old U+2581 test read
+ * p[1] and p[2] before checking that p[0] was not the last byte of the
+ * piece, which reads past the terminator on a piece ending in 0xE2. */
 static void append_piece(const char *t, char *line, size_t *len) {
-    for (const char *p = t; *p != '\0' && *len + 1 < REPLY_CAP; p++) {
-        if ((unsigned char) p[0] == 0xE2 && (unsigned char) p[1] == 0x96 &&
-            (unsigned char) p[2] == 0x81) {
+    for (const char *p = t; *p != '\0';) {
+        const unsigned char c   = (unsigned char) *p;
+        const size_t        seq = utf8_len(c);
+        /* A sequence the piece cuts short is not a character. */
+        if (strnlen(p, seq) < seq)
+            break;
+
+        if (seq == 3 && c == 0xE2 && (unsigned char) p[1] == 0x96 &&
+            (unsigned char) p[2] == 0x81) { /* U+2581, the word marker */
+            if (*len + 1 >= REPLY_CAP)
+                break;
             line[(*len)++] = ' ';
-            p += 2;
-        } else if (*p == '\n' || *p == '\r' || *p == '\t') {
-            line[(*len)++] = ' ';
-        } else if ((unsigned char) *p >= 0x20) {
-            line[(*len)++] = *p;
+            p += 3;
+        } else if (seq == 1) {
+            if (c == '\n' || c == '\r' || c == '\t') {
+                if (*len + 1 >= REPLY_CAP)
+                    break;
+                line[(*len)++] = ' ';
+            } else if (c >= 0x20) {
+                if (*len + 1 >= REPLY_CAP)
+                    break;
+                line[(*len)++] = (char) c;
+            }
+            p += 1;
+        } else {
+            if (*len + seq >= REPLY_CAP)
+                break;
+            memcpy(line + *len, p, seq);
+            *len += seq;
+            p += seq;
         }
     }
     line[*len] = '\0';
 }
 
 /* Audio already streamed into the session; finish the turn and emit the
- * transcript line. */
-static void transcribe_utterance(struct geist_session *sess) {
+ * transcript line. Returns 0, or 1 when the engine failed — a transcription
+ * that did not happen must not leave the process exiting 0. */
+static int transcribe_utterance(struct geist_session *sess) {
     char          suffix[PROMPT_CAP];
     geist_token_t toks[PROMPT_CAP];
     size_t        n = 0;
@@ -84,7 +126,7 @@ static void transcribe_utterance(struct geist_session *sess) {
     const size_t skip = (ok && n > 0 && toks[0] == cfg.bos) ? 1 : 0;
     if (!ok || geist_session_prefill_tokens(sess, n - skip, toks + skip) != GEIST_OK) {
         fprintf(stderr, "diktat: audio turn failed: %s\n", geist_session_errmsg(sess));
-        return;
+        return 1;
     }
 
     char          line[REPLY_CAP];
@@ -93,15 +135,17 @@ static void transcribe_utterance(struct geist_session *sess) {
     line[0]               = '\0';
     for (size_t i = 0; i < DECODE_CAP; i++) {
         geist_token_t tok;
-        if (geist_session_decode_step(sess, &tok) != GEIST_OK)
-            break;
+        if (geist_session_decode_step(sess, &tok) != GEIST_OK) {
+            fprintf(stderr, "diktat: decode failed: %s\n", geist_session_errmsg(sess));
+            return 1;
+        }
         if (tok == cfg.eos || tok == cfg.end_of_turn)
             break;
         /* A thought-channel reply is meta text, not dictation — drop the
          * whole utterance rather than typing it. */
         if (i == 0 && cfg.channel >= 0 && tok == cfg.channel) {
             fprintf(stderr, "diktat: model produced meta output, utterance dropped\n");
-            return;
+            return 0; /* dropped on purpose, not a failure */
         }
         /* #267 anti-loop: stop once the last 8 tokens are a period-1/2
          * cycle — keeps a hard clip from typing "big, big, big, ...". */
@@ -124,6 +168,7 @@ static void transcribe_utterance(struct geist_session *sess) {
         printf("%s\n", out);
         fflush(stdout);
     }
+    return 0;
 }
 
 int main(int argc, char **argv) {
@@ -133,13 +178,27 @@ int main(int argc, char **argv) {
                 argv[0]);
         return 2;
     }
-    const double rms_thr = argc > 2 ? atof(argv[2]) : 300.0;
+    /* atof() turned "abc" into 0.0 and accepted "nan", "-1" and "300junk" —
+     * a threshold of 0 opens the VAD on silence and never closes it. Reject
+     * before the model is loaded, so a typo costs no gigabytes. */
+    double rms_thr = 300.0;
+    if (argc > 2) {
+        char *end = nullptr;
+        rms_thr   = strtod(argv[2], &end);
+        if (end == argv[2] || *end != '\0' || !isfinite(rms_thr) || rms_thr <= 0.0) {
+            fprintf(stderr, "diktat: rms-threshold must be a positive number, got '%s'\n", argv[2]);
+            return 2;
+        }
+    }
     cfg.instr            = getenv("GEIST_DIKTAT_PROMPT");
     if (cfg.instr == nullptr)
         cfg.instr = "Transcribe this audio.";
 
+    /* cpu_scalar is the fallback of last resort, not the x86 backend: the
+     * list went neon -> scalar, so every x86 host quietly ran unaccelerated. */
     struct geist_backend *be = nullptr;
     if (geist_backend_create("cpu_neon", nullptr, nullptr, &be) != GEIST_OK &&
+        geist_backend_create("cpu_x86", nullptr, nullptr, &be) != GEIST_OK &&
         geist_backend_create("cpu_scalar", nullptr, nullptr, &be) != GEIST_OK) {
         fprintf(stderr, "backend create failed: %s\n", geist_last_create_error());
         return 1;
@@ -195,7 +254,26 @@ int main(int argc, char **argv) {
     int     loud = 0, quiet = 0;
     bool    in_speech = false;
 
-    while (fread(frame, sizeof(int16_t), FRAME, stdin) == FRAME) {
+    /* Every engine call below is checked: failures used to be logged and
+     * then ignored, so a session that had stopped working still exited 0
+     * and the pipeline downstream saw a clean run producing no text. */
+    int rc = 0;
+    for (;;) {
+        const size_t got = fread(frame, sizeof(int16_t), FRAME, stdin);
+        if (got < FRAME) {
+            /* Short read means EOF. The tail still counts: a final partial
+             * frame was dropped outright, and so was the whole last
+             * utterance when the mic closed while it was still open. */
+            if (in_speech && got > 0) {
+                if (geist_session_audio_push(sess, got, frame) != GEIST_OK) {
+                    fprintf(stderr, "audio_push failed: %s\n", geist_session_errmsg(sess));
+                    rc = 1;
+                } else {
+                    pushed += got;
+                }
+            }
+            break;
+        }
         const bool is_loud = frame_rms(frame) > rms_thr;
         if (!in_speech) {
             memcpy(pending[loud % OPEN_FRAMES], frame, sizeof frame);
@@ -205,19 +283,39 @@ int main(int argc, char **argv) {
             in_speech = true;
             quiet     = 0;
             pushed    = 0;
-            geist_session_reset(sess);
-            if (geist_session_audio_begin(sess) != GEIST_OK) {
-                fprintf(stderr, "audio_begin failed: %s\n", geist_session_errmsg(sess));
+            if (geist_session_reset(sess) != GEIST_OK) {
+                fprintf(stderr, "session_reset failed: %s\n", geist_session_errmsg(sess));
+                rc = 1;
                 break;
             }
-            for (int i = 0; i < OPEN_FRAMES - 1; i++) {
-                (void) geist_session_audio_push(sess, FRAME, pending[i]);
-                pushed += FRAME;
+            if (geist_session_audio_begin(sess) != GEIST_OK) {
+                fprintf(stderr, "audio_begin failed: %s\n", geist_session_errmsg(sess));
+                rc = 1;
+                break;
             }
+            for (int i = 0; i < OPEN_FRAMES - 1 && rc == 0; i++) {
+                if (geist_session_audio_push(sess, FRAME, pending[i]) != GEIST_OK) {
+                    fprintf(stderr, "audio_push failed: %s\n", geist_session_errmsg(sess));
+                    rc = 1;
+                } else {
+                    pushed += FRAME;
+                }
+            }
+            if (rc != 0)
+                break;
         }
-        if (pushed + FRAME <= MAX_UTT && geist_session_audio_push(sess, FRAME, frame) == GEIST_OK) {
+        if (pushed + FRAME <= MAX_UTT) {
+            if (geist_session_audio_push(sess, FRAME, frame) != GEIST_OK) {
+                fprintf(stderr, "audio_push failed: %s\n", geist_session_errmsg(sess));
+                rc = 1;
+                break;
+            }
             pushed += FRAME;
-            (void) geist_session_audio_poll(sess);
+            if (geist_session_audio_poll(sess) != GEIST_OK) {
+                fprintf(stderr, "audio_poll failed: %s\n", geist_session_errmsg(sess));
+                rc = 1;
+                break;
+            }
         }
         quiet = is_loud ? 0 : quiet + 1;
         if (quiet >= CLOSE_FRAMES || pushed + FRAME > MAX_UTT) {
@@ -226,19 +324,35 @@ int main(int argc, char **argv) {
             const size_t speech_len = pushed - (size_t) quiet * FRAME;
             if (geist_session_audio_end(sess) != GEIST_OK) {
                 fprintf(stderr, "audio_end failed: %s\n", geist_session_errmsg(sess));
-                continue;
+                rc = 1;
+                break;
             }
             if (speech_len >= MIN_UTT) {
                 fprintf(stderr, "diktat: [%.1f s]\n", (double) pushed / SR);
-                transcribe_utterance(sess);
-            } else {
-                geist_session_reset(sess);
+                if ((rc = transcribe_utterance(sess)) != 0)
+                    break;
+            } else if (geist_session_reset(sess) != GEIST_OK) {
+                fprintf(stderr, "session_reset failed: %s\n", geist_session_errmsg(sess));
+                rc = 1;
+                break;
             }
+        }
+    }
+
+    /* Still mid-utterance at EOF: close the turn and transcribe it. */
+    if (rc == 0 && in_speech) {
+        const size_t speech_len = pushed - (size_t) quiet * FRAME;
+        if (geist_session_audio_end(sess) != GEIST_OK) {
+            fprintf(stderr, "audio_end failed: %s\n", geist_session_errmsg(sess));
+            rc = 1;
+        } else if (speech_len >= MIN_UTT) {
+            fprintf(stderr, "diktat: [%.1f s]\n", (double) pushed / SR);
+            rc = transcribe_utterance(sess);
         }
     }
 
     geist_session_destroy(sess);
     geist_model_destroy(model);
     geist_backend_destroy(be);
-    return 0;
+    return rc;
 }
