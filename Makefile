@@ -160,8 +160,10 @@ tarball:
 # Same style file as the engine, so a function moved between repos does not
 # reformat. ibus/engine.c is GLib-shaped C and reformats too — that is fine,
 # the style file is the tie-breaker, not the GLib house style.
+# $(wildcard): a literal glob would reach clang-format unexpanded and fail
+# whenever a directory is empty — tests/ holds no C on a fresh clone yet.
 format:
-	clang-format -i src/*.c ibus/*.c tests/*.c tests/*.cpp
+	clang-format -i $(wildcard src/*.c ibus/*.c tests/*.c tests/*.cpp)
 
 clean:
 	rm -f diktat ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client

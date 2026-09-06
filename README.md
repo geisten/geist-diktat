@@ -66,7 +66,7 @@ arecord -q -f S16_LE -r 16000 -c 1 -t raw | \
 make deb                # roll your own .deb (Linux); `make tarball` elsewhere
 ```
 
-`make help` lists every entry point — build, the five test suites,
+`make help` lists every entry point — build, the six test suites,
 packaging and formatting all run through it, and CI calls the same
 targets.
 

@@ -34,7 +34,7 @@ jobs:
           fi
       - name: deps
         run: sudo apt-get update -q && sudo apt-get install -y -q lintian
-      - name: build (packaging/build-linux.sh — shared with release.yml)
+      - name: build (packaging/build-linux.sh — shared with ci.yml)
         run: |
           [ "$(uname -m)" = aarch64 ] || sudo apt-get install -y -q gcc-14 libibus-1.0-dev
           sh packaging/build-linux.sh
