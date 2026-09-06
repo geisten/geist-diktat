@@ -1,12 +1,44 @@
 # Produktfreigabe: Stand und Reihenfolge
 
-Stand: **6. September 2026**. Implementierungsbasis: `5e27010c461a6cff4ba830af52bf78df94cc7213`, Branch `codex/product-readiness`. Dieser Plan ersetzt die Reihenfolge vom 5. September.
+Stand: **6. September 2026**. Implementierungsbasis: `5e27010c461a6cff4ba830af52bf78df94cc7213`, Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
 
-**Noch kein allgemeines Produktrelease.** Die Stabilitätsbasis steht. Die größten Blocker bleiben kontinuierliches Pi5-Diktat, Qualität unter Rauschen, breite DACH-Abdeckung sowie Desktop- und Erststart-Abnahme. Empfohlen ist eine gestufte Freigabe pro geprüftem Plattform-/Sprachprofil; das Ziel einer breiten DACH-Unterstützung bleibt bestehen.
+**Ziel ist die erste öffentliche Ubuntu-GNOME-Beta.** Ihre Blocker sind zuverlässiges Desktop-Diktat, deutsche Qualität für Alltags- und technische Texte, die fünf verbindlichen Anwendungen, geführter Erststart und der externe Zeitgewinn-Nachweis. Die Stabilitätsbasis ist umgesetzt; die Beta ist noch nicht freigegeben. Pi5, macOS und zusätzliche Desktop-Profile liegen außerhalb des kritischen Pfads. Breite DACH-Tests bleiben im Plan, Dialektunterstützung wird zunächst ausdrücklich experimentell ausgewiesen.
 
-✅ = implementiert und im genannten Umfang getestet; 🟡 = teilweise umgesetzt; ⬜ = offen. Umsetzung auf dem Branch bedeutet nicht Merge, Veröffentlichung oder Feldabnahme. Die GitHub-Issues #16–40 waren bei der heutigen Abfrage weiterhin offen.
+✅ = implementiert und im genannten Umfang getestet; 🟡 = teilweise umgesetzt; ⬜ = offen. Umsetzung auf dem Branch bedeutet nicht Merge, Veröffentlichung oder Feldabnahme. Die GitHub-Issues #16–40 waren bei der dokumentierten Abfrage vom 6. September weiterhin offen; dieses Planupdate schließt keine Issues.
 
 Messungen: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md). Architekturentscheidung, Alternativen und aktuelle Primärquellen: [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md).
+
+## Bestätigte Produktentscheidungen
+
+| Entscheidung | Verbindliche Festlegung |
+|---|---|
+| Produktzweck | Direktes Diktieren plus Einbettbarkeit für Entwickler; die eigenen Adapter verwenden denselben Prozessvertrag |
+| Erste Plattform | Ubuntu GNOME; technisches Ausgangsprofil ist das bisher geplante Ubuntu 24.04 mit Wayland. Exakte OS-/App-/Paketversionen vor dem Pilot einfrieren |
+| Verbindliche Anwendungen | Vim, Neovim, ein vorab festgelegter GNOME-Texteditor, Firefox, LibreOffice Writer |
+| Entwicklerumfang | Lokaler Prozess: Audio hinein, Text und Zustandsereignisse heraus, Start/Stop und Fehlercodes. C-SDK und Netzwerk-API sind kein Beta-Versprechen |
+| Inhalte | Deutsche Alltags- **und** technische Texte einschließlich englischer Fachbegriffe, Zahlen und Bezeichner |
+| Dialektausgabe | Inhaltstreues Standarddeutsch ohne stilistische Umschreibung; wörtliche Dialektschreibung ist kein Produktmodus der ersten Beta |
+| Engine | Beste nachgewiesene Lösung je Plattform; Geist/Gemma darf als Standard ersetzt werden |
+| Bedienung | Shortcut startet/stoppt. Stabile Abschnitte nach Sprechpausen automatisch einfügen; vorläufigen Text nicht nachträglich im Zielfeld umschreiben |
+| Beta und Aufmerksamkeit | Öffentliche Vorstellung, nachvollziehbare Ergebnisse/Demo und installierbarer Beta-Download starten gemeinsam |
+| Vorabtest | Mindestens fünf externe Pilottester aus Germars Umfeld; Germar gewinnt sie, das Projekt liefert Ablauf und Auswertung |
+| Veröffentlichungstermin | Erst nach bestandenen Kriterien; kein fester Termin auf Kosten der Abnahme |
+| Pi5 und weitere Plattformen | Pi5 bleibt experimentell und blockiert die Ubuntu-Beta nicht. macOS und weitere Desktop-/App-Profile folgen separat |
+
+### Verbindlicher Nutzennachweis vor dem öffentlichen Download
+
+In **jeder** der beiden Kategorien Alltags- und technische Texte muss der Median
+der personenbezogenen Zeitgewinne mindestens **25 %** betragen. Je Kategorie müssen
+mindestens **vier von fünf Personen** schneller sein als beim Tippen. Die beiden
+Kategorien werden weder miteinander noch über ihre Rohzeiten zusammengefasst.
+Gemessen wird bis zum fertig korrigierten Text, einschließlich Start, Erkennung,
+Einfügung und Nachbearbeitung. Verbleibende Inhaltsfehler dürfen keinen scheinbaren
+Zeitvorteil erzeugen. Diese Kriterien sind beschlossen, aber noch nicht gemessen.
+
+Das [Pilotprotokoll](BETA-PILOT.md) definiert Auswertung, Aufgabenvergleich und
+Fehlerbehandlung. Technische Sprach-, Latenz-, Installations- und Sicherheitsgates
+bleiben zusätzlich erforderlich. Der Zeitgewinn gegenüber Tippen ist kein Nachweis
+für Überlegenheit gegenüber anderen Diktatprodukten.
 
 ## Bereits umgesetzt
 
@@ -45,7 +77,7 @@ Saubere Piloten: zwölf Aufnahmen, 294 Wörter; Rauschen: sechs Inhalte je Stufe
 
 ## Reihenfolge und Abnahmetore
 
-M1 und die Datenbeschaffung für M3 können sofort beginnen. M2 braucht die Messinstrumentierung; M4 den stabilen Ereignisvertrag aus M2. M5 baut auf den geprüften Aufnahme-/Einfügepfaden auf. M6 prüft die konkreten Release-Artefakte. Fortschritt wird an Ergebnissen gemessen; belastbare Termine erfordern zuerst den Backend-Prototyp und verfügbare Sprecher.
+Kritischer Pfad: **M1 Messung → M2 Ubuntu-Decoder → M4 fünf Anwendungen → M5 Erststart → M6 externer Pilot → M7 öffentliche Beta.** M3 stellt die unabhängigen Sprachdaten und Qualitätsgates bereit und beginnt mit M1; Germar gewinnt parallel die Pilottester. M0 sichert die Integration des Implementierungsstands. Pi5-Optimierung, macOS und zusätzliche Modellvergleiche dürfen diesen Pfad nicht verdrängen. Ein Termin ergibt sich erst aus bestandenen Toren.
 
 ### M0 — Stabilitätsbasis sichern: ✅ umgesetzt, Integration noch offen
 
@@ -60,30 +92,31 @@ Evidenz: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md), [CI-Lauf](http
 Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://github.com/geisten/geist-diktat/issues/36), [#38](https://github.com/geisten/geist-diktat/issues/38).
 
 - [x] Pilotmanifest, numerische Reports, gepinnte Modelle/Engines, Gate-Checker vorhanden.
-- [ ] Gesonderten Release-Qualitätsjob mit sauberer Sprache **und** Rauschen anlegen; Checker verpflichtend ausführen. Fehlende Gruppen/Referenzen oder fehlgeschlagene Clips verhindern die Freigabe.
+- [ ] Gesonderten Release-Qualitätsjob für das ausgewählte Ubuntu-Profil mit sauberer Sprache **und** Rauschen anlegen; Checker verpflichtend ausführen. Fehlende Gruppen/Referenzen oder fehlgeschlagene Clips verhindern die Freigabe.
 - [ ] Modell, Build, Hardware, Decoderparameter und Korpusrevision pro Plattform speichern. Numerische Release-Evidenz dauerhaft archivieren; bisherige Actions-Aufbewahrung: 30 Tage.
 - [ ] Zeitpunkte für Audioblock, Sprachende, Decoderstart/-ende, stabiles Ergebnis und tatsächliche Einfügung erfassen. Modellladen, Encoder, Decoder und Warteschlangen separat messen; kalte und warme Starts trennen.
 - [ ] Live-Harness zählt empfangene/verarbeitete/als verworfen gemeldete Frames, maximalen Lesestillstand, Queue-Alter/-Tiefe, Stop-Zeit und Prozessbaum-RSS. Auch Betriebssystem-Pipes berücksichtigen.
 
 **Tor:** Ein absichtlich schlechter oder unvollständiger Report blockiert den Release-Job. Latenz ist bis zur Texteingabe messbar. Hosting-CI bleibt für Verträge zuständig, der eigene Ubuntu-Agent für reale CPU-ASR. Pi5 sowie physische Desktop-/Mikrofonprüfungen bleiben eigene Abnahmen.
 
-### M2 — Residenten ASR-Pfad und Plattformprofile auswählen: 🟡 Freigabeblocker
+### M2 — Residenten ASR-Pfad für Ubuntu auswählen: 🟡 Freigabeblocker
 
 Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://github.com/geisten/geist-diktat/issues/37), [#34](https://github.com/geisten/geist-diktat/issues/34).
 
 - [x] Geist und quantisiertes Whisper auf identischem deutschen Pilot verglichen.
-- [ ] Zuerst residenten whisper.cpp-Kontext im eigenen Adapter entwickeln: einmal laden, kontinuierlich Audio übernehmen, begrenzte Arbeitspuffer, geordneter Stop. Geist hält sein Modell bereits während einer Sitzung; dort segmentweisen Decode-Stillstand und Lesepfad untersuchen.
+- [ ] Zuerst residenten whisper.cpp-Kontext für das Ubuntu-Desktopprofil im eigenen Adapter entwickeln: einmal laden, kontinuierlich Audio übernehmen, begrenzte Arbeitspuffer, geordneter Stop. Geist hält sein Modell bereits während einer Sitzung; dort segmentweisen Decode-Stillstand und Lesepfad untersuchen.
 - [ ] Additiven Ereignismodus mit `session_id`, Audiozeit, `partial`, `final`, `state`, `error` definieren; v1-Zeilenausgabe kompatibel lassen. Nur stabile Endergebnisse automatisch einfügen. Alte Sitzungen dürfen keinen Text nachliefern.
 - [ ] VAD-Endpunkte, kürzere Fenster und begrenzte Überlappung einzeln vergleichen. Kontext-Neuberechnung kann mehr Zeit kosten; doppelte Wörter und verlorene Satzanfänge erhalten Regressionen.
-- [ ] Pi5: small Q5_1 Beam 1 resident, anschließend mehrsprachiges base als kleineren Kandidaten vergleichen; 1/2/3/4 Threads, Quantisierung und BLAS getrennt messen. Keine englischen `.en`-Modelle für Deutsch einsetzen.
-- [ ] Mac: Whisper mit Metal, optional Core-ML-Encoder vergleichen. Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8. Parakeet v3 und Qwen3-ASR nach Sprach-/Runtime-/Speicherprüfung als Herausforderer aufnehmen; Details in der SOTA-Analyse.
-- [ ] Anschließend 30/60 Minuten zeitgetreue Dateien **und physische Aufnahme** pro beanspruchter Plattform mit dokumentierter Kühlung, Last und Geräteprofil.
+- [ ] Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8 vergleichen; den Standard anhand Qualität, Einfügelatenz, Speicher und Stabilität wählen. Den ersten Kandidaten mit bestandenen Toren produktisieren; eine vollständige Modellrangliste ist keine Release-Voraussetzung.
+- [ ] Parakeet v3 und Qwen3-ASR als weitere Kandidaten prüfen, wenn die ersten Pfade die Tore verfehlen oder eine konkrete verbleibende Qualitätslücke besteht; vorher Sprach-/Runtime-/Speicherprüfung.
+- [ ] 30/60 Minuten zeitgetreue Dateien **und physische Aufnahme** auf dem Ubuntu-Zielprofil mit dokumentierter Last und Geräteprofil. Das ist ein Belastungstest des Diktats, kein Versprechen einer eigenständigen Gesprächstranskriptionsfunktion.
+- [ ] Die dokumentierte Prozessschnittstelle mit einem minimalen externen Referenzclient abnehmen: Audiozufuhr, finale Texte, Zustandsereignisse, Start/Stop und Fehler. Eigene Editor-/IBus-Adapter müssen denselben Vertrag nutzen.
 
-**Vorgeschlagene Produktziele:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Pi5/4 GiB: Prozessbaum-RSS als Ziel ≤1,5 GiB, kein fortschreitender Swap-I/O und keine Drosselung im freigegebenen Kühlprofil. Das sind zu validierende Anforderungen, keine erzielten Werte.
+**Technische Abnahmekriterien für das Ubuntu-Profil:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Das sind Anforderungen, keine erzielten Werte. Die bisherigen Pi5-Zielwerte werden im separaten Folgeprofil weitergeführt.
 
-**Bei Nichtbestehen:** Pi5 bleibt experimentell; eine bestandene Desktop-Konfiguration kann separat in die Beta. Größere Puffer oder Übertakten ersetzen das Tor nicht. Beschleuniger-Hardware erst nach belegter Modell-/Operatorunterstützung als eigenes Profil planen. Lokale Verarbeitung bleibt Standard; kein stiller Cloud-Fallback.
+**Bei Nichtbestehen:** Der Ubuntu-Beta-Start wartet; Qualität und Zeitgewinn werden nicht für einen Termin abgeschwächt. Größere Puffer ersetzen das Tor nicht. Pi5 bleibt davon unabhängig experimentell. Lokale Verarbeitung bleibt Standard; kein stiller Cloud-Fallback.
 
-### M3 — Deutsche Qualität und breite DACH-Abdeckung: 🟡 Beschaffung sofort starten
+### M3 — Deutsche Qualitätsabnahme und experimentelle DACH-Tests: 🟡
 
 Issues: [#38](https://github.com/geisten/geist-diktat/issues/38), [#39](https://github.com/geisten/geist-diktat/issues/39).
 
@@ -93,21 +126,22 @@ Issues: [#38](https://github.com/geisten/geist-diktat/issues/38), [#39](https://
 - [ ] Sprecher, Ursprungsaufnahmen, parallele Inhalte und deren Rauschvarianten gemeinsam einem Split zuordnen. Entwicklungs- und versiegeltes Freigabeset trennen. Vorhandene Piloten nur zur Entwicklung verwenden.
 - [ ] Headset, Laptop-/USB-Mikrofon, Entfernung, Raumhall, Tastatur, Lüfter und Hintergrundsprache tatsächlich aufnehmen; 20/10/5-dB-Simulationen ergänzend erhalten.
 - [ ] RMS gegen Silero-VAD prüfen; Entrauschung anschließend separat als A/B-Versuch. Saubere Sprache und leise Satzanfänge dürfen nicht systematisch schlechter werden.
-- [ ] WER mit festgelegter Normalisierung, CER, Namen-/Zahlen-/Negationsfehler, ungesprochene Wörter und Korrekturaufwand ausweisen. Dialektschreibung und Übertragung ins Hochdeutsche getrennt referenzieren und bewerten.
+- [ ] WER mit festgelegter Normalisierung, CER, Namen-/Zahlen-/Negationsfehler, ungesprochene Wörter und Korrekturaufwand ausweisen. Für den Produktmodus die inhaltstreue Übertragung ins Standarddeutsche menschlich referenzieren und regional bewerten. Historische WER gegen Dialektschreibung bleibt eine gesonderte Forschungskennzahl; dafür wird kein zweiter Beta-Modus gebaut.
 
-**Tor:** Sauberes Standarddeutsch ≤10 % WER, 10 dB ≤25 % auf dem unabhängigen Set; Sprecher-basierte Konfidenzintervalle und schlechteste Gruppen mitberichten. Als vorgeschlagenes DACH-Ziel ≤25 % normalisierte WER pro beanspruchter Dialektgruppe und Referenzaufgabe vorab festschreiben; Machbarkeit zunächst am Entwicklungsset prüfen. Keine stille Lockerung nach Einsicht in Freigabedaten. Mindestens eine Stunde Stille/Nichtsprachgeräusche ohne automatisch eingefügten Text; zusätzlich keine erfundenen Sätze in manuell geprüften Sprach-/Rauschfällen. Das ist kein Versprechen einer Halluzinationsrate von null im Alltag.
+**Tor:** Sauberes Standarddeutsch ≤10 % WER, 10 dB ≤25 % auf dem unabhängigen Set; Sprecher-basierte Konfidenzintervalle und schlechteste Gruppen mitberichten. DACH-Ergebnisse werden pro Region mit Stichprobenumfang und Grenzen experimentell veröffentlicht und blockieren die Standarddeutsch-Beta nicht. Für eine spätere reguläre Dialektfreigabe bleibt ≤25 % normalisierte WER gegen die standarddeutsche Referenz ein vorgeschlagenes Entwicklungsziel; vor dieser Freigabe sind Machbarkeit und regionale Kriterien festzulegen. Keine stille Lockerung nach Einsicht in Freigabedaten. Mindestens eine Stunde Stille/Nichtsprachgeräusche ohne automatisch eingefügten Text; zusätzlich keine erfundenen Sätze in manuell geprüften Sprach-/Rauschfällen. Das ist kein Versprechen einer Halluzinationsrate von null im Alltag.
 
-Bei Nichterreichen keine Freigabe der betroffenen Sprachgruppe. Explizite Nutzerkorrekturen können später ein rechtegeklärtes Anpassungsset bilden; Fine-Tuning erst nach Fehleranalyse und mit getrenntem Nachweis auf ungesehenen Sprechern.
+Bei Nichterreichen keine reguläre Freigabe der betroffenen Sprachgruppe; experimentelle Ergebnisse bleiben als solche sichtbar. Explizite Nutzerkorrekturen können später ein rechtegeklärtes Anpassungsset bilden; Fine-Tuning erst nach Fehleranalyse und mit getrenntem Nachweis auf ungesehenen Sprechern.
 
 ### M4 — Einbettung in echte Anwendungen: 🟡
 
 Issues: #19, #20, #23, #24, #27–29, [#31](https://github.com/geisten/geist-diktat/issues/31), [#32](https://github.com/geisten/geist-diktat/issues/32), [#33](https://github.com/geisten/geist-diktat/issues/33), [#34](https://github.com/geisten/geist-diktat/issues/34), [#35](https://github.com/geisten/geist-diktat/issues/35).
 
 - [x] Echte Vim-/Neovim-Prozesse, Unicode, 100 Wechsel, IBus-Lifecycle, GTK3-/Qt5-Felder und Schutzfeldregeln getestet.
-- [ ] Zuerst Vim/Neovim und Ubuntu 24.04 GNOME Wayland vollständig abnehmen; anschließend Xorg und KDE separat. Jede Matrixzelle erhält OS-, Desktop-, Toolkit-/App-Version, Datum und Ergebnis.
-- [ ] GTK3/4, Qt5/6, Firefox/Chromium, Electron, LibreOffice, Flatpak/Snap: Cursor/Selektion, Modus/Buffer/Fokus, Undo, IME-Wechsel, Passwort/PIN, globaler Stop, Gerätewechsel, Sperren/Entsperren und Session-Neustart prüfen.
+- [ ] Die fünf verbindlichen Anwendungen auf dem Ubuntu-GNOME-Zielprofil abnehmen: Vim, Neovim, vorab festgelegter GNOME-Texteditor, Firefox, LibreOffice Writer. Jede Matrixzelle erhält OS-, Desktop-, Toolkit-/App-Version, Paketformat, Datum und Ergebnis.
+- [ ] Für diese Anwendungen Cursor/Selektion, Modus/Buffer/Fokus, Undo, IME-Wechsel, Passwort/PIN, globalen Stop, Gerätewechsel, Sperren/Entsperren und Session-Neustart prüfen. Das tatsächlich verwendete Paketformat gehört zwingend zur jeweiligen Zelle, auch wenn es Flatpak oder Snap ist.
+- [ ] Weitere Chromium-/Electron-/Qt-Anwendungen, Paketvarianten, Xorg und KDE separat mit Teststatus dokumentieren; deren vollständige Matrix ist kein Tor für diese Beta.
 - [ ] Ubuntu bevorzugt IBus-Text-Commit; globalen Shortcut über verfügbares Portal integrieren. Fehlende Fähigkeiten im Doctor anzeigen. `wtype` bleibt eine bedingte Senke, keine universelle Wayland-Lösung.
-- [ ] macOS: native Audioaufnahme und Gerätewechsel ergänzen; festgehaltenes Einfügeziel, Secure Input und Berechtigungswiderruf in TextEdit, Browsern, Terminal und Editoren tatsächlich testen. Nicht einfügbaren Text in Vorschau erhalten.
+- [ ] Bei nicht mehr sicher bestimmtem Einfügeziel keine automatische Einfügung; Wiederauffinden bereits erkannter Ergebnisse und verständliche Statusanzeige abnehmen. macOS-Feldtests liegen im Folgeprofil.
 
 **Tor:** Alle zugesagten Zellen bestehen; geschützte/unklare Ziele erhalten keinen Text. Nicht unterstützte Pfade erkennbar deaktivieren. Globaler Stop wirkt auch während Decoder-Stillstand. Headless-CI allein schließt dieses Tor nicht.
 
@@ -117,18 +151,36 @@ Issues: [#21](https://github.com/geisten/geist-diktat/issues/21), [#29](https://
 
 - [x] Pakete, Editorinstallation, Diagnose, geprüfte Downloads und macOS-App-Prototyp vorhanden.
 - [ ] Modellprofil vorschlagen; Downloadgröße, Fortschritt, Wiederaufnahme und Speichermangel verständlich behandeln. Mikrofon wählen, Pegel/echte Aufnahme prüfen, Testdiktat einfügen, Shortcut zuordnen.
-- [ ] Abhängigkeiten vollständig liefern: macOS ohne Homebrew/externes Python/SoX starten können; native Capture-Lösung bzw. mitgelieferte Runtime prüfen. Ubuntu-Paketabhängigkeiten und Eingabequellenregistrierung abnehmen.
+- [ ] Ubuntu-Paketabhängigkeiten und Eingabequellenregistrierung auf frischen Systemen vollständig abnehmen. Eine selbstständig lauffähige macOS-App ist Aufgabe des Folgeprofils.
 - [ ] Update, Rollback, abgebrochenes Setup, verbliebener Lock und Deinstallation über einen verständlichen Bedienpfad. Pakettexte an tatsächliche Architektur anpassen.
-- [ ] Fünf Personen ohne Entwicklerkontext je freizugebender Desktop-Plattform auf frischen Systemen beobachten: Klicks, Berechtigungen, Downloadzeit, aktive Einrichtungszeit und Zeit bis zum ersten korrekt eingefügten Satz dokumentieren.
+- [ ] Mindestens fünf externe Personen ohne Projektinterna auf frischen Ubuntu-Installationen bzw. frischen Benutzerprofilen beobachten; die Installationsprüfung muss auch die Abwesenheit vorhandener Entwicklerabhängigkeiten abdecken: Klicks, Berechtigungen, Downloadzeit, aktive Einrichtungszeit und Zeit bis zum ersten korrekt eingefügten Satz dokumentieren.
 
 **Tor:** Alle fünf erreichen das Testdiktat ohne Terminal-Diagnose oder Entwicklerhilfe. Keine fehlenden Laufzeitabhängigkeiten; kaputter Download/Offline/Update lässt sich geführt beheben. Alltag: ein Shortcut. Erstinstallation: geführter Ablauf mit erforderlichen OS-Dialogen. Erst Messergebnisse rechtfertigen ein „One-Click“-Versprechen.
 
-### M6 — Release-Kandidat und gestufte Beta: ⬜
+### M6 — Externen Nutzennachweis bestehen: ⬜ vor dem ersten öffentlichen Download
 
-- [ ] M1–M5 für jedes veröffentlichte Profil bestehen; DACH-/Pi5-/App-Claims nur für jeweils abgenommene Gruppen. Experimentelle Profile klar kennzeichnen.
-- [ ] macOS Developer-ID/Hardened Runtime/Notarisierung/Stapling und Gatekeeper-Test auf frischem System. Beim letzten lokalen Check gab es keine gültigen Codesigning-Identitäten; deren Bereitstellung bleibt externer Meilenstein.
-- [ ] Versionierte signierte Artefakte, Prüfsummen, Modell-/Abhängigkeitslizenzen, Build-Provenienz und Rückkehr zur Vorversion bereitstellen.
-- [ ] Gates mit exakt ausgelieferten Binaries/Modellen wiederholen; Supportmatrix, Grenzen und numerische Evidenz dauerhaft veröffentlichen.
-- [ ] Begrenzte Alltagsbeta: Abbrüche, falsche Einfügeziele, Korrekturaufwand und erfolgreiche Sitzungen auswerten; Sprachinhalte nur nach ausdrücklicher Zustimmung erfassen. Offene P1 schließen, verbleibende P2 pro freigegebenem Profil bewerten und dokumentieren.
+- [ ] Germar gewinnt mindestens fünf externe Pilottester aus seinem Umfeld. Das Projekt stellt [Pilotprotokoll](BETA-PILOT.md), Aufgaben, Messvorlage und Auswertung bereit. Die bestätigte Rekrutierungszusage ist noch kein Nachweis verfügbarer Teilnehmer.
+- [ ] Vor dem Pilot Kohorte, Aufgabenpaare, Anwendungsversionen, Kandidaten-Build/Modell und Auswertungsregel einfrieren. Alltags- und technische Texte sind gleichberechtigte Pflichtkategorien.
+- [ ] Personenbezogene Zeitgewinne bis zum fertig korrigierten Text auswerten: je Kategorie Median ≥25 % und mindestens vier von fünf Personen schneller als beim Tippen. Fehler, Abbrüche und fehlende Ergebnisse nicht aussortieren.
+- [ ] Zusätzlich müssen alle fünf den geführten Erststart ohne Projekt-/Entwicklerhilfe bewältigen. Diagnosefähigkeit erfahrener Entwickler ist keine Voraussetzung für das Produkt.
+- [ ] Bei Änderungen nach einem gescheiterten Pilot einen neuen Kandidaten mit neuen, vergleichbaren Aufgaben prüfen. Alte Fehlversuche und Versionswechsel nachvollziehbar erhalten.
 
-**Freigabeumfang:** Zuerst bestandene Editor-/Ubuntu-/Mac-Profile, Pi5 und weitere Dialekt-/Desktopprofile nach eigenen Toren. Eine allgemeine Freigabe für den gesamten ursprünglichen Anspruch folgt erst nach allen zugehörigen Abnahmen. Belegter Mehrwert heute: lokale Verarbeitung und gezielte Editor-/IBus-Komposition. Zielmehrwert: zuverlässiges tägliches Diktat mit geringem Korrekturaufwand und transparenter Kontrolle. Eine generelle SOTA-Erkennungsüberlegenheit oder bessere Bedienbarkeit gegenüber etablierten Produkten ist noch nicht nachgewiesen.
+**Tor:** Sowohl Nutzenkriterium als auch M1–M5 für das Ubuntu-Profil bestanden. Ergebnisse pro Person und Kategorie berichten; eine kleine Pilotgruppe rechtfertigt keine allgemeine Marktüberlegenheitsbehauptung. Der Mindestnutzen wird vor dem öffentlichen Download nachgewiesen, nicht erstmals in der öffentlichen Beta gesucht.
+
+### M7 — Öffentliche Vorstellung und Beta-Download gemeinsam: ⬜
+
+- [ ] Versionierte, signierte Release-Artefakte mit Modell-/Abhängigkeitslizenzen, Prüfsummen, Build-Provenienz und Wiederherstellung bereitstellen. Mit exakt ausgelieferten Binaries/Modellen die technischen Gates bestehen; Änderungen am Diktatpfad nach dem Pilot erfordern passende erneute Nutzentests.
+- [ ] Supportmatrix nennt die fünf geprüften Anwendungen und deren konkrete Versionen/Paketformate. Weitere Apps, DACH-Varianten und Pi5 erhalten einen ehrlichen experimentellen bzw. ungeprüften Status.
+- [ ] Demo, numerische Evidenz, Installationsanleitung und Beta-Download gemeinsam vorbereiten und veröffentlichen. Kein separater öffentlicher Vorab-Demo-Start als Ersatz für den funktionsfähigen Download.
+- [ ] Aufmerksamkeit auf belegbaren Arbeitsvorteil und lokale Entwickler-/Editorintegration richten. Keine Behauptung universeller Linux-Unterstützung, genereller SOTA-Überlegenheit oder ungeprüfter One-Click-Installation.
+- [ ] Offene P1 schließen, P2 für das Beta-Profil beurteilen und bekannte Einschränkungen dokumentieren. Öffentliche Beta-Rückmeldungen zu Abbrüchen, Einfügefehlern, Korrekturaufwand und Installation erfassen; Sprachinhalte nur nach ausdrücklicher Zustimmung.
+
+**Freigabeentscheidung:** Kein festes Datum. Erst nach M0–M6 für das vereinbarte Ubuntu-Profil veröffentlichen. Dieser bestätigte Plan beauftragt die Planaktualisierung; ein Produktrelease oder Nachrichten an Tester werden dadurch nicht bereits ausgeführt.
+
+## Folgeprofile außerhalb des ersten Beta-Startpfads
+
+- **Pi5 (#36/#37):** small Q5_1 Beam 1 resident, danach mehrsprachiges base; Threads, Quantisierung, BLAS und Kühlung getrennt prüfen. Weiterhin RTF ≤0,8, p95 ≤3 s, 30/60-Minuten-Dauerabnahme; für 4 GiB als Entwicklungsziel Prozessbaum-RSS ≤1,5 GiB ohne fortschreitenden Swap-I/O/Drosselung. Bis zum Nachweis experimentell.
+- **macOS (#32):** native Capture-/Gerätepfade, App-/TCC-Abnahme, gebündelte Abhängigkeiten, Developer-ID/Hardened Runtime/Notarisierung/Stapling und Gatekeeper-Prüfung. Fehlende Signieridentitäten blockieren diese Plattform, nicht die Ubuntu-Beta.
+- **Weitere Linux-Profile (#31):** Xorg/KDE, zusätzliche Apps sowie zusätzliche Flatpak-/Snap-Varianten mit eigener Matrix qualifizieren.
+- **Reguläre DACH-Unterstützung (#38/#39):** breite Tests weiterführen, unabhängige Sprecher und regionale Referenzen erweitern; erst nach eigener Abnahme das experimentelle Kennzeichen entfernen.
+- **Weitere Entwicklerprodukte (#34):** C-SDK und Netzwerkdienst nur bei begründetem Bedarf später planen. Die erste Beta liefert den lokalen Prozessvertrag.

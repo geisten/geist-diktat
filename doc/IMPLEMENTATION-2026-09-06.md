@@ -19,6 +19,21 @@ Der aktualisierte [Produktplan](PRODUCT-PLAN.md) trennt erledigte Arbeiten von
 verbleibenden Freigabetoren; die [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md)
 begründet die nächsten Architektur- und Modellvergleiche.
 
+## Bestätigter erster Freigabeumfang nach dem Grilling-Interview
+
+Der [Produktplan](PRODUCT-PLAN.md) priorisiert jetzt die **öffentliche Ubuntu-GNOME-Beta**:
+Alltags- und technische Texte, Vim/Neovim/GNOME-Texteditor/Firefox/LibreOffice Writer
+und eine dokumentierte lokale Prozessschnittstelle. Pi5, macOS und reguläre
+DACH-Unterstützung sind Folgeprofile; ihre offenen Befunde bleiben unten erhalten,
+blockieren aber nicht die erste Ubuntu-Beta. DACH-Tests laufen breit und experimentell weiter.
+
+Vor dem öffentlichen Download müssen mindestens fünf externe Pilottester den
+[Zeitgewinn-Nachweis](BETA-PILOT.md) erbringen: je Textkategorie ≥25 % im Median,
+mit mindestens vier von fünf Personen schneller als beim Tippen, einschließlich
+vollständiger Korrektur. Germar gewinnt die Tester. Öffentliche Vorstellung und
+Download starten gemeinsam, sobald die Abnahmekriterien bestehen. Diese Entscheidungen
+sind bestätigt; die neuen Abnahmen und technische Umsetzung sind noch offen.
+
 ## Implementiert
 
 | Aufgabe | Umsetzung | Abnahmestand |
@@ -152,16 +167,18 @@ Das ist ein bestandener Test des **kontrollierten Überlastverhaltens**, aber ei
 nicht bestandenes Tor für kontinuierliches Diktieren. Es wird keine WER über
 abgebrochene Gesprächsfragmente als reguläre Erkennungsleistung ausgegeben.
 
-## Nächste Schritte zur Produktfreigabe
+## Technische Restarbeiten aus der Messung (Priorität gemäß aktuellem Produktplan)
 
 1. **Erledigt:** Branch gepusht; `quality-audit` auf dem Implementierungsstand
    erfolgreich ausgeführt (gehostetes x64/ARM64 und manueller CPU-Agent).
    **Neu offen:** Release-Qualitätsjob muss den vorhandenen WER-Gate-Checker
    verpflichtend ausführen und neben sauberer Sprache auch Rauschen prüfen.
    Der bisherige grüne Workflow misst WER, erzwingt aber keine WER-Grenze.
-2. Die stabilisierten P1-Korrekturen und Editorpfade reviewen. Wiederherstellung nach unterbrochenen
+2. Für die Ubuntu-Beta zuerst den residenten Decoder, fünf zugesagte Anwendungen,
+   Erststart und externen Pilot gemäß [Produktplan](PRODUCT-PLAN.md) abschließen.
+   Die stabilisierten P1-Korrekturen und Editorpfade reviewen. Wiederherstellung nach unterbrochenen
    Installationen sowie breite Vim-/Neovim-Modus-/Fokusmatrix ergänzen.
-3. Pi5: residenten ASR-Prozess, kürzere/überlappende Segmente und kleinere
+3. Pi5 als experimentelles Folgeprofil: residenten ASR-Prozess, kürzere/überlappende Segmente und kleinere
    Modelle jeweils getrennt gegen WER **und** maximalen Decoder-Stillstand testen.
    Nur den Puffer zu vergrößern verdeckt lange Verzögerungen. Beam 1 ist ein
    messbarer Kandidat, keine Freigabe. Danach 30/60 Minuten physische Aufnahme mit
@@ -169,12 +186,12 @@ abgebrochene Gesprächsfragmente als reguläre Erkennungsleistung ausgegeben.
 4. Unabhängiges DACH-Testset mit mehreren Sprechern pro Region und echter
    Mikrofon-/Umgebungsgeräuschstreuung einfrieren. Pilotdaten nicht zugleich für
    Parameterauswahl und abschließende Qualitätsbehauptungen verwenden.
-5. GNOME Wayland/Xorg, KDE, GTK4/Qt6, Browser, Electron, LibreOffice und
-   Flatpak/Snap samt Schutzfeldern und Gerätewechsel tatsächlich abnehmen.
+5. GNOME Wayland und die fünf zugesagten Anwendungen samt Paketformat, Schutzfeldern
+   und Gerätewechsel zuerst abnehmen. Xorg/KDE und weitere Anwendungen/Varianten folgen separat.
 6. Geführten Erststart, Mikrofonwahl, Update/Rollback/Deinstallation und Tests
    mit fünf Personen ohne Entwicklerkontext abschließen.
-7. macOS-App mit vorhandener Developer-ID signieren/notarisieren und die
-   Berechtigungs-/TextEdit-/Browser-/Terminal-Matrix testen. Aktuell sind auf
+7. Im macOS-Folgeprofil Developer-ID bereitstellen, App signieren/notarisieren und die
+   Berechtigungs-/TextEdit-/Browser-/Terminal-Matrix testen. Beim dokumentierten lokalen Check waren auf
    diesem Mac **null gültige Codesigning-Identitäten** vorhanden.
 
 Der derzeit belegte Mehrwert liegt in lokaler Verarbeitung, einem kleinen C-
