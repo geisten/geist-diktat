@@ -16,6 +16,7 @@ on:
       - 'tests/**'
       - 'benchmarks/**'
       - '.github/workflows/quality-audit.yml'
+      - '.github/workflows/release.yml'
 permissions:
   contents: read
 jobs:
@@ -67,7 +68,9 @@ jobs:
         run: |
           test -f "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf"
           test -f "$HOME/.local/share/geist-diktat/audio_tower.safetensors"
-      - name: Prepare public German read-speech pilot
+      - name: Clear results from previous self-hosted runs
+        run: python3 -c "import shutil; shutil.rmtree('build/speech-results', ignore_errors=True); shutil.rmtree('quality-metrics', ignore_errors=True)"
+      - name: Prepare public German read-speech and simulated-noise pilot
         run: python3 benchmarks/prepare_quality.py --fleurs-only
       - name: Measure real-model German WER and CPU performance
         run: |
@@ -75,8 +78,15 @@ jobs:
             --manifest build/speech-corpus/manifest.json --binary ./diktat \
             --model "$HOME/.local/share/geist-diktat/gemma4-e2b-Q4_K_M.gguf" \
             --tower "$HOME/.local/share/geist-diktat/audio_tower.safetensors" \
-            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean --timeout 240 \
+            --mel geistlib/audio_test_data/mel_constants.bin --groups de-read-clean,de-noise-10db --timeout 240 \
             --output build/speech-results/ubuntu-agent-quality.json
+      - name: Enforce speech quality on this exact commit
+        if: always()
+        env:
+          CANDIDATE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 benchmarks/check_gates.py build/speech-results/ubuntu-agent-quality.json \
+            --expected-commit "$CANDIDATE_COMMIT" --output quality-metrics/speech-gates.json
       - name: Export metrics without corpus audio or transcripts
         if: always()
         run: |

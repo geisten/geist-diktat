@@ -19,6 +19,27 @@ class Runtime(unittest.TestCase):
     def test_finite_pcm_is_delivered_exactly(self):
         p=self.run_pipeline("printf 'abcdefgh'","import sys; print(repr(sys.stdin.buffer.read()))")
         self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(p.stdout,b"b'abcdefgh'\n")
+    def test_trace_accounts_for_all_delivered_bytes(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'trace.jsonl'
+            p=subprocess.run(self.command("printf 'abcdefgh'","import sys;sys.stdin.buffer.read()"),
+                env=dict(os.environ,GEIST_DIKTAT_TRACE=str(path)),capture_output=True,timeout=6)
+            self.assertEqual(p.returncode,0,p.stderr)
+            events=[json.loads(line) for line in path.read_text().splitlines()]
+            summary=events[-1]
+            self.assertEqual((summary['received_bytes'],summary['delivered_bytes'],summary['unconfirmed_bytes']),(8,8,0))
+            self.assertFalse(summary['failed']);self.assertNotIn('abcdefgh',path.read_text())
+
+    def test_trace_exposes_overload_and_unconfirmed_audio(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'trace.jsonl'
+            p=subprocess.run(self.command('cat /dev/zero','import time;time.sleep(60)',.1),
+                env=dict(os.environ,GEIST_DIKTAT_TRACE=str(path)),capture_output=True,timeout=6)
+            self.assertEqual(p.returncode,75,p.stderr)
+            summary=json.loads(path.read_text().splitlines()[-1])
+            self.assertTrue(summary['failed']);self.assertGreater(summary['unconfirmed_bytes'],0)
+            self.assertLessEqual(summary['peak_queue_bytes'],3200)
+
     def test_capture_error(self):
         p=self.run_pipeline('exit 17','import sys; sys.stdin.buffer.read()')
         self.assertEqual(p.returncode,17,p.stderr)

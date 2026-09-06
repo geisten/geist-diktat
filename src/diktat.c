@@ -23,6 +23,7 @@
  * VAD: identical to push_to_talk — 20 ms frames, opens after 60 ms above
  * threshold, closes after 0.8 s below, threshold as argv[2] (default 300).
  */
+#define _POSIX_C_SOURCE 200809L
 #include <geist.h>
 #include <geist_util.h>
 
@@ -32,6 +33,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "trace.h"
+
+static size_t trace_utterance, trace_output, trace_sample;
 
 #define SR 16000
 #define FRAME 320       /* 20 ms */
@@ -145,9 +150,11 @@ static int transcribe_utterance(struct geist_session *sess) {
     /* Trim the leading SentencePiece space; emit exactly one line. */
     const char *out = line[0] == ' ' ? line + 1 : line;
     if (out[0] != '\0') {
+        diktat_trace("core", "output_ready", trace_utterance, trace_output+1, trace_sample);
         if (printf("%s\n", out) < 0 || fflush(stdout) != 0) {
             perror("diktat: output"); return 1;
         }
+        diktat_trace("core", "output_emitted", trace_utterance, ++trace_output, trace_sample);
     }
     return 0;
 }
@@ -181,6 +188,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, "backend create failed: %s\n", geist_last_create_error());
         return 1;
     }
+    diktat_trace("core", "model_load_start", 0, 0, 0);
     struct geist_model *model = nullptr;
     if (geist_model_load(argv[1], be, &model) != GEIST_OK) {
         fprintf(stderr, "model_load failed: %s\n", geist_last_create_error());
@@ -221,6 +229,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    diktat_trace("core", "model_ready", 0, 0, 0);
     fprintf(stderr, "diktat: listening (VAD threshold %.0f RMS, Ctrl-C to quit)...\n", rms_thr);
 
     /* Same streaming VAD loop as push_to_talk: push PCM while the user
@@ -228,7 +237,7 @@ int main(int argc, char **argv) {
     int16_t frame[FRAME];
     int16_t pending[OPEN_FRAMES][FRAME];
     size_t pending_sizes[OPEN_FRAMES];
-    size_t pushed = 0, trailing = 0;
+    size_t pushed = 0, trailing = 0, received_samples = 0;
     int loud = 0, quiet = 0, result = 0;
     bool in_speech = false;
     size_t bytes;
@@ -237,8 +246,10 @@ int main(int argc, char **argv) {
             fprintf(stderr, "diktat: incomplete PCM16 sample\n"); result = 1; break;
         }
         const size_t n = bytes / sizeof(int16_t);
+        received_samples += n;
         memset(frame + n, 0, sizeof frame - bytes);
         const bool is_loud = frame_rms(frame) > rms_thr;
+        if (is_loud) trace_sample = received_samples;
         if (!in_speech) {
             memcpy(pending[loud], frame, sizeof frame);
             pending_sizes[loud] = n;
@@ -247,6 +258,7 @@ int main(int argc, char **argv) {
             if (geist_session_reset(sess) != GEIST_OK || geist_session_audio_begin(sess) != GEIST_OK) {
                 result = 1; break;
             }
+            trace_utterance++;
             in_speech = true; quiet = 0; pushed = trailing = 0;
             for (int i = 0; i < OPEN_FRAMES - 1; i++) {
                 if (geist_session_audio_push(sess, pending_sizes[i], pending[i]) != GEIST_OK) {
@@ -262,20 +274,25 @@ int main(int argc, char **argv) {
         quiet = is_loud ? 0 : quiet + 1;
         trailing = is_loud ? 0 : trailing + n;
         if (quiet >= CLOSE_FRAMES || pushed >= MAX_UTT) {
+            diktat_trace("core", "decode_start", trace_utterance, trace_output, trace_sample);
             if (geist_session_audio_end(sess) != GEIST_OK) { result = 1; break; }
             if (pushed - trailing >= MIN_UTT) {
                 fprintf(stderr, "diktat: [%.1f s]\n", (double) pushed / SR);
                 result = transcribe_utterance(sess);
             } else if (geist_session_reset(sess) != GEIST_OK) result = 1;
+            diktat_trace("core", "decode_end", trace_utterance, trace_output, trace_sample);
             in_speech = false; loud = 0;
             if (result) break;
         }
     }
     if (ferror(stdin)) { perror("diktat: input"); result = 1; }
     if (!result && in_speech) {
+        diktat_trace("core", "decode_start", trace_utterance, trace_output, trace_sample);
         if (geist_session_audio_end(sess) != GEIST_OK) result = 1;
         else if (pushed - trailing >= MIN_UTT) result = transcribe_utterance(sess);
+        diktat_trace("core", "decode_end", trace_utterance, trace_output, trace_sample);
     }
+    diktat_trace("core", "input_summary", trace_utterance, trace_output, received_samples);
     if (result) fprintf(stderr, "diktat: recognition failed: %s\n", geist_session_errmsg(sess));
 
     geist_session_destroy(sess);

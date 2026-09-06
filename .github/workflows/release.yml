@@ -13,6 +13,28 @@ permissions:
   contents: write
 
 jobs:
+  quality-evidence:
+    # A successful build alone must never authorize public distribution.
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify speech evidence for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 benchmarks/release_evidence.py --repo "$GITHUB_REPOSITORY" \
+            --commit "$CANDIDATE_COMMIT" --output release-evidence/speech-approval.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: speech-release-evidence
+          path: release-evidence/
+
   artifacts:
     strategy:
       matrix:
@@ -161,7 +183,7 @@ jobs:
           path: geist-diktat_*_macos-*.tar.gz
 
   publish:
-    needs: [artifacts, linux-tarball, macos-tarball]
+    needs: [quality-evidence, artifacts, linux-tarball, macos-tarball]
     runs-on: ubuntu-24.04
     if: startsWith(github.ref, 'refs/tags/')
     steps:

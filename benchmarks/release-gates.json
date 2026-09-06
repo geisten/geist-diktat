@@ -1,7 +1,33 @@
 {
-  "description": "Proposed release targets; current Geist pilot is expected to fail. Passing a small pilot does not certify a product.",
+  "description": "Mandatory speech-quality prerequisite for the Ubuntu beta; the small development pilot alone cannot approve the product.",
   "groups": {
-    "de-read-clean": {"max_wer": 0.1, "min_clips": 12},
-    "de-noise-10db": {"max_wer": 0.25, "min_clips": 6}
+    "de-read-clean": {
+      "max_wer": 0.1,
+      "min_clips": 12,
+      "min_reference_words": 294
+    },
+    "de-noise-10db": {
+      "max_wer": 0.25,
+      "min_clips": 6,
+      "min_reference_words": 130
+    }
+  },
+  "require_run_evidence": true,
+  "required_files": [
+    "binary",
+    "model"
+  ],
+  "engines": {
+    "geist": {
+      "required_files": [
+        "tower",
+        "mel"
+      ]
+    },
+    "whisper": {
+      "required_report_hashes": [
+        "whisper_cli_sha256"
+      ]
+    }
   }
 }

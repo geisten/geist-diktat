@@ -13,6 +13,7 @@ import subprocess
 import sys
 import threading
 import time
+from trace_metrics import emit
 
 
 def supervise(capture, decoder, buffer_seconds=6):
@@ -21,6 +22,9 @@ def supervise(capture, decoder, buffer_seconds=6):
     chunks=queue.Queue(maxsize=max(1,int(buffer_seconds*50)))
     stopped=threading.Event(); eof=threading.Event(); fault=[]
     children=[]
+    metrics=dict(received_bytes=0,delivered_bytes=0,peak_queue_bytes=0,
+                 max_write_block_ns=0,max_queue_age_ns=0)
+    metric_lock=threading.Lock()
     def fail(code,message):
         if not stopped.is_set():
             fault.append(code);print('geist-diktat: '+message,file=sys.stderr,flush=True)
@@ -32,12 +36,18 @@ def supervise(capture, decoder, buffer_seconds=6):
         children.append(rec)
         mic=subprocess.Popen(capture,stdout=subprocess.PIPE,start_new_session=True)
         children.append(mic)
+        emit("runtime","capture_started")
         def read_audio():
             try:
                 while not stopped.is_set():
                     data=mic.stdout.read(640)
                     if not data:break
-                    try:chunks.put_nowait(data)
+                    arrived=time.monotonic_ns()
+                    with metric_lock:metrics['received_bytes']+=len(data)
+                    try:
+                        chunks.put_nowait((data,arrived))
+                        with metric_lock:
+                            metrics['peak_queue_bytes']=max(metrics['peak_queue_bytes'],chunks.qsize()*640)
                     except queue.Full:
                         fail(75,'overload: recognition cannot keep up; audio stopped. Choose a faster engine or shorter dictation.')
                         break
@@ -46,11 +56,17 @@ def supervise(capture, decoder, buffer_seconds=6):
         def write_audio():
             try:
                 while not stopped.is_set():
-                    try:data=chunks.get(timeout=.05)
+                    try:data,arrived=chunks.get(timeout=.05)
                     except queue.Empty:
                         if eof.is_set():break
                         continue
+                    before=time.monotonic_ns()
+                    with metric_lock:
+                        metrics['max_queue_age_ns']=max(metrics['max_queue_age_ns'],before-arrived)
                     rec.stdin.write(data);rec.stdin.flush()
+                    with metric_lock:
+                        metrics['delivered_bytes']+=len(data)
+                        metrics['max_write_block_ns']=max(metrics['max_write_block_ns'],time.monotonic_ns()-before)
             except (BrokenPipeError,OSError):
                 # The main thread reports the recognizer's actual exit code.
                 pass
@@ -98,6 +114,14 @@ def supervise(capture, decoder, buffer_seconds=6):
             try:os.killpg(p.pid,signal.SIGKILL)
             except ProcessLookupError:pass
             p.wait()
+        for thread in locals().get('readers',[]):thread.join(timeout=.2)
+        try:
+            with metric_lock:
+                emit("runtime","input_summary",**metrics,
+                     unconfirmed_bytes=metrics['received_bytes']-metrics['delivered_bytes'],
+                     failed=bool(fault))
+        except (OSError,ValueError) as error:
+            print('geist-diktat: trace failed: '+str(error),file=sys.stderr)
         for s,handler in previous.items():signal.signal(s,handler)
 
 

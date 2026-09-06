@@ -24,7 +24,9 @@
  * enable. A resident daemon with a warm model is the upgrade path if
  * source-switch latency matters.
  */
+#define _POSIX_C_SOURCE 200809L
 #include <ibus.h>
+#include "../src/trace.h"
 
 #include <glib-unix.h>
 
@@ -59,6 +61,7 @@ struct _GeistEngine {
     GPid       pid;   /* pipeline process group leader; 0 = not running */
     guint      child_watch;
     gboolean enabled, focused, protected_input;
+    size_t trace_output;
     guint      watch; /* GIOChannel source id */
     GIOChannel *out;
     IBusPropList *props;
@@ -126,6 +129,7 @@ static gboolean on_pipeline_line(GIOChannel *ch, GIOCondition cond, gpointer dat
             if (line[0] && !e->protected_input) {
                 gchar *text = g_strconcat(line, " ", NULL);
                 ibus_engine_commit_text(IBUS_ENGINE(e), ibus_text_new_from_string(text));
+                diktat_trace("ibus", "commit_requested", 0, ++e->trace_output, 0);
                 g_free(text);
             }
             g_free(line); continue;
@@ -159,6 +163,7 @@ static void pipeline_start(GeistEngine *e) {
         return;
     }
     close_output(e);
+    e->trace_output = 0;
     gchar *cmd    = pipeline_cmd();
     gchar *argv[] = {"/bin/sh", "-c", cmd, NULL};
     gint   out_fd = -1;

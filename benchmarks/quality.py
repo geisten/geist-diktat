@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 import platform
 import re
+import subprocess
+import time
 import unicodedata
 import wave
 from dictation import run, digest
@@ -84,7 +86,10 @@ def main():
     fixtures=[f for f in fixtures if not groups or f['group'] in groups]
     if args.limit:fixtures=fixtures[:args.limit]
     if not fixtures:ap.error('no matching fixtures')
-    report=dict(engine=args.engine,platform=platform.platform(),threads=args.threads,paced=args.paced,
+    source_commit=subprocess.check_output(['git','-C',str(Path(__file__).resolve().parents[1]),'rev-parse','HEAD'],text=True).strip()
+    report=dict(source_commit=source_commit,date_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
+        evaluation_scope='development pilot; no physical microphone or held-out DACH certification',
+        engine=args.engine,platform=platform.platform(),machine=platform.machine(),threads=args.threads,paced=args.paced,
         environment={k:v for k,v in os.environ.items() if k.startswith('GEIST_AUDIO_') or k in ('OMP_WAIT_POLICY','GEIST_WHISPER_BEAM_SIZE')},
         files=hashes,manifest_sha256=digest(args.manifest),
         normalization='NFC lowercase; Unicode letters/digits; punctuation split; no number/dialect rewriting',

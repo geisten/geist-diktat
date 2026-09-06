@@ -21,5 +21,9 @@ sh tests/toolkit_isolated.sh gtk > tests/results/ubuntu-gtk.log 2>&1
 gtk=$?
 sh tests/toolkit_isolated.sh qt > tests/results/ubuntu-qt.log 2>&1
 qt=$?
-printf 'contracts=%s lifecycle=%s integration=%s gtk=%s qt=%s\n' "$contracts" "$lifecycle" "$integration" "$gtk" "$qt"
-test "$contracts$lifecycle$integration$gtk$qt" = 00000
+sh tests/toolkit_latency.sh gtk > tests/results/ubuntu-gtk-latency.log 2>&1
+gtk_latency=$?
+sh tests/toolkit_latency.sh qt > tests/results/ubuntu-qt-latency.log 2>&1
+qt_latency=$?
+printf 'contracts=%s lifecycle=%s integration=%s gtk=%s qt=%s gtk_latency=%s qt_latency=%s\n' "$contracts" "$lifecycle" "$integration" "$gtk" "$qt" "$gtk_latency" "$qt_latency"
+test "$contracts$lifecycle$integration$gtk$qt$gtk_latency$qt_latency" = 0000000

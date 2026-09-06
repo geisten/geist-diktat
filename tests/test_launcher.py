@@ -17,7 +17,8 @@ class Launcher(unittest.TestCase):
         self.wrapper=self.bin/'geist-diktat'; shutil.copy(ROOT/'packaging/geist-diktat',self.wrapper)
         self.wrapper.chmod(0o755)
         share=self.root/'prefix/share/geist-diktat'; share.mkdir(parents=True)
-        shutil.copy(ROOT/'runtime/diktat_runtime.py',share/'diktat_runtime.py')
+        for helper in (ROOT/'runtime').glob('*.py'):
+            shutil.copy(helper,share/helper.name)
         self.stub=self.bin/'diktat'
         self.stub.write_text('#!/bin/sh\ncat\nprintf "MODEL=%s\\nTOWER=%s\\nMEL=%s\\nRMS=%s\\n" "$1" "$GEIST_AUDIO_MODEL_PATH" "$GEIST_MEL_CONSTANTS_PATH" "$2" >&2\n')
         self.stub.chmod(0o755)

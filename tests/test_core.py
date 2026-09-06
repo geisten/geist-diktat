@@ -42,6 +42,22 @@ class Core(unittest.TestCase):
         stats = dict((k, int(v)) for k, v in re.findall(r'(\w+)=(\d+)', p.stderr.decode(errors='replace')))
         return p, stats
 
+    def test_opt_in_trace_has_numeric_stage_events_without_transcript(self):
+        import json
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'trace.jsonl'
+            env=dict(os.environ,GEIST_DIKTAT_TRACE=str(path),ASAN_OPTIONS='detect_leaks=0')
+            p=subprocess.run([self.binary,'model.gguf'],input=pcm()*2,capture_output=True,env=env,timeout=10)
+            self.assertEqual(p.returncode,0,p.stderr)
+            events=[json.loads(line) for line in path.read_text().splitlines()]
+            outputs=[r for r in events if r['event']=='output_emitted']
+            self.assertEqual([r['output_seq'] for r in outputs],[1,2])
+            self.assertEqual([r['audio_end_sample'] for r in outputs],[8000,28800])
+            self.assertEqual(events[-1]['audio_end_sample'],41600)
+            self.assertIn('model_ready',[r['event'] for r in events])
+            self.assertNotIn('Hallo',path.read_text())
+            self.assertTrue(all(r['monotonic_ns']>0 for r in events))
+
     def test_usage(self):
         p, s = self.run_core(args=())
         self.assertEqual(p.returncode, 2)

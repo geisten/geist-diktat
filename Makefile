@@ -57,7 +57,7 @@ LDLIBS  := $(LDLIBS_TARGET) $(GEMM_LDLIBS) $(EXTRA_LDLIBS)
 
 all: diktat
 
-diktat: src/diktat.c $(LIB)
+diktat: src/diktat.c src/trace.h $(LIB)
 	$(CC) $(CFLAGS) -o $@ $< $(LIB) $(LDFLAGS) $(LDLIBS)
 
 # IBus engine + headless test client (Linux with libibus-1.0-dev only).
@@ -66,14 +66,14 @@ IBUS_LIBS   := $(shell pkg-config --libs ibus-1.0 2>/dev/null)
 
 ibus: ibus-engine-geist-diktat ibus-engine-geist-diktat-test ibus-test-client
 
-ibus-engine-geist-diktat: ibus/engine.c
+ibus-engine-geist-diktat: ibus/engine.c src/trace.h
 	$(CC) $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
 
 # Same engine with the GEIST_DIKTAT_CMD pipeline override compiled in.
 # Separate binary, not a flag on the one above: the packaged engine must
 # never take its command line from the environment, and one output per
 # set of flags keeps a stale object from leaking the hook into a release.
-ibus-engine-geist-diktat-test: ibus/engine.c
+ibus-engine-geist-diktat-test: ibus/engine.c src/trace.h
 	$(CC) $(IBUS_CFLAGS) -DGEIST_DIKTAT_TEST_HOOKS -o $@ $< $(IBUS_LIBS)
 
 ibus-test-client: ibus/test_client.c
