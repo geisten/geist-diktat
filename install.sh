@@ -44,8 +44,13 @@ trap 'rm -rf "$TMP"' EXIT
 # compromised release. v0.1.2 predates that manifest, so keep its independently
 # verified hashes as a narrow migration path. Any other manifest-less release
 # still fails closed because its assets cannot match these pins.
-# ponytail: signature verification (gh attestation / minisign) is the upgrade
-# path once releases are signed.
+#
+# Releases from v0.1.3 on also carry build provenance, which answers the
+# question a checksum cannot — where the bytes came from:
+#   gh attestation verify <file> --repo geisten/geist-diktat
+# Deliberately not run here: it needs gh installed and authenticated, and a
+# check that cannot tell "could not verify" from "verification failed" is
+# worse than none. Whoever wants the stronger guarantee runs one command.
 if ! curl -fL --retry 3 -o "$TMP/SHA256SUMS" "$BASE/SHA256SUMS"; then
     echo "geist-diktat: release manifest unavailable; trying pinned v0.1.2 hashes" >&2
     cat > "$TMP/SHA256SUMS" <<'EOF'
