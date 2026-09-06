@@ -108,3 +108,9 @@ jobs:
           name: ubuntu-agent-speech-metrics
           path: quality-metrics/
           retention-days: 30
+
+  resident-candidate:
+    # Reuse the candidate workflow from this branch. Manual-only: never execute
+    # pull-request code on the persistent CPU agent.
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/resident-audit.yml
