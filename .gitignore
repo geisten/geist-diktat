@@ -7,3 +7,9 @@
 /build/
 *.deb
 *.tar.gz
+__pycache__/
+/nvim.log
+
+/tests/results/
+
+/benchmarks/results/
