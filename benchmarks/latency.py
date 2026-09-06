@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import math
+import time
 from pathlib import Path
 
 
@@ -60,14 +61,32 @@ def analyze(events,annotations):
                 capture=source,full_product_approval=False)
 
 
+def load_trace(path, wait_seconds=0):
+    if not math.isfinite(wait_seconds) or not 0<=wait_seconds<=5:
+        raise ValueError('trace completion wait must be between 0 and 5 seconds')
+    deadline=time.monotonic()+wait_seconds
+    while True:
+        try:
+            events=[json.loads(line) for line in path.read_text().splitlines()]
+        except (OSError,ValueError):
+            if time.monotonic()>=deadline:raise
+        else:
+            if not wait_seconds or any(isinstance(e,dict) and e.get('component')=='runtime'
+                                       and e.get('event')=='input_summary' for e in events):
+                return events
+        if time.monotonic()>=deadline:raise ValueError('timed out waiting for terminal runtime accounting')
+        time.sleep(.02)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--trace',type=Path,required=True);p.add_argument('--annotations',type=Path,required=True)
+    p.add_argument('--wait-seconds',type=float,default=0)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--max-p95-seconds',type=float,default=3)
     a=p.parse_args()
     try:
         if not math.isfinite(a.max_p95_seconds) or a.max_p95_seconds<=0:raise ValueError('positive finite latency target required')
-        events=[json.loads(line) for line in a.trace.read_text().splitlines()]
+        events=load_trace(a.trace,a.wait_seconds)
         result=analyze(events,json.loads(a.annotations.read_text()))
         result['passed']=result['p95_insertion_s']<=a.max_p95_seconds
         result['trace_sha256']=hashlib.sha256(a.trace.read_bytes()).hexdigest()

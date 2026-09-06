@@ -34,5 +34,5 @@ PY
 export GEIST_DIKTAT_CMD
 export IBUS_TEST_EXPECTED='Hallo Welt Grüße! '
 sh tests/toolkit_isolated.sh "$APP"
-python3 benchmarks/latency.py --trace "$GEIST_DIKTAT_TRACE" --annotations "$RUN/annotations.json" \
+python3 benchmarks/latency.py --wait-seconds 3 --trace "$GEIST_DIKTAT_TRACE" --annotations "$RUN/annotations.json" \
     --output "tests/results/$APP-latency.json"

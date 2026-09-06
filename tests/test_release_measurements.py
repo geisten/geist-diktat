@@ -13,7 +13,7 @@ sys.path.insert(0,str(ROOT/'benchmarks'))
 from check_gates import evaluate
 from quality import aggregate
 from release_evidence import select_run
-from latency import analyze
+from latency import analyze, load_trace
 
 
 class SpeechEvidence(unittest.TestCase):
@@ -79,6 +79,21 @@ class SpeechEvidence(unittest.TestCase):
         with self.assertRaises(ValueError):select_run([],'b'*40)
 
 
+class PacedSource(unittest.TestCase):
+    def test_complete_frame_is_delivered_at_its_end(self):
+        import os
+        import wave
+        with tempfile.TemporaryDirectory() as d:
+            wav=Path(d)/'frame.wav';trace=Path(d)/'trace.jsonl'
+            with wave.open(str(wav),'wb') as w:
+                w.setparams((1,2,16000,0,'NONE','not compressed'));w.writeframes(bytes(640))
+            p=subprocess.run([sys.executable,str(ROOT/'benchmarks/trace_capture.py'),str(wav)],
+                env=dict(os.environ,GEIST_DIKTAT_TRACE=str(trace)),capture_output=True,timeout=3)
+            self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(p.stdout,bytes(640))
+            events=[json.loads(line) for line in trace.read_text().splitlines()]
+            self.assertGreaterEqual(events[-1]['monotonic_ns']-events[0]['origin_ns'],20_000_000)
+
+
 class InsertionLatency(unittest.TestCase):
     def fixture(self):
         def e(component,event,t,**v):return dict(schema=1,component=component,event=event,monotonic_ns=t,**v)
@@ -91,6 +106,17 @@ class InsertionLatency(unittest.TestCase):
                 e('core','input_summary',3_100_000_000,audio_end_sample=32000),
                 e('runtime','input_summary',3_200_000_000,received_bytes=64000,delivered_bytes=64000,failed=False)]
     annotations=[dict(output_seq=1,end_sample=16000)]
+    def test_waits_for_terminal_accounting_without_treating_window_exit_as_end(self):
+        import threading
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'trace.jsonl';path.write_text('')
+            timer=threading.Timer(.05,lambda:path.write_text(''.join(json.dumps(e)+'\n' for e in self.fixture())))
+            timer.start()
+            try:self.assertEqual(analyze(load_trace(path,1),self.annotations)['p95_insertion_s'],2)
+            finally:timer.join()
+            path.write_text('')
+            with self.assertRaises(ValueError):load_trace(path,.02)
+
     def test_insertion_is_app_observation_not_stdout_or_ibus_request(self):
         r=analyze(self.fixture(),self.annotations)
         self.assertEqual(r['p95_insertion_s'],2)

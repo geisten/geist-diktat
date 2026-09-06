@@ -20,7 +20,8 @@ def main():
         sent=0;max_lateness=0
         try:
             while data:=w.readframes(320):
-                target=origin+sent*1_000_000_000//32000
+                # A captured block becomes available at its END, not its start.
+                target=origin+(sent+len(data))*1_000_000_000//32000
                 time.sleep(max(0,(target-time.monotonic_ns())/1e9))
                 sys.stdout.buffer.write(data);sys.stdout.buffer.flush()
                 max_lateness=max(max_lateness,time.monotonic_ns()-target)
