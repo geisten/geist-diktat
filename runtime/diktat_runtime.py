@@ -15,6 +15,7 @@ import sys
 import threading
 import time
 from trace_metrics import emit
+from pipe_limits import pipe_options
 
 
 def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
@@ -44,10 +45,10 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
     def cancel(signum,_frame):fail(128+signum,'stopped')
     previous={s:signal.signal(s,cancel) for s in (signal.SIGTERM,signal.SIGINT)}
     try:
-        options={}
+        options=pipe_options()
         if ready_timeout is not None:
             read_fd,write_fd=os.pipe();ready_fds.extend((read_fd,write_fd))
-            options=dict(pass_fds=(write_fd,),env=dict(os.environ,GEIST_DIKTAT_READY_FD=str(write_fd)))
+            options.update(pass_fds=(write_fd,),env=dict(os.environ,GEIST_DIKTAT_READY_FD=str(write_fd)))
         rec=subprocess.Popen(decoder,stdin=subprocess.PIPE,start_new_session=True,**options)
         children.append(rec)
         if ready_timeout is not None:
@@ -63,7 +64,7 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
             os.close(read_fd);ready_fds.remove(read_fd)
             if stopped.is_set():return fault[0]
             emit('runtime','recognizer_ready')
-        mic=subprocess.Popen(capture,stdout=subprocess.PIPE,start_new_session=True)
+        mic=subprocess.Popen(capture,stdout=subprocess.PIPE,start_new_session=True,**pipe_options())
         children.append(mic)
         emit("runtime","capture_started")
         def read_audio():

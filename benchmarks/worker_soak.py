@@ -35,7 +35,7 @@ def main():
     if not rows:p.error('no fixtures')
     provenance=dict(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
-        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','benchmarks/worker_soak.py')},
+        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','runtime/pipe_limits.py','benchmarks/worker_soak.py')},
         files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},platform=platform.platform(),machine=platform.machine())
     a.output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='gs-',dir='/tmp') as temp:

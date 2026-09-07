@@ -128,7 +128,7 @@ def main():
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
         files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},
-        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','benchmarks/worker_bench.py')},
+        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/pipe_limits.py','benchmarks/worker_bench.py')},
         audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),paced=a.paced,configs=[])
     a.output.parent.mkdir(parents=True,exist_ok=True)
     for threads in map(int,a.threads.split(',')):
@@ -166,5 +166,5 @@ def main():
             config['fixture_end_latency_s']=dict(count=len(latency),p50=quantile(latency,.5),p95=quantile(latency,.95))
             config['all_audio_accounted']=all(r['passed'] for r in config['runs'])
             report['configs'].append(config);a.output.write_text(json.dumps(report,indent=2)+'\n')
-    return 0
+    return 0 if report['configs'] and all(c['all_audio_accounted'] for c in report['configs']) else 1
 if __name__=='__main__':raise SystemExit(main())

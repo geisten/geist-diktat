@@ -62,6 +62,17 @@ class Runtime(unittest.TestCase):
             self.assertGreater(summary['oldest_queued_age_ns'],150000000)
             self.assertGreater(summary['queued_bytes'],0)
 
+    @unittest.skipUnless(sys.platform.startswith('linux'),'Linux pipe-size API')
+    def test_kernel_pipes_bound_audio_before_children_start(self):
+        import shlex
+        capture=shlex.join([sys.executable,'-c',"import fcntl;print(fcntl.fcntl(1,fcntl.F_GETPIPE_SZ))"])
+        decoder="import fcntl,sys,json;print(json.dumps([fcntl.fcntl(0,fcntl.F_GETPIPE_SZ),int(sys.stdin.read())]))"
+        p=self.run_pipeline(capture,decoder)
+        self.assertEqual(p.returncode,0,p.stderr)
+        for capacity in json.loads(p.stdout):
+            self.assertGreater(capacity,0)
+            self.assertLessEqual(capacity,max(8192,os.sysconf('SC_PAGE_SIZE')))
+
     def test_capture_error(self):
         p=self.run_pipeline('exit 17','import sys; sys.stdin.buffer.read()')
         self.assertEqual(p.returncode,17,p.stderr)

@@ -21,6 +21,7 @@ import subprocess
 import sys
 import time
 import uuid
+from pipe_limits import pipe_options
 
 MAX_PACKET=640
 MAX_QUEUE=50*(MAX_PACKET+4)
@@ -87,7 +88,7 @@ class Service:
         if self.worker is not None:return
         env=dict(os.environ);env.pop('GEIST_DIKTAT_READY_FD',None)
         self.worker=subprocess.Popen([str(self.a.core),'--worker',str(self.a.model),str(self.a.rms)],
-            stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,bufsize=0,env=env)
+            stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,bufsize=0,env=env,**pipe_options())
         os.set_blocking(self.worker.stdin.fileno(),False);os.set_blocking(self.worker.stdout.fileno(),False)
         self.load_started=time.monotonic();self.loads+=1
         self.watch(self.worker.stdout,selectors.EVENT_READ,'worker-read')
