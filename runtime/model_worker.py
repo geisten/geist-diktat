@@ -336,7 +336,8 @@ def client(a):
             if event.get('type')=='final':
                 text=event['text']
                 if not isinstance(text,str) or '\n' in text:raise ValueError('invalid final text')
-                print(text,flush=True)
+                # The public stream is UTF-8 regardless of the caller's locale.
+                sys.stdout.buffer.write((text+'\n').encode('utf-8'));sys.stdout.buffer.flush()
             elif event.get('type')=='done':
                 sender.join(timeout=.2)
                 if failure or sender.is_alive():raise ValueError('incomplete audio sender')

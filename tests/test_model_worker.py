@@ -87,6 +87,12 @@ class ModelWorker(unittest.TestCase):
             self.assertEqual(done['type'],'done');self.assertEqual(done['samples'],8000);s.close()
         self.assertEqual(len(set(ids)),20);self.assertEqual(len(set(pids)),1)
         self.assertEqual(self.log.read_text().splitlines().count('load 0'),1)
+    def test_public_text_stays_utf8_with_ascii_process_locale(self):
+        self.env.update(LC_ALL='C',PYTHONUTF8='0',PYTHONCOERCECLOCALE='0')
+        self.start();p=self.call('run',PCM)
+        self.assertEqual(p.returncode,0,p.stderr)
+        self.assertEqual(p.stdout,'Hallo Welt Grüße!\n'.encode('utf-8'))
+
     def test_idle_cancel_reuses_model_and_discards_partial_audio(self):
         self.start();s,ready=self.open();self.packet(s,PCM[:4000]);s.close()
         status=self.wait_idle();self.assertTrue(status['loaded']);self.assertEqual(status['pid'],ready['pid'])
