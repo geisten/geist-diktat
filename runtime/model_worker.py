@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import selectors
+import select
 import signal
 import socket
 import stat
@@ -140,7 +141,7 @@ class Service:
         cmd=request.get('command')
         if cmd=='status':
             self.finish(client,dict(type='status',loaded=self.ready,busy=self.active is not None or self.cancel_deadline is not None,
-                pid=self.worker.pid if self.worker else None,loads=self.loads,idle_seconds=self.a.idle_seconds));return
+                pid=self.worker.pid if self.worker else None,loads=self.loads,idle_seconds=self.a.idle_seconds,transport_queue_bytes=len(self.pending)));return
         if cmd=='stop':
             if self.active is not None:
                 active=self.active;self.active=None;self.finish(active,dict(type='error',code=143,message='worker stopped'))
@@ -223,6 +224,13 @@ class Service:
                     if self.exit:
                         if not hasattr(self,'exit_deadline'):self.exit_deadline=now+.2
                         if now>=self.exit_deadline:break
+                    # Read backpressure must never suppress peer-disconnect
+                    # detection: unread PCM can otherwise hide EOF until decode ends.
+                    if self.active is not None:
+                        hangup=select.poll()
+                        flags=select.POLLHUP|select.POLLERR|getattr(select,'POLLRDHUP',0)
+                        hangup.register(self.active,flags)
+                        if any(mask&flags for _,mask in hangup.poll(0)):self.drop(self.active)
                     if self.cancel_deadline and now>=self.cancel_deadline:self.kill_worker()
                     if self.worker and not self.ready and now-self.load_started>self.a.load_timeout:
                         if self.active is not None:

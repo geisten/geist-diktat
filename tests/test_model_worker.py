@@ -101,6 +101,26 @@ class ModelWorker(unittest.TestCase):
         status=self.wait_idle();self.assertLess(time.monotonic()-start,1);self.assertFalse(status['loaded'])
         p=self.call('run',PCM,timeout=5);self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(p.stdout.decode(),'Hallo Welt Grüße!\n')
         self.assertEqual(self.log.read_text().splitlines().count('load 0'),2)
+    def test_cancel_with_full_queue_stops_decode_before_draining_audio(self):
+        import threading
+        self.start(STUB_BLOCK='1',STUB_LONG_BLOCK='1');s,_=self.open()
+        def feed():
+            try:self.packet(s,PCM+bytes(25600)+PCM*40)
+            except OSError:pass
+        sender=threading.Thread(target=feed,daemon=True);sender.start()
+        end=time.monotonic()+2
+        while time.monotonic()<end:
+            status=json.loads(self.call('status').stdout)
+            if status['transport_queue_bytes']>=31000:break
+            time.sleep(.01)
+        self.assertGreaterEqual(status['transport_queue_bytes'],31000)
+        started=time.monotonic();s.shutdown(socket.SHUT_RDWR);s.close()
+        status=self.wait_idle();self.assertLess(time.monotonic()-started,1)
+        self.assertFalse(status['loaded'])
+        # macOS can keep the test feeder in socket.select until its 3 s timeout
+        # after another thread closes the fd. This cleanup is outside Stop timing.
+        sender.join(timeout=3.5);self.assertFalse(sender.is_alive())
+
     def test_busy_and_mismatched_configuration_fail_without_stealing_session(self):
         self.start();s,ready=self.open()
         p=self.call('run',PCM);self.assertEqual(p.returncode,73,p.stderr)

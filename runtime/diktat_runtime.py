@@ -32,10 +32,10 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
         now=time.monotonic_ns()
         with metric_lock:
             result=dict(metrics);inflight=result.pop('inflight_write_ns')
-        if inflight:result['max_write_block_ns']=max(result['max_write_block_ns'],now-inflight)
-        with chunks.mutex:
-            result['queued_bytes']=sum(len(data) for data,_ in chunks.queue)
-            result['oldest_queued_age_ns']=now-chunks.queue[0][1] if chunks.queue else 0
+            if inflight:result['max_write_block_ns']=max(result['max_write_block_ns'],now-inflight)
+            with chunks.mutex:
+                result['queued_bytes']=sum(len(data) for data,_ in chunks.queue)
+                result['oldest_queued_age_ns']=max(0,time.monotonic_ns()-chunks.queue[0][1]) if chunks.queue else 0
         return result
     def fail(code,message):
         if not stopped.is_set():

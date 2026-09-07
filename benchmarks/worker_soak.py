@@ -9,6 +9,7 @@ import argparse
 import json
 import math
 import os
+import platform
 from pathlib import Path
 import shlex
 import statistics
@@ -32,6 +33,10 @@ def main():
     if digest(a.model)!='ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb':p.error('model SHA mismatch')
     rows=[r for r in json.loads(a.manifest.read_text()) if r['group']==a.group]
     if not rows:p.error('no fixtures')
+    provenance=dict(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
+        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','benchmarks/worker_soak.py')},
+        files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},platform=platform.platform(),machine=platform.machine())
     a.output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='gs-',dir='/tmp') as temp:
         d=Path(temp);wav=d/'input.wav';trace=d/'trace.jsonl';sock=d/'w.sock';references=[];samples=0;occurrences=[]
@@ -98,10 +103,7 @@ def main():
             memory_pass=(growth is not None and growth<=64 and peak_rss is not None and peak_rss<=1536 and peak_swap==0)
             soak_pass=transport_pass and (a.minutes<30 or (memory_pass and not throttled))
             result=dict(scope=__doc__,passed=soak_pass,transport_passed=transport_pass,transport_complete=complete,full_product_approval=False,
-                source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-                working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
-                implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','benchmarks/worker_soak.py')},
-                files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},input_sha256=digest(wav),source_occurrences=occurrences,
+                **provenance,input_sha256=digest(wav),source_occurrences=occurrences,
                 requested_minutes=a.minutes,audio_s=samples/16000,wall_s=wall_s,model_startup_s=model_startup_s,model_loads=loads,
                 audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),threads=a.threads,beam_size=a.beam,wait_policy='PASSIVE',exit_code=proc.returncode,timeout=timeout,
                 runtime=runtime,core=core,capture=capture_summary,decode_events=[e for e in events if e['component']=='core'],buffer_observations=[e for e in events if e['event']=='buffer_state'],
@@ -110,10 +112,12 @@ def main():
                 temperature_peak_c=max((s['temperature_c'] for s in resource_samples if s['temperature_c'] is not None),default=None),
                 active_throttling_observed=throttled,
                 physical_microphone=False,application_insertion=False)
+            result['source_files_unchanged']=all(digest(ROOT/name)==sha for name,sha in provenance['implementation_sha256'].items())
+            result['passed']=result['passed'] and result['source_files_unchanged']
             if complete:
                 analysis_start=time.monotonic();result['quality']=score(' '.join(references),' '.join((d/'text').read_text().splitlines()));result['wer_analysis_s']=time.monotonic()-analysis_start
             a.output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:result[k] for k in ('passed','audio_s','wall_s','model_loads','rss_median_growth_mib','active_throttling_observed')}),flush=True)
-            return 0 if soak_pass else 1
+            return 0 if result['passed'] else 1
         finally:
             if probe:probe.finish()
             if proc and proc.poll() is None:

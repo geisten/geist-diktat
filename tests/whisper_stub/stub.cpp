@@ -26,7 +26,7 @@ int whisper_full(whisper_context *ctx,whisper_full_params p,const float *audio,i
     record("first_sample",int(audio[0]*32768)); record("beam",p.beam_search.beam_size); record("audio_ctx",p.audio_ctx);
     if (getenv("STUB_BLOCK")) {
         fprintf(stderr,"stub: decoding\n"); fflush(stderr);
-        for (int i=0;i<200;++i) {
+        for (int i=0;i<(getenv("STUB_LONG_BLOCK")?1000:200);++i) {
             if (p.abort_callback(p.abort_callback_user_data)) { record("aborted"); return 1; }
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
