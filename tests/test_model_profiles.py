@@ -28,6 +28,17 @@ class ProfileSetup(unittest.TestCase):
     def tearDown(self):self.definition.stop();self.env.stop();self.temp.cleanup()
     def writer(self,command,**kw):
         Path(command[command.index('-o')+1]).write_bytes(self.content)
+    def test_worker_policy_reports_and_rejects_invalid_pi_options(self):
+        with patch.dict(os.environ,GEIST_WHISPER_AUDIO_CONTEXT='adaptive',GEIST_WHISPER_CHUNK_SECONDS='12'):
+            policy=profiles.resolve(self.prefix,'whisper-small')['worker']
+            self.assertEqual(policy['audio_context'],'adaptive');self.assertEqual(policy['chunk_seconds'],12)
+        for key,values in {'GEIST_WHISPER_CHUNK_SECONDS':['0','3','29','8.5','８'],
+                           'GEIST_WHISPER_AUDIO_CONTEXT':['typo'],
+                           'GEIST_DIKTAT_IDLE_SECONDS':['nan','0','3601']}.items():
+            for value in values:
+                with self.subTest(key=key,value=value),patch.dict(os.environ,{key:value}),self.assertRaises(ValueError):
+                    profiles.resolve(self.prefix,'whisper-small')
+
     def test_setup_only_downloads_the_selected_model(self):
         with patch.object(launcher.subprocess,'run',side_effect=self.writer) as run:launcher.setup(self.prefix,self.config)
         self.assertEqual(run.call_count,1);self.assertEqual(self.path.read_bytes(),self.content)
