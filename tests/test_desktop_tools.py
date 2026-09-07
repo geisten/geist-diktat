@@ -2,10 +2,12 @@ import importlib.util
 import os
 from pathlib import Path
 import shutil
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'runtime'))
 spec=importlib.util.spec_from_file_location('desktop',ROOT/'runtime/desktop_tools.py')
 desktop=importlib.util.module_from_spec(spec);spec.loader.exec_module(desktop)
 class DesktopTools(unittest.TestCase):

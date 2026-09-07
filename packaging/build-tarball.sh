@@ -19,6 +19,13 @@ set -e
 cd "$(dirname "$0")/.."
 
 VERSION="${VERSION:-0.1.0}"
+case "$VERSION" in ''|*[!0-9A-Za-z.+:~_-]*) echo 'invalid package version' >&2; exit 1;; esac
+PROFILE="${GEIST_PACKAGE_PROFILE:-geist}"
+case "$PROFILE" in
+geist) BINARY=./diktat; CORE_NAME=diktat;;
+whisper-small) BINARY=build/whisper-resident/diktat-whisper; CORE_NAME=diktat-whisper;;
+*) echo 'invalid package profile' >&2; exit 1;;
+esac
 ARCH="$(uname -m)"
 case "$(uname -s)" in
 Darwin) OS=macos ;;
@@ -27,18 +34,13 @@ esac
 NAME="geist-diktat_${VERSION}_${OS}-${ARCH}"
 STAGE="build/$NAME"
 
-test -x ./diktat || { echo "build ./diktat first (make)" >&2; exit 1; }
+test -x "$BINARY" || { echo "build selected decoder first: $BINARY" >&2; exit 1; }
 
 rm -rf "$STAGE"
 mkdir -p "$STAGE/bin" "$STAGE/share/geist-diktat"
-install -m755 diktat "$STAGE/bin/diktat"
-strip "$STAGE/bin/diktat" 2>/dev/null || true   # advisory: BSD strip is pickier
-install -m755 packaging/geist-diktat "$STAGE/bin/geist-diktat"
-install -m755 runtime/*.py "$STAGE/share/geist-diktat/"
-mkdir -p "$STAGE/share/geist-diktat/editor"
-cp -R lua plugin autoload "$STAGE/share/geist-diktat/editor/"
-install -m644 geistlib/audio_test_data/mel_constants.bin "$STAGE/share/geist-diktat/"
-install -m755 geistlib/tools/fetch_audio_tower.py "$STAGE/share/geist-diktat/"
+python3 packaging/stage-runtime.py "$STAGE" --profile "$PROFILE"
+strip "$STAGE/bin/$CORE_NAME" 2>/dev/null || true
+python3 packaging/stage-runtime.py "$STAGE" --finalize
 install -m644 README.md LICENSE "$STAGE/"
 
 # A shipped binary must not reach past what the platform guarantees.
@@ -48,16 +50,16 @@ install -m644 README.md LICENSE "$STAGE/"
 # glibc word their ldd output differently, the ELF header does not.
 case "$OS" in
 macos)
-    if otool -L "$STAGE/bin/diktat" | tail -n +2 | grep -qvE '/usr/lib/|/System/Library/'; then
+    if otool -L "$STAGE/bin/$CORE_NAME" | tail -n +2 | grep -qvE '/usr/lib/|/System/Library/'; then
         echo "diktat links a non-system library — rebuild with GEIST_STATIC_OMP=1" >&2
-        otool -L "$STAGE/bin/diktat" | tail -n +2 >&2
+        otool -L "$STAGE/bin/$CORE_NAME" | tail -n +2 >&2
         exit 1
     fi
     ;;
 linux)
-    if ! readelf -d "$STAGE/bin/diktat" 2>/dev/null | grep -q "There is no dynamic section"; then
+    if ! readelf -d "$STAGE/bin/$CORE_NAME" 2>/dev/null | grep -q "There is no dynamic section"; then
         echo "diktat is not statically linked — build it on musl with EXTRA_LDFLAGS=-static" >&2
-        readelf -d "$STAGE/bin/diktat" 2>&1 | head -20 >&2
+        readelf -d "$STAGE/bin/$CORE_NAME" 2>&1 | head -20 >&2
         exit 1
     fi
     ;;

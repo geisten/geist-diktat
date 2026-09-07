@@ -10,19 +10,19 @@ import shutil
 import sys
 import tempfile
 import time
+from model_profiles import resolve
 
 
-def doctor(prefix, verify=False):
+def doctor(prefix, verify=False, profile=None):
     data=Path(os.getenv('XDG_DATA_HOME',str(Path.home()/'.local/share')))/'geist-diktat'
     checks=[]
     def check(name, ok, hint):checks.append(dict(name=name,ok=bool(ok),help='' if ok else hint))
     check('python3',shutil.which('python3'),'Install Python 3')
-    core=Path(os.getenv('GEIST_DIKTAT_CORE',str(prefix/'bin/diktat')))
-    check('recognizer',core.is_file() and os.access(core,os.X_OK),'Reinstall geist-diktat; recognizer is missing or not executable')
-    files=[('model',Path(os.getenv('GEIST_DIKTAT_MODEL',str(data/'gemma4-e2b-Q4_K_M.gguf'))),'740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8'),
-           ('tower',Path(os.getenv('GEIST_AUDIO_MODEL_PATH',str(data/'audio_tower.safetensors'))),'d6c45a6c276212dc3a793e66dfc588d89c12d1ac92c0e4b85494390ca848cd77'),
-           ('mel',Path(os.getenv('GEIST_MEL_CONSTANTS_PATH',str(prefix/'share/geist-diktat/mel_constants.bin'))),None)]
-    for name,path,sha in files:
+    config=resolve(prefix,profile)
+    core=config['core']
+    check('recognizer',core.is_file() and os.access(core,os.X_OK),'Install the selected profile package; decoder missing: '+str(core))
+    for file in config['files']:
+        name,path,sha=file['name'],file['path'],file.get('sha256')
         ok=path.is_file() and path.stat().st_size>0
         if ok and verify and sha:
             h=hashlib.sha256()
@@ -30,9 +30,20 @@ def doctor(prefix, verify=False):
                 for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
             ok=h.hexdigest()==sha
         check(name,ok,'Run geist-diktat setup; missing, empty or invalid file: '+str(path))
+    metadata_path=prefix/'share/geist-diktat/package-profile.json'
+    metadata=json.loads(metadata_path.read_text()) if metadata_path.exists() else None
+    if metadata is not None:
+        valid=isinstance(metadata,dict) and metadata.get('profile')==config['name']
+        check('package-profile',valid,'Selected profile differs from the installed package; install the matching profile package')
+        if valid and verify:
+            h=hashlib.sha256()
+            if core.is_file():
+                with core.open('rb') as f:
+                    for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+            check('recognizer-sha256',core.is_file() and h.hexdigest()==metadata.get('binary_sha256'),'Reinstall package; recognizer differs from the packaged binary')
     capture=bool(os.getenv('GEIST_DIKTAT_CAPTURE')) or any(shutil.which(c) for c in (('sox','ffmpeg') if platform.system()=='Darwin' else ('arecord',)))
     check('capture-command',capture,'macOS: brew install sox; Ubuntu: sudo apt install alsa-utils')
-    return dict(platform=platform.platform(),ready=all(c['ok'] for c in checks),checks=checks,
+    return dict(package_profile=metadata,profile=dict(name=config['name'],source=config['source'],engine=config['engine'],core=str(core),parameters=config['parameters']),platform=platform.platform(),ready=all(c['ok'] for c in checks),checks=checks,
                 verification='sha256' if verify else 'file presence only',
                 limitations=['Device access, microphone permission and focused-app insertion require an interactive test.'],
                 editors={c:shutil.which(c) for c in ('vim','nvim')})

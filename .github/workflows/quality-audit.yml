@@ -6,6 +6,10 @@ on:
         description: Also compare the experimental resident candidates
         type: boolean
         default: false
+      run_packages:
+        description: Build and install the selected profile in clean Ubuntu containers
+        type: boolean
+        default: false
   pull_request:
     paths:
       - 'src/**'
@@ -16,6 +20,7 @@ on:
       - 'runtime/**'
       - 'whisper/**'
       - '.github/workflows/resident-audit.yml'
+      - '.github/workflows/package-audit.yml'
       - 'macos/**'
       - 'packaging/**'
       - 'install.sh'
@@ -119,3 +124,7 @@ jobs:
     # pull-request code on the persistent CPU agent.
     if: github.event_name == 'workflow_dispatch' && inputs.run_resident
     uses: ./.github/workflows/resident-audit.yml
+
+  profile-packages:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_packages
+    uses: ./.github/workflows/package-audit.yml

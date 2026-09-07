@@ -46,6 +46,13 @@ jobs:
             '--model','build/ggml-small-q5_1.bin','--wav',str(manifest.parent/fixture['wav']),
             '--output','build/resident-results/stop.json'],check=True)
           PYTHON
+      - name: Exercise staged installed profile with a real German clip
+        run: |
+          python3 packaging/stage-runtime.py build/profile-prefix --profile whisper-small
+          python3 packaging/stage-runtime.py build/profile-prefix --finalize
+          python3 benchmarks/package_smoke.py --prefix build/profile-prefix \
+            --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+            --output build/resident-results/package-smoke.json
       - name: Evaluate candidate quality without changing the release default
         if: always()
         env:
