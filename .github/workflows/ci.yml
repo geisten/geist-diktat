@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: deps
-        run: sudo apt-get update -q && sudo apt-get install -y -q libopenblas-dev gcc-14
+        run: sudo apt-get update -q && sudo apt-get install -y -q gcc-14
       - name: build
         run: make CC=gcc-14 TARGET=linux
       - name: smoke test (fixture-gated half skips without the 3.7 GB model)

@@ -52,10 +52,22 @@ ifneq ($(ENGINE),ok)
 $(error engine sync failed — see the messages above)
 endif
 
+# Before the target include, not after. Every mk/target-*.mk sets its own
+# GEMM_PROVIDER ?= (openblas on linux and pi5, accelerate on mac), and ?= only
+# takes when the variable is still unset — so ours, sitting after the include,
+# never applied. A plain `make` on Linux therefore demanded OpenBLAS while
+# every artifact we ship is built GEMM_PROVIDER=native, and a CI job without
+# libopenblas-dev died on it.
+#
+# Not auto-detected. Probing for -lopenblas and falling back would make the
+# GEMM backend depend on what happens to be installed on the builder — the
+# same commit producing a differently-linked binary on two machines, silently.
+# The tarballs are reproducible precisely so that cannot happen.
+# `make GEMM_PROVIDER=openblas` opts in explicitly.
+GEMM_PROVIDER ?= native
+
 TARGET ?= $(shell $(GEISTLIB)/mk/detect-target.sh)
 include $(GEISTLIB)/mk/target-$(TARGET).mk
-
-GEMM_PROVIDER ?= native
 include $(GEISTLIB)/mk/gemm-$(GEMM_PROVIDER).mk
 
 endif
@@ -104,11 +116,19 @@ ibus-engine-geist-diktat-test: ibus/engine.c
 ibus-test-client: ibus/test_client.c
 	$(CC) $(IBUS_CFLAGS) -o $@ $< $(IBUS_LIBS)
 
+# GEMM_PROVIDER is forwarded, and that is load-bearing: a variable set in this
+# file is not inherited by a sub-make (only a command-line one is), so the
+# engine would re-pick its own target default and compile the archive against
+# OpenBLAS while diktat links without it — an undefined-reference link error
+# on cblas_sgemv. It only ever worked because every caller happened to pass
+# GEMM_PROVIDER on the command line.
+#
 # Always delegate: the submodule's own make is incremental and cheap,
 # and a plain file target went stale on submodule bumps (the lib exists
 # but is outdated — measured: a deaf binary after the #277 pin bump).
 $(LIB): FORCE
-	$(MAKE) -C $(GEISTLIB) lib TARGET=$(TARGET) MODE=$(MODE)
+	$(MAKE) -C $(GEISTLIB) lib TARGET=$(TARGET) MODE=$(MODE) \
+		GEMM_PROVIDER=$(GEMM_PROVIDER)
 
 FORCE:
 
