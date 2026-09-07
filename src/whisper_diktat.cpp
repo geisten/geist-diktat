@@ -25,6 +25,7 @@ std::atomic<bool> session_cancelled{false};
 void cancel_session(int) { session_cancelled=1; }
 bool worker_mode=false;
 bool adaptive_context=false;
+size_t window_samples=max_samples;
 size_t worker_session=0;
 void worker_event(const char *type, const std::string &fields="") {
     if (!worker_mode) return;
@@ -176,7 +177,7 @@ std::string line_text(whisper_context *ctx) {
 }
 int session(whisper_context *ctx, whisper_full_params params, double threshold) {
     Input input; params.abort_callback=abort_decode; params.abort_callback_user_data=&input;
-    std::vector<float> pcm; pcm.reserve(max_samples);
+    std::vector<float> pcm; pcm.reserve(window_samples);
     std::vector<float> pre; pre.reserve(3*frame_samples);
     bool active=false; size_t quiet=0, loud_frames=0, total=0, last_loud=0, utterance=0, output=0;
     auto decode=[&]() {
@@ -213,7 +214,7 @@ int session(whisper_context *ctx, whisper_full_params params, double threshold) 
                 pcm.assign(pre.begin(),pre.end()); pre.clear(); loud_frames=0; active=true; quiet=0;
             } else pcm.insert(pcm.end(),frame.pcm.begin(),frame.pcm.begin()+frame.size);
             quiet=loud?0:quiet+1;
-            if (quiet>=40 || pcm.size()>=max_samples) { decode(); pcm.clear(); active=false; quiet=0; }
+            if (quiet>=40 || pcm.size()>=window_samples) { decode(); pcm.clear(); active=false; quiet=0; }
         }
         if (active) decode();
         if (worker_mode) input.finish();
@@ -234,6 +235,9 @@ int main(int argc,char **argv) {
         if (errno || (argc==3 && (end==argv[2] || *end)) || !std::isfinite(rms) || rms<=0 || rms>32768)
             throw std::runtime_error("invalid RMS");
         int threads=integer_env("OMP_NUM_THREADS",4,256), beam=integer_env("GEIST_WHISPER_BEAM_SIZE",5,8);
+        int chunk_seconds=integer_env("GEIST_WHISPER_CHUNK_SECONDS",28,28);
+        if (chunk_seconds<4) throw std::runtime_error("GEIST_WHISPER_CHUNK_SECONDS must be 4..28");
+        window_samples=static_cast<size_t>(chunk_seconds)*16000;
         const char *context=getenv("GEIST_WHISPER_AUDIO_CONTEXT");
         if (context && std::string(context)!="full" && std::string(context)!="adaptive") throw std::runtime_error("invalid GEIST_WHISPER_AUDIO_CONTEXT");
         adaptive_context=context && std::string(context)=="adaptive";

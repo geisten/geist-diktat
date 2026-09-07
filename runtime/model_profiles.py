@@ -52,7 +52,9 @@ def resolve(prefix,explicit=None):
         if wait not in ('PASSIVE','ACTIVE'):raise ValueError('invalid OMP_WAIT_POLICY')
         context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full')
         if context not in ('full','adaptive'):raise ValueError('invalid GEIST_WHISPER_AUDIO_CONTEXT')
-        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait,audio_context=context)
+        chunk=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28'))
+        if not 4<=chunk<=28:raise ValueError('GEIST_WHISPER_CHUNK_SECONDS must be 4..28')
+        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait,audio_context=context,chunk_seconds=chunk)
     return dict(name=name,source=source,label=p['label'],engine=p['engine'],core=core,files=files,parameters=parameters,worker=worker)
 
 def save(prefix,name):

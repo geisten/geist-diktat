@@ -105,7 +105,7 @@ def main():
             result=dict(scope=__doc__,passed=soak_pass,transport_passed=transport_pass,transport_complete=complete,full_product_approval=False,
                 **provenance,input_sha256=digest(wav),source_occurrences=occurrences,
                 requested_minutes=a.minutes,audio_s=samples/16000,wall_s=wall_s,model_startup_s=model_startup_s,model_loads=loads,
-                audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),threads=a.threads,beam_size=a.beam,wait_policy='PASSIVE',exit_code=proc.returncode,timeout=timeout,
+                audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),threads=a.threads,beam_size=a.beam,wait_policy='PASSIVE',exit_code=proc.returncode,timeout=timeout,
                 runtime=runtime,core=core,capture=capture_summary,decode_events=[e for e in events if e['component']=='core'],buffer_observations=[e for e in events if e['event']=='buffer_state'],
                 resources=resource_samples,checkpoints=checkpoints,rss_median_growth_mib=growth,
                 memory_plateau_passed=memory_pass,peak_tree_rss_mib=peak_rss,peak_process_swap_mib=peak_swap,

@@ -54,6 +54,15 @@ class ResidentWhisper(unittest.TestCase):
         p,log,trace=self.run_audio(audio(29*16000));self.assertEqual(p.returncode,0,p.stderr)
         self.assertEqual([s for s in log if s.startswith('decode ')],['decode 448000','decode 16000'])
         self.assertEqual([r['audio_end_sample'] for r in trace if r['event']=='input_summary'],[464000])
+    def test_shorter_windows_bound_decode_without_losing_audio(self):
+        p,log,trace=self.run_audio(audio(25*16000),GEIST_WHISPER_CHUNK_SECONDS='12')
+        self.assertEqual(p.returncode,0,p.stderr)
+        self.assertEqual([s for s in log if s.startswith('decode ')],['decode 192000','decode 192000','decode 16000'])
+        self.assertEqual([r['audio_end_sample'] for r in trace if r['event']=='input_summary'],[400000])
+        for value in ('0','3','29','8.5','nan'):
+            p,log,_=self.run_audio(b'',GEIST_WHISPER_CHUNK_SECONDS=value)
+            self.assertNotEqual(p.returncode,0);self.assertEqual(log,[])
+
     def test_invalid_configuration_fails_before_loading(self):
         for args,env in [(('nan',),{}),(('0',),{}),(('300x',),{}),((),{'GEIST_WHISPER_BEAM_SIZE':'0'}),((),{'OMP_NUM_THREADS':'-1'})]:
             with self.subTest(args=args,env=env):

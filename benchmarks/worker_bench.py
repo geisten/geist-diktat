@@ -129,7 +129,7 @@ def main():
         working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
         files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},
         implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/pipe_limits.py','benchmarks/worker_bench.py')},
-        audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),paced=a.paced,configs=[])
+        audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),paced=a.paced,configs=[])
     a.output.parent.mkdir(parents=True,exist_ok=True)
     for threads in map(int,a.threads.split(',')):
       for beam in map(int,a.beams.split(',')):
