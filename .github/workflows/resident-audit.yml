@@ -53,6 +53,15 @@ jobs:
           python3 benchmarks/package_smoke.py --prefix build/profile-prefix \
             --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
             --output build/resident-results/package-smoke.json
+      - name: Reused model across the complete German pilot
+        run: |
+          python3 benchmarks/worker_bench.py --binary build/whisper-resident/diktat-whisper \
+            --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+            --threads 4 --beams 5 --per-group 0 --output build/resident-results/worker-quality.json
+          python3 benchmarks/worker_bench.py --binary build/whisper-resident/diktat-whisper \
+            --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+            --threads 4 --beams 5 --paced --groups de-read-clean --per-group 3 \
+            --output build/resident-results/worker-paced.json
       - name: Evaluate candidate quality without changing the release default
         if: always()
         env:

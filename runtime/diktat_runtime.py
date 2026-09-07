@@ -8,6 +8,7 @@ import argparse
 import os
 from pathlib import Path
 import queue
+import select
 import signal
 import subprocess
 import sys
@@ -16,9 +17,11 @@ import time
 from trace_metrics import emit
 
 
-def supervise(capture, decoder, buffer_seconds=6):
+def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
     if not 0.1 <= buffer_seconds <= 60:
         raise ValueError('buffer seconds must be between 0.1 and 60')
+    if ready_timeout is not None and not 0<ready_timeout<=300:raise ValueError('invalid ready timeout')
+    ready_fds=[]
     chunks=queue.Queue(maxsize=max(1,int(buffer_seconds*50)))
     stopped=threading.Event(); eof=threading.Event(); fault=[]
     children=[]
@@ -32,8 +35,25 @@ def supervise(capture, decoder, buffer_seconds=6):
     def cancel(signum,_frame):fail(128+signum,'stopped')
     previous={s:signal.signal(s,cancel) for s in (signal.SIGTERM,signal.SIGINT)}
     try:
-        rec=subprocess.Popen(decoder,stdin=subprocess.PIPE,start_new_session=True)
+        options={}
+        if ready_timeout is not None:
+            read_fd,write_fd=os.pipe();ready_fds.extend((read_fd,write_fd))
+            options=dict(pass_fds=(write_fd,),env=dict(os.environ,GEIST_DIKTAT_READY_FD=str(write_fd)))
+        rec=subprocess.Popen(decoder,stdin=subprocess.PIPE,start_new_session=True,**options)
         children.append(rec)
+        if ready_timeout is not None:
+            os.close(write_fd);ready_fds.remove(write_fd)
+            deadline=time.monotonic()+ready_timeout
+            while not stopped.is_set():
+                if select.select([read_fd],[],[],.025)[0]:
+                    if os.read(read_fd,1)==b'1':break
+                    try:status=rec.wait(timeout=.2)
+                    except subprocess.TimeoutExpired:status=70
+                    fail(status if status>0 else 70,'recognizer failed before readiness');break
+                if time.monotonic()>=deadline:fail(70,'recognizer readiness timed out');break
+            os.close(read_fd);ready_fds.remove(read_fd)
+            if stopped.is_set():return fault[0]
+            emit('runtime','recognizer_ready')
         mic=subprocess.Popen(capture,stdout=subprocess.PIPE,start_new_session=True)
         children.append(mic)
         emit("runtime","capture_started")
@@ -76,7 +96,11 @@ def supervise(capture, decoder, buffer_seconds=6):
         readers=[threading.Thread(target=f,daemon=True) for f in (read_audio,write_audio)]
         for t in readers:t.start()
         print('geist-diktat: capture process started; Ctrl-C stops all audio',file=sys.stderr,flush=True)
+        next_progress=time.monotonic()+5
         while not stopped.wait(.025):
+            if time.monotonic()>=next_progress:
+                with metric_lock:emit('runtime','buffer_state',**metrics,queued_bytes=chunks.qsize()*640)
+                next_progress=time.monotonic()+5
             capture_status=mic.poll();decode_status=rec.poll()
             if capture_status not in (None,0):
                 fail(capture_status if capture_status>0 else 1,'capture failed ('+str(capture_status)+')');break
@@ -97,6 +121,7 @@ def supervise(capture, decoder, buffer_seconds=6):
         print('geist-diktat: '+str(error),file=sys.stderr);return 1
     finally:
         stopped.set()
+        for fd in ready_fds:os.close(fd)
         for p in children:
             # Kill the group even if its leader already exited: a capture
             # command may have spawned descendants which still hold the pipe.
@@ -130,11 +155,13 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--capture',required=True)
     parser.add_argument('--buffer-seconds',type=float,default=6)
+    parser.add_argument('--ready-timeout',type=float)
     parser.add_argument('decoder',nargs=argparse.REMAINDER)
     args=parser.parse_args()
     command=args.decoder[1:] if args.decoder[:1]==['--'] else args.decoder
     if not command:parser.error('decoder command required')
     if not 0.1 <= args.buffer_seconds <= 60:parser.error('buffer seconds must be between 0.1 and 60')
-    return supervise(['sh','-c',args.capture],command,args.buffer_seconds)
+    if args.ready_timeout is not None and not 0<args.ready_timeout<=300:parser.error('invalid ready timeout')
+    return supervise(['sh','-c',args.capture],command,args.buffer_seconds,args.ready_timeout)
 
 if __name__=='__main__':raise SystemExit(main())

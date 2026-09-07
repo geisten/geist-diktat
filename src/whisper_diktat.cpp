@@ -20,6 +20,46 @@
 
 namespace {
 constexpr size_t frame_samples=320, max_samples=28*16000, queue_frames=50;
+static_assert(std::atomic<bool>::is_always_lock_free,"signal cancellation requires a lock-free flag");
+std::atomic<bool> session_cancelled{false};
+void cancel_session(int) { session_cancelled=1; }
+bool worker_mode=false;
+size_t worker_session=0;
+void worker_event(const char *type, const std::string &fields="") {
+    if (!worker_mode) return;
+    if (printf("{\"type\":\"%s\",\"session\":%zu%s}\n",type,worker_session,fields.c_str())<0 || fflush(stdout)!=0)
+        throw std::runtime_error("worker output failed");
+}
+std::string json_text(const std::string &text) {
+    std::string result="\"";
+    for (unsigned char c:text) {
+        if (c=='"' || c=='\\') result+='\\';
+        result+=static_cast<char>(c);
+    }
+    return result+"\"";
+}
+// Internal worker transport only: BE32 START, then <=640-byte PCM packets,
+// then a zero-length end marker. EOF between sessions releases the model.
+int read_exact(unsigned char *out, size_t size, const std::atomic<bool> *stop=nullptr) {
+    size_t used=0;
+    while (used<size) {
+        if (stop) {
+            if (stop->load()) return -1;
+            struct pollfd fd{STDIN_FILENO,POLLIN,0};
+            int ready=poll(&fd,1,50);
+            if (ready<0 && errno==EINTR) continue;
+            if (ready<0) return -1;
+            if (!ready) continue;
+        }
+        ssize_t n=read(STDIN_FILENO,out+used,size-used);
+        if (n<0 && errno==EINTR) continue;
+        if (n<0) return -1;
+        if (!n) return used? -1:0;
+        used+=static_cast<size_t>(n);
+    }
+    return 1;
+}
+uint32_t word(const unsigned char *p) { return (uint32_t(p[0])<<24)|(uint32_t(p[1])<<16)|(uint32_t(p[2])<<8)|p[3]; }
 // Some model phases do not consult the engine abort callback promptly. This
 // isolated process owns no persistent state: explicit Stop uses async-signal-safe
 // _exit; the OS releases memory/FDs/threads. Normal EOF still frees the context.
@@ -42,6 +82,32 @@ class Input {
     std::atomic<bool> stopped{false};
     std::atomic<int> failure{0};
     size_t received=0, peak=0;
+    void framed_loop() {
+        while (!stopped) {
+            unsigned char header[4];
+            if (read_exact(header,4,&stopped)!=1) { failure=74; break; }
+            uint32_t bytes=word(header);
+            if (!bytes) break;
+            if (bytes>640 || bytes%2) { failure=74; break; }
+            std::array<unsigned char,640> raw{};
+            if (read_exact(raw.data(),bytes,&stopped)!=1) { failure=74; break; }
+            received+=bytes;
+            if (session_cancelled) continue;
+            Frame frame; frame.size=bytes/2;
+            for (size_t i=0;i<frame.size;++i) {
+                int value=raw[2*i] | (static_cast<unsigned>(raw[2*i+1])<<8);
+                if (value>=32768) value-=65536;
+                frame.pcm[i]=static_cast<float>(value)/32768.0f;
+            }
+            std::unique_lock<std::mutex> lock(mutex);
+            while (frames.size()>=queue_frames && !stopped && !session_cancelled)
+                changed.wait_for(lock,std::chrono::milliseconds(20));
+            if (!stopped && !session_cancelled) { frames.push_back(frame); peak=std::max(peak,frames.size()); }
+            changed.notify_all();
+        }
+        { std::lock_guard<std::mutex> lock(mutex); eof=true; }
+        changed.notify_all();
+    }
     void read_loop() {
         std::array<unsigned char,640> raw{}; size_t used=0;
         while (!stopped) {
@@ -74,9 +140,9 @@ class Input {
         changed.notify_all();
     }
 public:
-    Input() { reader=std::thread([this]{read_loop();}); }
+    Input() { reader=std::thread([this]{if (worker_mode) framed_loop(); else read_loop();}); }
     ~Input() { stop(); }
-    bool aborted() const { return failure.load()!=0; }
+    bool aborted() const { return failure.load()!=0 || session_cancelled; }
     int error() const { return failure.load(); }
     bool next(Frame &frame) {
         std::unique_lock<std::mutex> lock(mutex);
@@ -84,6 +150,7 @@ public:
         if (aborted() || frames.empty()) return false;
         frame=frames.front(); frames.pop_front(); changed.notify_all(); return true;
     }
+    void finish() { if (reader.joinable()) reader.join(); }
     void stop() { stopped=true; changed.notify_all(); if (reader.joinable()) reader.join(); }
     void summary() { // only after stop/join
         diktat_trace("whisper_input","received_samples",0,0,received/2);
@@ -113,15 +180,18 @@ int session(whisper_context *ctx, whisper_full_params params, double threshold) 
     bool active=false; size_t quiet=0, loud_frames=0, total=0, last_loud=0, utterance=0, output=0;
     auto decode=[&]() {
         if (pcm.size()<8000 || input.aborted()) return;
+        worker_event("state",",\"state\":\"decoding\"");
         ++utterance; diktat_trace("core","decode_start",utterance,output,last_loud);
         int rc=whisper_full(ctx,params,pcm.data(),static_cast<int>(pcm.size()));
         diktat_trace("core","decode_end",utterance,output,last_loud);
+        worker_event("state",",\"state\":\"listening\"");
         if (input.aborted()) return;
         if (rc) throw std::runtime_error("whisper decode failed: "+std::to_string(rc));
         std::string line=line_text(ctx);
         if (line.empty() || input.aborted()) return;
         diktat_trace("core","output_ready",utterance,output+1,last_loud);
-        if (printf("%s\n",line.c_str())<0 || fflush(stdout)!=0) throw std::runtime_error("stdout write failed");
+        if (worker_mode) worker_event("final",",\"text\":"+json_text(line));
+        else if (printf("%s\n",line.c_str())<0 || fflush(stdout)!=0) throw std::runtime_error("stdout write failed");
         diktat_trace("core","output_emitted",utterance,++output,last_loud);
     };
     try {
@@ -141,16 +211,19 @@ int session(whisper_context *ctx, whisper_full_params params, double threshold) 
             if (quiet>=40 || pcm.size()>=max_samples) { decode(); pcm.clear(); active=false; quiet=0; }
         }
         if (active) decode();
+        if (worker_mode) input.finish();
         input.stop(); input.summary();
         diktat_trace("core","input_summary",utterance,output,total);
         if (input.error()) { fprintf(stderr,"diktat: invalid or failed PCM input\n"); return input.error(); }
+        worker_event("done",",\"cancelled\":"+std::string(session_cancelled?"true":"false")+",\"samples\":"+std::to_string(total));
         return 0;
     } catch (...) { input.stop(); throw; }
 }
 }
 int main(int argc,char **argv) {
     try {
-        if (argc<2 || argc>3) throw std::runtime_error("usage: diktat-whisper MODEL [RMS]");
+        if (argc>=2 && std::string(argv[1])=="--worker") { worker_mode=true; ++argv; --argc; }
+        if (argc<2 || argc>3) throw std::runtime_error("usage: diktat-whisper [--worker] MODEL [RMS]");
         char *end=nullptr; errno=0;
         double rms=argc==3?strtod(argv[2],&end):300;
         if (errno || (argc==3 && (end==argv[2] || *end)) || !std::isfinite(rms) || rms<=0 || rms>32768)
@@ -158,6 +231,7 @@ int main(int argc,char **argv) {
         int threads=integer_env("OMP_NUM_THREADS",4,256), beam=integer_env("GEIST_WHISPER_BEAM_SIZE",5,8);
         struct sigaction action{}; action.sa_handler=cancel; sigemptyset(&action.sa_mask);
         sigaction(SIGTERM,&action,nullptr); sigaction(SIGINT,&action,nullptr); signal(SIGPIPE,SIG_IGN);
+        if (worker_mode) { action.sa_handler=cancel_session; sigaction(SIGUSR1,&action,nullptr); }
         auto options=whisper_context_default_params(); options.use_gpu=false; options.flash_attn=true;
         diktat_trace("core","model_load_start",0,0,0);
         std::unique_ptr<whisper_context,decltype(&whisper_free)> ctx(whisper_init_from_file_with_params(argv[1],options),whisper_free);
@@ -170,7 +244,17 @@ int main(int argc,char **argv) {
         params.print_realtime=false; params.print_progress=false; params.print_timestamps=false; params.print_special=false;
         diktat_trace("core","model_ready",0,0,0);
         fprintf(stderr,"diktat: listening (resident whisper CPU; threads=%d beam=%d)\n",threads,beam); fflush(stderr);
-        return session(ctx.get(),params,rms);
+        if (!worker_mode) return session(ctx.get(),params,rms);
+        worker_event("ready");
+        while (true) {
+            unsigned char header[4]; int rc=read_exact(header,4);
+            if (!rc) break;
+            if (rc<0 || word(header)!=UINT32_MAX) throw std::runtime_error("invalid worker session marker");
+            session_cancelled=0; ++worker_session;
+            worker_event("state",",\"state\":\"listening\"");
+            if (session(ctx.get(),params,rms)) return 74;
+        }
+        return 0;
     } catch (const std::exception &error) {
         fprintf(stderr,"diktat: %s\n",error.what()); return 1;
     }

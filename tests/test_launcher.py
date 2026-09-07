@@ -24,7 +24,7 @@ class Launcher(unittest.TestCase):
         self.stub.write_text('#!/bin/sh\ncat\nprintf "MODEL=%s\\nTOWER=%s\\nMEL=%s\\nRMS=%s\\n" "$1" "$GEIST_AUDIO_MODEL_PATH" "$GEIST_MEL_CONSTANTS_PATH" "$2" >&2\n')
         self.stub.chmod(0o755)
         self.env=dict(os.environ,HOME=str(self.root/'home'),XDG_CONFIG_HOME=str(self.root/'config'),XDG_DATA_HOME=str(self.root/'data'),
-            GEIST_DIKTAT_CAPTURE="printf 'Hallo Welt\\n'")
+            GEIST_DIKTAT_REUSE_MODEL="0",GEIST_DIKTAT_CAPTURE="printf 'Hallo Welt\\n'")
         for key in ('GEIST_DIKTAT_PROFILE','GEIST_DIKTAT_CORE','GEIST_DIKTAT_MODEL','OMP_NUM_THREADS','GEIST_WHISPER_BEAM_SIZE'):self.env.pop(key,None)
         self.env.pop('GEIST_AUDIO_MODEL_PATH',None)
         self.env.pop('GEIST_MEL_CONSTANTS_PATH',None)

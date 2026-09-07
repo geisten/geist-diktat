@@ -17,12 +17,16 @@ def main():
     for name in ('manifest','binary','model','tower','mel','output_dir'):
         ap.add_argument('--'+name.replace('_','-'),type=Path,required=True)
     a=ap.parse_args();a.output_dir.mkdir(parents=True,exist_ok=True)
-    for stream,threads,wait in [(0,1,'PASSIVE'),(1,1,'PASSIVE'),(0,2,'PASSIVE'),(1,2,'PASSIVE'),(0,4,'PASSIVE'),(1,4,'PASSIVE'),(0,4,'ACTIVE')]:
+    # Full legacy-engine control matrix. Whisper does not implement these
+    # Geist-specific subsampling/worker-start settings.
+    settings=[(0,t,w,inc) for t in (1,2,4) for w in ('PASSIVE','ACTIVE') for inc in (0,1)]
+    settings += [(1,4,'PASSIVE',inc) for inc in (0,1)]
+    for stream,threads,wait,incremental in settings:
         cmd=[sys.executable,str(Path(__file__).with_name('quality.py'))]
         for name in ('manifest','binary','model','tower','mel'):cmd+=['--'+name,str(getattr(a,name))]
-        cmd+=['--output',str(a.output_dir/f'stream{stream}-threads{threads}-{wait.lower()}.json'),
+        cmd+=['--output',str(a.output_dir/f'stream{stream}-threads{threads}-{wait.lower()}-subsample{incremental}.json'),
               '--threads',str(threads),'--groups','de-read-clean','--limit','2','--paced','--timeout','180']
-        print(f'CONFIG stream={stream} threads={threads} wait={wait}',flush=True)
-        subprocess.run(cmd,env=dict(os.environ,GEIST_AUDIO_STREAM=str(stream),OMP_WAIT_POLICY=wait),check=True)
+        print(f'CONFIG stream={stream} threads={threads} wait={wait} subsample_incremental={incremental}',flush=True)
+        subprocess.run(cmd,env=dict(os.environ,GEIST_AUDIO_STREAM=str(stream),OMP_WAIT_POLICY=wait,GEIST_AUDIO_SUBSAMPLE_INC=str(incremental)),check=True)
 
 if __name__=='__main__':main()

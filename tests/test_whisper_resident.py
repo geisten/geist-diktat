@@ -98,6 +98,20 @@ class ResidentWhisper(unittest.TestCase):
             p=subprocess.run([str(self.binary),'model.bin'],input=audio(8000),stdout=write_fd,stderr=subprocess.PIPE,timeout=5)
             self.assertEqual(p.returncode,1,p.stderr);self.assertIn(b'stdout write failed',p.stderr)
         finally:os.close(write_fd)
+    def test_worker_output_failure_does_not_hang_input_reader(self):
+        p=subprocess.Popen([str(self.binary),'--worker','model.bin'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        try:
+            self.assertEqual(json.loads(p.stdout.readline())['type'],'ready')
+            p.stdin.write(struct.pack('!I',0xffffffff));p.stdin.flush()
+            self.assertEqual(json.loads(p.stdout.readline())['state'],'listening');p.stdout.close()
+            data=audio(8000)+bytes(25600)
+            for offset in range(0,len(data),640):
+                piece=data[offset:offset+640];p.stdin.write(struct.pack('!I',len(piece))+piece)
+            p.stdin.flush();p.wait(timeout=2);self.assertEqual(p.returncode,1)
+        finally:
+            if p.poll() is None:p.kill();p.wait()
+            p.stdin.close();p.stderr.close()
+
     def test_input_read_error_is_failure(self):
         fd=os.open(ROOT,os.O_RDONLY)
         try:

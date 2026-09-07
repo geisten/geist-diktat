@@ -64,6 +64,7 @@ def main():
     p.add_argument('--prefix',type=Path,required=True);p.add_argument('--profile',choices=list(PROFILES))
     sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('setup')
+    worker=sub.add_parser('worker');worker.add_argument('action',choices=['start','status','stop'])
     run=sub.add_parser('run');run.add_argument('rms',nargs='?')
     doctor=sub.add_parser('doctor');doctor.add_argument('--json',action='store_true');doctor.add_argument('--verify',action='store_true')
     editor=sub.add_parser('editor-install');editor.add_argument('editor',choices=['vim','nvim','all'])
@@ -82,7 +83,16 @@ def main():
             script='desktop_tools.py' if a.command=='editor-install' else 'line_sink.py'
             args=['--prefix',str(a.prefix),'editor-install',a.editor] if a.command=='editor-install' else ['--',*a.sink]
             os.execv(sys.executable,[sys.executable,str(share/script),*args])
+        if a.command=='worker' and a.action in ('status','stop'):
+            os.execv(sys.executable,[sys.executable,str(share/'model_worker.py'),a.action])
         config=resolve(a.prefix,a.profile)
+        if a.command=='worker':
+            if config['engine']!='whisper-resident':raise ValueError('model reuse requires the resident Whisper profile')
+            os.environ['OMP_WAIT_POLICY']=config['worker']['wait_policy']
+            os.environ['OMP_NUM_THREADS']=str(config['parameters']['threads'])
+            os.environ['GEIST_WHISPER_BEAM_SIZE']=str(config['parameters']['beam_size'])
+            model=next(f['path'] for f in config['files'] if f['name']=='model')
+            os.execv(sys.executable,[sys.executable,str(share/'model_worker.py'),a.action,'--core',str(config['core']),'--model',str(model),'--idle-seconds',str(config['worker']['idle_seconds'])])
         if a.command=='profile':
             print(json.dumps(config,default=str,ensure_ascii=False,indent=2));return 0
         if a.command=='setup':setup(a.prefix,config);return 0
@@ -100,12 +110,19 @@ def main():
         if not model.is_file():raise ValueError('model missing — run: geist-diktat setup')
         if a.rms is not None and (not math.isfinite(float(a.rms)) or not 0<float(a.rms)<=32768):raise ValueError('invalid RMS')
         capture=capture_command()
+        if config['worker']:os.environ['OMP_WAIT_POLICY']=config['worker']['wait_policy']
         os.environ['OMP_NUM_THREADS']=str(config['parameters']['threads'])
         if 'beam_size' in config['parameters']:os.environ['GEIST_WHISPER_BEAM_SIZE']=str(config['parameters']['beam_size'])
         for file in config['files']:
             if file['name']!='model':os.environ[file['env']]=str(file['path'])
-        args=[sys.executable,str(share/'diktat_runtime.py'),'--capture',capture,'--buffer-seconds',os.environ.get('GEIST_DIKTAT_BUFFER_SECONDS','6'),'--',str(core),str(model)]
-        if a.rms is not None:args.append(a.rms)
+        decoder=[str(core),str(model)]
+        if a.rms is not None:decoder.append(a.rms)
+        ready=[]
+        if config['worker'] and config['worker']['enabled']:
+            decoder=[sys.executable,str(share/'model_worker.py'),'run','--core',str(core),'--model',str(model),
+                '--rms',a.rms or '300','--idle-seconds',str(config['worker']['idle_seconds'])]
+            ready=['--ready-timeout','125']
+        args=[sys.executable,str(share/'diktat_runtime.py'),'--capture',capture,'--buffer-seconds',os.environ.get('GEIST_DIKTAT_BUFFER_SECONDS','6'),*ready,'--',*decoder]
         os.execv(sys.executable,args)
     except (OSError,ValueError,subprocess.SubprocessError) as error:
         print('geist-diktat: '+str(error),file=sys.stderr);return 1

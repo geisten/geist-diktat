@@ -27,7 +27,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='geist-installed-') as d:
         d=Path(d);data=d/'data/geist-diktat';data.mkdir(parents=True)
         (data/'ggml-small-q5_1.bin').symlink_to(a.model.resolve())
-        env=dict(os.environ,HOME=str(d),XDG_DATA_HOME=str(d/'data'),XDG_CONFIG_HOME=str(d/'config'),GEIST_DIKTAT_CAPTURE='true')
+        env=dict(os.environ,HOME=str(d),XDG_DATA_HOME=str(d/'data'),XDG_CONFIG_HOME=str(d/'config'),XDG_RUNTIME_DIR=str(d/'r'),GEIST_DIKTAT_CAPTURE='true')
         for key in ('GEIST_DIKTAT_PROFILE','GEIST_DIKTAT_CORE','GEIST_DIKTAT_MODEL','GEIST_WHISPER_BEAM_SIZE','OMP_NUM_THREADS'):env.pop(key,None)
         def call(*args):return subprocess.run([str(launcher),*args],env=env,capture_output=True,text=True,timeout=120)
         chosen=call('profile','show');assert chosen.returncode==0,chosen.stderr
@@ -38,7 +38,9 @@ def main():
         doctor=json.loads(checked.stdout);assert doctor['profile']['parameters']==dict(threads=4,beam_size=5)
         env['GEIST_DIKTAT_CAPTURE']=shlex.join([sys.executable,str(ROOT/'benchmarks/trace_capture.py'),str(wav.resolve())])
         env['GEIST_DIKTAT_TRACE']=str(d/'trace.jsonl')
-        start=time.monotonic();recognition=call('run');elapsed=time.monotonic()-start
+        start=time.monotonic()
+        try:recognition=call('run');elapsed=time.monotonic()-start
+        finally:call('worker','stop')
         measured=score(fixture['reference'],' '.join(recognition.stdout.splitlines()))
         result=dict(source_commit=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip(),
             passed=recognition.returncode==0 and measured['wer']==0,scope='one paced known clean German clip through installed profile/setup/doctor/run; no general WER or desktop acceptance',

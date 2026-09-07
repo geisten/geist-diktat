@@ -43,7 +43,7 @@ def doctor(prefix, verify=False, profile=None):
             check('recognizer-sha256',core.is_file() and h.hexdigest()==metadata.get('binary_sha256'),'Reinstall package; recognizer differs from the packaged binary')
     capture=bool(os.getenv('GEIST_DIKTAT_CAPTURE')) or any(shutil.which(c) for c in (('sox','ffmpeg') if platform.system()=='Darwin' else ('arecord',)))
     check('capture-command',capture,'macOS: brew install sox; Ubuntu: sudo apt install alsa-utils')
-    return dict(package_profile=metadata,profile=dict(name=config['name'],source=config['source'],engine=config['engine'],core=str(core),parameters=config['parameters']),platform=platform.platform(),ready=all(c['ok'] for c in checks),checks=checks,
+    return dict(worker_policy=config['worker'],package_profile=metadata,profile=dict(name=config['name'],source=config['source'],engine=config['engine'],core=str(core),parameters=config['parameters']),platform=platform.platform(),ready=all(c['ok'] for c in checks),checks=checks,
                 verification='sha256' if verify else 'file presence only',
                 limitations=['Device access, microphone permission and focused-app insertion require an interactive test.'],
                 editors={c:shutil.which(c) for c in ('vim','nvim')})

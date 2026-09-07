@@ -68,6 +68,24 @@ class Runtime(unittest.TestCase):
         for value in ('nan','inf','0','61'):
             p=self.run_pipeline('true','pass',value)
             self.assertEqual(p.returncode,2);self.assertNotIn(b'Traceback',p.stderr)
+    def test_capture_waits_for_explicit_decoder_readiness(self):
+        import shlex
+        with tempfile.TemporaryDirectory() as d:
+            marker=Path(d)/'ready'
+            decoder="import os,time,sys;time.sleep(.1);open("+repr(str(marker))+",'w').close();os.write(int(os.environ['GEIST_DIKTAT_READY_FD']),b'1');os.close(int(os.environ['GEIST_DIKTAT_READY_FD']));sys.stdout.buffer.write(sys.stdin.buffer.read())"
+            command=self.command('test -f '+shlex.quote(str(marker))+" && printf 'abcdefgh'",decoder)
+            command[2:2]=['--ready-timeout','1']
+            p=subprocess.run(command,capture_output=True,timeout=4)
+            self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(p.stdout,b'abcdefgh')
+    def test_startup_timeout_and_invalid_ready_do_not_start_capture(self):
+        import shlex
+        for decoder in ("import time;time.sleep(5)","import os,time;os.close(int(os.environ['GEIST_DIKTAT_READY_FD']));time.sleep(5)"):
+            with tempfile.TemporaryDirectory() as d:
+                marker=Path(d)/'capture'
+                command=self.command('touch '+shlex.quote(str(marker)),decoder);command[2:2]=['--ready-timeout','.1']
+                p=subprocess.run(command,capture_output=True,timeout=3)
+                self.assertEqual(p.returncode,70,p.stderr);self.assertFalse(marker.exists());self.assertNotIn(b'Traceback',p.stderr)
+
     def test_term_stops_descendants(self):
         with tempfile.TemporaryDirectory() as d:
             pidfile=Path(d)/'pid'

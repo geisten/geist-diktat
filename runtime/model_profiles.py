@@ -1,5 +1,6 @@
 """Pinned model profiles shared by setup, launch, doctor and packaging."""
 import json
+import math
 import os
 from pathlib import Path
 import tempfile
@@ -42,7 +43,15 @@ def resolve(prefix,explicit=None):
         return int(raw)
     parameters=dict(threads=integer('OMP_NUM_THREADS',p['threads'],256))
     if 'beam_size' in p:parameters['beam_size']=integer('GEIST_WHISPER_BEAM_SIZE',p['beam_size'],8)
-    return dict(name=name,source=source,label=p['label'],engine=p['engine'],core=core,files=files,parameters=parameters)
+    worker=None
+    if p['engine']=='whisper-resident':
+        enabled=os.getenv('GEIST_DIKTAT_REUSE_MODEL','1')
+        idle=float(os.getenv('GEIST_DIKTAT_IDLE_SECONDS','60'))
+        if enabled not in ('0','1') or not math.isfinite(idle) or not 1<=idle<=3600:raise ValueError('invalid model worker policy')
+        wait=os.getenv('OMP_WAIT_POLICY','PASSIVE').upper()
+        if wait not in ('PASSIVE','ACTIVE'):raise ValueError('invalid OMP_WAIT_POLICY')
+        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait)
+    return dict(name=name,source=source,label=p['label'],engine=p['engine'],core=core,files=files,parameters=parameters,worker=worker)
 
 def save(prefix,name):
     name=validate(name);core=prefix/'bin'/PROFILES[name]['binary']
