@@ -1,6 +1,7 @@
 name: package-audit
 on:
   workflow_call:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -27,10 +28,12 @@ jobs:
           docker run --rm -v "$PWD:/work:ro" ubuntu:24.04 sh -ec '
             apt-get update -q >/dev/null
             apt-get install -y --no-install-recommends /work/geist-diktat_0.1.0-profiletest_*.deb >/dev/null
-            ! command -v gcc
-            ! command -v g++
-            ! command -v cmake
-            ! command -v git
+            for tool in gcc g++ cmake git; do
+              if command -v "$tool"; then
+                echo "Unexpected developer tool: $tool" >&2
+                exit 1
+              fi
+            done
             geist-diktat profile show > /tmp/profile.json
             geist-diktat doctor --json > /tmp/doctor.json && exit 1
             python3 -c '\''import json; p=json.load(open("/tmp/profile.json")); d=json.load(open("/tmp/doctor.json")); assert p["name"]=="whisper-small"; assert [c["name"] for c in d["checks"] if not c["ok"]]==["model"]; assert not d["ready"]'\''
