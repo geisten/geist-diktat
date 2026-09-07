@@ -67,6 +67,13 @@ jobs:
           python3 benchmarks/worker_lifecycle.py --binary build/whisper-resident/diktat-whisper \
             --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
             --output build/resident-results/worker-lifecycle.json
+      - name: Enforce selected worker quality and complete audio accounting
+        if: always()
+        env:
+          CANDIDATE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 benchmarks/check_worker_gates.py build/resident-results/worker-quality.json \
+            --expected-commit "$CANDIDATE_COMMIT" --output resident-metrics/worker-gates.json
       - name: Evaluate candidate quality without changing the release default
         if: always()
         env:
