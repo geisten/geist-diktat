@@ -66,11 +66,12 @@ if [ "$PROFILE" = whisper-small ]; then
     cat >> "$STAGE/usr/share/doc/geist-diktat/copyright" <<'EOF'
 
 Files: usr/bin/diktat-whisper
-Copyright: 2023-2026 The whisper.cpp and ggml authors
+Copyright: 2023-2026 The ggml authors
 License: MIT
- The full upstream license texts are included in
- /usr/share/doc/geist-diktat/whisper/LICENSE.
 EOF
+    # Minimal Ubuntu images exclude ordinary documentation, but retain copyright.
+    # Keep the complete linked engine license in that mandatory file too.
+    sed -e 's/^$/./' -e 's/^/ /' build/whisper.cpp/LICENSE >> "$STAGE/usr/share/doc/geist-diktat/copyright"
 fi
 
 # Derive minimum ABI versions from both actual binaries, including C++/OpenMP.

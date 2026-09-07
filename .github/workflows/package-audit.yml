@@ -37,7 +37,8 @@ jobs:
             diktat-whisper /nonexistent.bin </dev/null >/tmp/out 2>/tmp/err && exit 1
             grep -q "model_load failed" /tmp/err
             geist-diktat profile use whisper-small
-            test -f /usr/share/doc/geist-diktat/whisper/LICENSE
+            grep -q "Permission is hereby granted" /usr/share/doc/geist-diktat/copyright
+            grep -q "THE SOFTWARE IS PROVIDED" /usr/share/doc/geist-diktat/copyright
             echo "PASS: selected profile installed and decoder loads on clean Ubuntu; only model data absent"
           '
       - uses: actions/upload-artifact@v4
