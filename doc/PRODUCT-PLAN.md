@@ -1,10 +1,10 @@
 # Produktfreigabe: Stand und Reihenfolge
 
-Stand: **7. September 2026**. Aktuell getesteter Code: `46a2845` (M1-Evidenz `9968fea`, Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
+Stand: **7. September 2026**. Aktuell integrierter Code: `e9aeed9` (CI-Prüfung), Laufzeit/Pakete `fd01781` (Modellprofile `ad58011`, M2-Decoder `46a2845`, Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
 
 **Ziel ist die erste öffentliche Ubuntu-GNOME-Beta.** Ihre Blocker sind zuverlässiges Desktop-Diktat, deutsche Qualität für Alltags- und technische Texte, die fünf verbindlichen Anwendungen, geführter Erststart und der externe Zeitgewinn-Nachweis. Die Stabilitätsbasis ist umgesetzt; die Beta ist noch nicht freigegeben. Pi5, macOS und zusätzliche Desktop-Profile liegen außerhalb des kritischen Pfads. Breite DACH-Tests bleiben im Plan, Dialektunterstützung wird zunächst ausdrücklich experimentell ausgewiesen.
 
-✅ = implementiert und im genannten Umfang getestet; 🟡 = teilweise umgesetzt; ⬜ = offen. Umsetzung auf dem Branch bedeutet nicht Merge, Veröffentlichung oder Feldabnahme. Die GitHub-Issues #16–40 waren bei der dokumentierten Abfrage vom 6. September weiterhin offen; dieses Planupdate schließt keine Issues.
+✅ = implementiert und im genannten Umfang getestet; 🟡 = teilweise umgesetzt; ⬜ = offen. Umsetzung auf dem Branch bedeutet nicht Merge, Veröffentlichung oder Feldabnahme. Die bisherigen GitHub-Issues bleiben offen, soweit ihre vollständige Abnahme aussteht. #48 ergänzt die Distributionskompatibilität; dieses Planupdate schließt keine Issues.
 
 Messungen: [Implementierungsbericht](IMPLEMENTATION-2026-09-06.md). Architekturentscheidung, Alternativen und aktuelle Primärquellen: [SOTA-Analyse](RELEASE-STRATEGY-2026-09-06.md).
 
@@ -50,12 +50,12 @@ für Überlegenheit gegenüber anderen Diktatprodukten.
 | ✅ | Vim/Neovim #19, #20, #24, #27–29 | Asynchrone Adapter, UTF-8-Framing, Sitzungswechsel, begrenzte Ausgabequeue, native Paketinstallation | Breite interaktive Modus-/Fokusmatrix unter M4 |
 | ✅ | IBus-Lifecycle #23 | Reaping, Stop/Neustart, EOF/HUP, 100 Wechsel | Weitere Desktop-Sitzungen unter M4 |
 | ✅ | Pipeline #33 | Wörtliche zeilenweise UTF-8-Übergabe ohne Shell-Auswertung | Verfügbarkeit der Senke pro Desktop |
-| ✅ | Tests / GitHub-Ubuntu-Agent | macOS und gehostetes Ubuntu x64/ARM64 je 117 Fälle auf `46a2845`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
+| ✅ | Tests / GitHub-Ubuntu-Agent | macOS 134 Fälle auf `ad58011`; Ubuntu x64/ARM64 je 134 und frische Paketinstallation auf `e9aeed9`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
 | 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, 6 s Supervisor-Queue und Überlast Exit 75; residenter Whisper-CPU-Kandidat mit begrenztem Leser implementiert | Reale Ubuntu-Modellauswahl und 30/60-Minuten-Abnahme; Pi5-Folgeprofil ungeprüft |
 | 🟡 | Sprache #38, #39 | 47 Pilot-Fixtures; WER-, Rausch-, Schweizer Dialekt- und Gesprächsmessungen; lokaler Gate-Checker | Unabhängiges DACH-Set und bestandene Qualitätsgates fehlen |
 | 🟡 | Vertrag / Status #34, #35 | PCM16/UTF-8/Exitcode-Vertrag v1; IBus-Fokus-/Schutzfeldregeln | Zustandsereignisse, Teil-/Endergebnisse und globale Stop-Abnahme |
 | 🟡 | Ubuntu-Apps #31 | Echte IBus-/GTK3-/Qt5-Prüfungen unter privatem D-Bus/Xvfb | GNOME Wayland/Xorg, KDE, moderne Toolkits und Sandbox-Apps |
-| 🟡 | Erststart #30 | Doctor, SHA-geprüfte Modelldownloads, Setup, Editorinstallation | Mikrofonwahl, Fortschritt/Wiederaufnahme, Recovery, Nutzertests |
+| 🟡 | Erststart #30 | Persistente Modellprofile, profilabhängiger Doctor, SHA-geprüfte atomare Downloads, URL-Wiederaufnahme und Lock, Editorinstallation | Geführte Mikrofonwahl, Recovery-Oberfläche, Nutzertests |
 | 🟡 | macOS #32 | Swift-Menüleisten-App, Hotkey, Vorschau/Kopieren, optionales AX-Einfügen; Build/ad-hoc-Signatur grün | Native Capture-/Abhängigkeitslösung, GUI/TCC, Developer-ID/Notarisierung |
 
 Der historische [GitHub-Lauf 34020085582](https://github.com/geisten/geist-diktat/actions/runs/34020085582) auf `5e27010` war vollständig grün. Ubuntu-Core-Coverage: **98,08 % Zeilen, 73,50 % Zweige, 100 % Funktionen**, mit kontrollierter Engine. Das erfasst keine Modell-, Treiber- oder vollständige Produktabdeckung.
@@ -65,6 +65,19 @@ Der historische [GitHub-Lauf 34020085582](https://github.com/geisten/geist-dikta
 Der [M1-Lauf 34054971819](https://github.com/geisten/geist-diktat/actions/runs/34054971819) auf `9968fea` besteht beide Vertragsjobs mit je 100 Fällen und den Textfeld-Latenzprobes. Core-Coverage: **98,18 % Zeilen, 73,76 % Zweige, 100 % Funktionen**. Der Sprachjob ist wegen **15,99 % sauberer und 35,38 % 10-dB-WER** korrekt rot. Die [numerische Evidenz](../benchmarks/reports/m1-2026-09-06/index.json) ist dauerhaft archiviert. M1 bleibt wegen der ausstehenden realen App-/Mikrofon-/Dauermessungen teilweise offen.
 
 M2: [Lauf 34062909992](https://github.com/geisten/geist-diktat/actions/runs/34062909992) bestätigt je **117 Tests** auf Ubuntu x64/ARM64. Der residente Beam-5-Kandidat besteht beide Pilot-WER-Gates sowie seine dreiminütige Dateisitzung und den realen Stop-Test. Der Gesamtworkflow bleibt wegen Geist und des schwächeren Beam-1-Vergleichs rot. [Details](RESIDENT-ASR.md) und [dauerhafte Evidenz](../benchmarks/reports/m2-2026-09-07/index.json).
+
+Profilintegration: Laufzeit/Pakete `fd01781`, endgültige CI-Prüfung `e9aeed9`.
+**134 Regressionen bestehen auf macOS und jeweils Ubuntu x64/ARM64**; die beiden
+Ubuntu-Paketjobs installieren das Kandidaten-`.deb` erfolgreich ohne
+Compiler/CMake/Git. Der entpackte Mac-Tarball und der gestagte Ubuntu-Präfix
+bestehen Auswahl, Cache-Setup, SHA-Doctor und einen echten deutschen Clip
+(18 Wörter, null Fehler; keine allgemeine WER-Aussage).
+[Sprach-/Sitzungslauf 34093794448](https://github.com/geisten/geist-diktat/actions/runs/34093794448),
+[finale Paket-/Vertragsjobs 34094126495](https://github.com/geisten/geist-diktat/actions/runs/34094126495),
+[numerische Evidenz mit Artefakthashes](../benchmarks/reports/profiles-2026-09-07/index.json).
+Der erneute Beam-5-Pilot bestätigt 8,84 % / 24,62 % WER, vollständige 193,56 s
+Dateisitzung und 15,35 ms Stop als Einzelmessung. Gesamt-CI bleibt wegen Geist
+und des Beam-1-Diagnosevergleichs rot. [Profilbedienung und Grenzen](MODEL-PROFILES.md).
 
 ## Messungen, die die Priorität bestimmen
 
@@ -114,7 +127,8 @@ Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://
 
 - [x] Geist und quantisiertes Whisper auf identischem deutschen Pilot verglichen. Residentes small Q5_1 **Beam 5** als Ubuntu-Entwicklungskandidat ausgewählt: im abschließenden Lauf `34062909992` 8,84 % saubere / 24,62 % 10-dB-WER; Beam 1 verfehlt mit 32,31 % das Rauschziel. Dies ist noch keine Auswahl anhand unabhängiger Freigabedaten.
 - [x] Residenten whisper.cpp-CPU-Kandidaten implementiert: einmaliges Modellladen je Sitzung, ein begrenzter separater Leser, 28-s-Audiofenster, vorhandener PCM-/Textvertrag. 16 zusätzliche Frontend-Verträge mit Sanitizern bestanden. Normaler EOF räumt geordnet auf; ausdrücklicher Stop beendet den isolierten Prozess sofort, unabhängig von Engine-Callbacks. [Details und Messungen](RESIDENT-ASR.md).
-- [ ] Den ausgewählten Entwicklungskandidaten in Launcher, Doctor, Modellprofile sowie Pakete integrieren. Modell bleibt bisher nur während einer Sitzung geladen, nicht über mehrere Shortcut-Starts hinweg. Geist hält sein Modell ebenfalls während einer Sitzung; dessen Decode-Stillstand bleibt separat zu untersuchen.
+- [x] Ausgewählten Beam-5-Kandidaten in Launcher, Doctor, persistente Modellprofile und explizite Entwicklungspakete integriert (`ad58011`, Paketlizenzkorrektur `fd01781`). [Bedienung und Grenzen](MODEL-PROFILES.md). Modell bleibt nur während einer Sitzung geladen, nicht über mehrere Shortcut-Starts hinweg. Geist hält sein Modell ebenfalls während einer Sitzung; dessen Decode-Stillstand bleibt separat zu untersuchen.
+- [ ] Portable Ubuntu-Distributionsbuilds ([#48](https://github.com/geisten/geist-diktat/issues/48)) für eingefrorene CPU-/OS-Profile qualifizieren und WER/Leistung mit exakt ausgelieferten Paketen messen. Aktuelle Whisper-Pakete sind bewusst als Build-Rechner-optimierte Entwicklungsartefakte gekennzeichnet.
 - [ ] Additiven Ereignismodus mit `session_id`, Audiozeit, `partial`, `final`, `state`, `error` definieren; v1-Zeilenausgabe kompatibel lassen. Nur stabile Endergebnisse automatisch einfügen. Alte Sitzungen dürfen keinen Text nachliefern.
 - [ ] VAD-Endpunkte, kürzere Fenster und begrenzte Überlappung einzeln vergleichen. Kontext-Neuberechnung kann mehr Zeit kosten; doppelte Wörter und verlorene Satzanfänge erhalten Regressionen.
 - [ ] Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8 vergleichen; den Standard anhand Qualität, Einfügelatenz, Speicher und Stabilität wählen. Den ersten Kandidaten mit bestandenen Toren produktisieren; eine vollständige Modellrangliste ist keine Release-Voraussetzung.
@@ -123,7 +137,7 @@ Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://
 - [x] Beam-5-Dateisitzung mit 193,56 s menschlicher Lesesprache auf Ubuntu und macOS bestanden: jeweils ein Modellladevorgang, vollständige Byte-/Samplebilanz, 8,84 % WER. Reales Decoder-Stop-Einzelexperiment unter 1 s auf beiden Plattformen. Das schließt weder 30/60 Minuten noch physische Geräte ein.
 - [ ] Die dokumentierte Prozessschnittstelle mit einem minimalen externen Referenzclient abnehmen: Audiozufuhr, finale Texte, Zustandsereignisse, Start/Stop und Fehler. Eigene Editor-/IBus-Adapter müssen denselben Vertrag nutzen.
 
-**Nächste Umsetzung:** Den ausgewählten Beam-5-Prozess in Modellprofil, Launcher/Doctor und Pakete integrieren; Zustands-/Sitzungsereignisse und reale App-Einfügung abnehmen. Den bisherigen Drei-Minuten-Nachweis anschließend auf 30/60 Minuten und physische Aufnahme erweitern.
+**Nächste Umsetzung:** Additiven Zustands-/Sitzungsvertrag samt externem Referenzclient implementieren; anschließend den installierten Beam-5-Pfad in den fünf Anwendungen abnehmen. Distributionsprofil vor diesen Abnahmen einfrieren. Den bisherigen Drei-Minuten-Nachweis auf 30/60 Minuten und physische Aufnahme erweitern. Die grundlegende Modell-/Paketintegration ist erledigt; sie ersetzt diese Tore nicht.
 
 **Technische Abnahmekriterien für das Ubuntu-Profil:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Diese vollständige Abnahme steht noch aus; die erreichten Pilot-Teilwerte sind oben separat ausgewiesen. Die bisherigen Pi5-Zielwerte werden im separaten Folgeprofil weitergeführt.
 
@@ -163,8 +177,10 @@ Issues: #19, #20, #23, #24, #27–29, [#31](https://github.com/geisten/geist-dik
 Issues: [#21](https://github.com/geisten/geist-diktat/issues/21), [#29](https://github.com/geisten/geist-diktat/issues/29), [#30](https://github.com/geisten/geist-diktat/issues/30), [#32](https://github.com/geisten/geist-diktat/issues/32).
 
 - [x] Pakete, Editorinstallation, Diagnose, geprüfte Downloads und macOS-App-Prototyp vorhanden.
-- [ ] Modellprofil vorschlagen; Downloadgröße, Fortschritt, Wiederaufnahme und Speichermangel verständlich behandeln. Mikrofon wählen, Pegel/echte Aufnahme prüfen, Testdiktat einfügen, Shortcut zuordnen.
-- [ ] Ubuntu-Paketabhängigkeiten und Eingabequellenregistrierung auf frischen Systemen vollständig abnehmen. Eine selbstständig lauffähige macOS-App ist Aufgabe des Folgeprofils.
+- [x] Profilbezogene CLI-Auswahl, Setup und Doctor implementiert; geprüfter Cache ohne Download, curl-Fortschritt und Wiederaufnahme für URL-Dateien, atomarer Austausch und prozessgebundener Lock getestet.
+- [ ] Geführte Profilvorschläge, Downloadgröße, verständliche Platz-/Netzwerkfehler und Recovery anbieten. Mikrofon wählen, Pegel/echte Aufnahme prüfen, Testdiktat einfügen, Shortcut zuordnen.
+- [x] Explizite Whisper-`.deb` auf Ubuntu 24.04 x64/ARM64 bauen und auf frischen Minimalcontainern ohne Compiler/CMake/Git installieren; tatsächliche versionierte ELF-Abhängigkeiten ableiten, Profil-/Decoderstart und Lizenztext prüfen (`e9aeed9`).
+- [ ] Eingabequellenregistrierung und vollständigen Erststart auf frischen GNOME-Desktopprofilen abnehmen. Eine selbstständig lauffähige macOS-App ist Aufgabe des Folgeprofils.
 - [ ] Update, Rollback, abgebrochenes Setup, verbliebener Lock und Deinstallation über einen verständlichen Bedienpfad. Pakettexte an tatsächliche Architektur anpassen.
 - [ ] Mindestens fünf externe Personen ohne Projektinterna auf frischen Ubuntu-Installationen bzw. frischen Benutzerprofilen beobachten; die Installationsprüfung muss auch die Abwesenheit vorhandener Entwicklerabhängigkeiten abdecken: Klicks, Berechtigungen, Downloadzeit, aktive Einrichtungszeit und Zeit bis zum ersten korrekt eingefügten Satz dokumentieren.
 

@@ -63,8 +63,9 @@ python3 runtime/diktat_runtime.py --capture \
 
 Dieser Befehl startet ein echtes Mikrofon nur bei bewusster Ausführung. Die
 berichteten automatischen Abnahmen verwenden ausschließlich Dateiquellen.
-Modellwahl im Launcher, Doctor, Installationspakete und Ereignisschnittstelle
-sind noch nicht für diesen Kandidaten integriert.
+Modellwahl, Launcher, Doctor und explizite Entwicklungspakete sind inzwischen
+[integriert](MODEL-PROFILES.md). Portable Distributionsbuilds und die additive
+Ereignisschnittstelle bleiben offen.
 
 ## Stop-Verhalten
 

@@ -1,0 +1,7 @@
+{
+  "cases": 134,
+  "seconds": 54.708,
+  "passed": true,
+  "source_commit": "ad580118a96f0c8201ffbe89266099d39750f6dc",
+  "scope": "all local model-free regression tests; later changes only Debian license/CI and docs"
+}

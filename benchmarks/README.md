@@ -94,3 +94,21 @@ und misst unter Linux den RSS des Prozessbaums. `--max-audio-seconds` begrenzt
 gezielt einen Testausschnitt. Exit 75 des Produkts wird als **kontrollierte
 Überlast**, nicht als erfolgreiche Erkennung, dokumentiert. `--timeout` bleibt
 eine separate technische Zeitgrenze. Keine physische Mikrofonaufnahme.
+
+## Installierter Whisper-Profilpfad
+
+`package_smoke.py` testet einen installierten oder entpackten Präfix mit dem
+echten gepinnten Modell in einem isolierten HOME: Profilwahl, Cache-Setup,
+Doctor mit SHA-Prüfung und eine zeitgetreu zugespielte bekannte deutsche Aufnahme.
+
+```sh
+python3 benchmarks/package_smoke.py --prefix /path/to/unpacked-prefix \
+  --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+  --output build/package-smoke.json
+```
+
+Der Präfix muss das `whisper-small`-Paketprofil enthalten. Der Test lädt keine
+Modelle aus dem Netz und startet kein Mikrofon. Er exportiert nur numerische
+Ergebnisse und Hashes. 0 Wortfehler auf diesem einzelnen bekannten Clip sind
+keine neue Korpus-WER oder Desktop-Abnahme. Der manuelle Ubuntu-Agent-Lauf mit
+`run_resident=true` führt ihn zusätzlich zu WER, Sitzung und Stop aus.

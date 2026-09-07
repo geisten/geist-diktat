@@ -90,3 +90,18 @@ Die Prozesse dieser Tests gehören ausschließlich zum Testlauf.
 Die bisherigen historischen Auditberichte bleiben unverändert. Aktuelle Zahlen
 und weiterhin offene Produkt-Abnahmen stehen in
 [IMPLEMENTATION-2026-09-06.md](../doc/IMPLEMENTATION-2026-09-06.md).
+
+## Modellprofile und Installationspakete (7. September 2026)
+
+`test_model_profiles.py` ergänzt die Launcher-Verträge um geprüften Offline-Cache,
+profilbezogene Downloads, Abbruch/Wiederaufnahme, konkurrierendes Setup,
+Symlink-Abweisung und atomare Auswahl-/Modellfehler. Die insgesamt 23 Launcher-/
+Profilfälle laufen in isolierten Benutzerverzeichnissen mit kontrolliertem
+Downloader. Die volle Suite umfasst jetzt 134 Fälle.
+
+Der GitHub-Lauf `quality-audit` mit `run_packages=true` baut zusätzlich echte
+Whisper-`.deb` auf Ubuntu 24.04 x64 und ARM64 und installiert sie in einem frischen
+`ubuntu:24.04`-Container. Die explizite Prüfung auf fehlende Entwicklerwerkzeuge
+muss bei vorhandenem gcc/g++/CMake/Git scheitern. Profil, fehlendes Modell,
+tatsächlicher Decoderstart und vollständiger Lizenztext werden geprüft.
+[Bedienung und Nachweisgrenzen](../doc/MODEL-PROFILES.md).

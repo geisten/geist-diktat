@@ -1,0 +1,7 @@
+{
+  "source_commit": "fd017813b6a7a63b6f287dc6dc9e3c79dc870881",
+  "artifact_name": "geist-diktat_0.1.0-m3_macos-arm64.tar.gz",
+  "package_sha256": "926276f1dbbfaa749c69aae94f977a32e899de9684852b32f4f2635163a82647",
+  "package_bytes": 763641,
+  "smoke_report": "macos-package-smoke.json"
+}

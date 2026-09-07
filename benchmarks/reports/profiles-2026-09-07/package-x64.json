@@ -1,0 +1,24 @@
+{
+  "source_commit": "e9aeed90318974742a201edf23dcd738eb6a35d2",
+  "artifact_name": "geist-diktat_0.1.0-profiletest_amd64.deb",
+  "package_sha256": "7956855b7f94ea822860dc9f5946fd967b5e8a24504e296bcdc9e6e5a5f26d27",
+  "package_bytes": 767164,
+  "metadata": {
+    "profile": "whisper-small",
+    "engine": "whisper-resident",
+    "binary": "diktat-whisper",
+    "model_files": [
+      {
+        "name": "model",
+        "filename": "ggml-small-q5_1.bin",
+        "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      }
+    ],
+    "cpu_compatibility": "build-host native; development profile, not a portable release",
+    "source_sha256": "1eb2b4bd15bf2bc7409b9d6e7e20a51324450ce56c3bf31bfe7dc621aeb3c1bc",
+    "binary_sha256": "a3c01fedd0e7f8b80b2089c55acf1680cfbdd7167f32f1104ed3341924d82d6b"
+  },
+  "binary_hash_verified": true,
+  "complete_engine_license_in_copyright": true,
+  "control": "Package: geist-diktat\nVersion: 0.1.0-profiletest\nArchitecture: amd64\nMaintainer: germar <g.schlegel@geisten.net>\nInstalled-Size: 2228\nDepends: libc6 (>= 2.38), libgcc-s1 (>= 3.0), libglib2.0-0t64 (>= 2.79.0), libgomp1 (>= 6), libibus-1.0-5 (>= 1.5.1), libstdc++6 (>= 11), alsa-utils, curl, python3\nRecommends: ibus\nSection: sound\nPriority: optional\nHomepage: https://github.com/geisten/geist-diktat\nDescription: local dictation with the whisper-small model profile\n Local speech recognition with a supervised audio pipeline and an IBus\n input source. Model files are fetched per user with geist-diktat setup.\n Use geist-diktat doctor --verify to inspect the selected configuration.\n The whisper-small profile is a development build for the build host;\n broad CPU compatibility and complete desktop acceptance remain pending.\n"
+}

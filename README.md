@@ -13,6 +13,11 @@ bleiben Freigabeblocker. [Messmethodik und Grenzen](doc/QUALITY-2026-09-05.md),
 [Umsetzungsplan](doc/PRODUCT-PLAN.md),
 [Implementierung und neue Test-/Vergleichsergebnisse](doc/IMPLEMENTATION-2026-09-06.md).
 
+Der ausgewählte zusätzliche Entwicklungskandidat ist jetzt als installiertes
+Modellprofil verfügbar: **Whisper small Q5_1, Beam 5**. Launcher, Setup, Doctor
+und ausdrücklich gebaute Kandidatenpakete verwenden dieselbe Profilwahl.
+[Bedienung, Tests und Paketgrenzen](doc/MODEL-PROFILES.md).
+
 ## Ubuntu / Linux
 
 Nach Installation eines passenden .deb aus diesem Quellstand:
@@ -105,6 +110,7 @@ ist auf dem Pi5 noch nicht freigegeben.
 
 ## Lizenz
 
-Apache-2.0. Der experimentelle whisper.cpp-Vergleich in `benchmarks/` ist ein
-separat zu bauender Vergleichsbackend und gehört nicht zum standardmäßig
-ausgelieferten Erkennungspfad.
+Apache-2.0 für den Projektcode. Der separat gebaute residente Whisper-Kandidat
+verwendet whisper.cpp/ggml unter MIT; seine Entwicklungspakete enthalten den
+vollständigen Lizenztext. Der bisherige Releaseweg verwendet weiterhin Geist.
+Modelllizenzen sind vor einer öffentlichen Auslieferung getrennt zu prüfen.

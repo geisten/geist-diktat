@@ -1,0 +1,159 @@
+{
+  "scope": "model profile and installation integration evidence; not full beta approval",
+  "runtime_source_commit": "fd017813b6a7a63b6f287dc6dc9e3c79dc870881",
+  "package_test_source_commit": "e9aeed90318974742a201edf23dcd738eb6a35d2",
+  "runtime_workflow": {
+    "id": 34093794448,
+    "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "speech-cpu",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652772958",
+        "failed_steps": [
+          "Enforce speech quality on this exact commit"
+        ]
+      },
+      {
+        "name": "contracts (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652773085",
+        "failed_steps": []
+      },
+      {
+        "name": "resident-candidate / resident-cpu",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652773145",
+        "failed_steps": [
+          "Evaluate candidate quality without changing the release default"
+        ]
+      },
+      {
+        "name": "profile-packages / clean-ubuntu (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652773147",
+        "failed_steps": []
+      },
+      {
+        "name": "profile-packages / clean-ubuntu (ubuntu-24.04)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652773244",
+        "failed_steps": []
+      },
+      {
+        "name": "contracts (ubuntu-24.04)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34093794448/job/101652773306",
+        "failed_steps": []
+      }
+    ]
+  },
+  "package_workflow": {
+    "id": 34094126495,
+    "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495",
+    "scope": "final contracts and clean package jobs pass; legacy Geist speech gate fails; resident comparison intentionally skipped in this final packaging-only follow-up",
+    "conclusion": "failure",
+    "jobs": [
+      {
+        "name": "contracts (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653794686",
+        "failed_steps": []
+      },
+      {
+        "name": "speech-cpu",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653794844",
+        "failed_steps": [
+          "Enforce speech quality on this exact commit"
+        ]
+      },
+      {
+        "name": "contracts (ubuntu-24.04)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653794887",
+        "failed_steps": []
+      },
+      {
+        "name": "profile-packages / clean-ubuntu (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653794945",
+        "failed_steps": []
+      },
+      {
+        "name": "profile-packages / clean-ubuntu (ubuntu-24.04)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653795040",
+        "failed_steps": []
+      },
+      {
+        "name": "resident-candidate",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/geisten/geist-diktat/actions/runs/34094126495/job/101653796062",
+        "failed_steps": []
+      }
+    ]
+  },
+  "local_macos": {
+    "contracts": "contracts-macos.json",
+    "package": "package-macos.json",
+    "smoke": "macos-package-smoke.json"
+  },
+  "initial_failures": [
+    {
+      "run": 34093395167,
+      "source_commit": "ad58011",
+      "finding": "package contained MIT license, but ordinary documentation absent after minimal Ubuntu installation; fixed by retaining full license in Debian copyright",
+      "fixed_commit": "fd01781"
+    },
+    {
+      "source_commit": "fd01781",
+      "finding": "negated shell commands did not enforce absence of developer tools under errexit",
+      "fixed_commit": "e9aeed9",
+      "validation": "explicit exit on presence; positive/negative local controls and both clean Ubuntu package jobs pass"
+    }
+  ],
+  "limitations": [
+    "Native build-host CPU optimization; no portable release acceptance (#48).",
+    "macOS smoke uses extracted tarball; Ubuntu real-model smoke uses staged prefix. Clean hosted Ubuntu tests install actual .deb without model, on separate hosts/binaries.",
+    "One known German clip with 18 words through installed launcher; not a new corpus WER or microphone test.",
+    "Independent DACH, 30/60-minute physical capture, five product apps, user setup and external time-gain pilot remain open.",
+    "Overall quality workflows remain red because legacy Geist and the diagnostic beam-1 comparison fail their speech gates.",
+    "No release, default backend switch, merge or external tester messages."
+  ],
+  "sha256": {
+    "arm-gtk-latency.json": "6e6b902cbcc74594a40c2bab98e95e87ddc092f59b26d3dd6536d4b1056578e2",
+    "arm-qt-latency.json": "9961b8594f800027d590492f982e4d2cb85f4cc0f61d60f65e0261e3e1f3c589",
+    "contracts-arm.json": "cf1c6534b88d652d7b57214a757c87bb2d8ed5ffcd0b190ed59a9cc6377fb61c",
+    "contracts-macos.json": "cf026005056fd3b36da92a15f9814330727d477da8776f93aab338cc4776cd4f",
+    "contracts-x64.json": "944981803dcec1fded50440e7cb42b421a63000de6f5183aeeba3eeb19016ad1",
+    "geist-speech-gates.json": "4432dbb85a39fa6b07d2b6bdfd1b3eaa5954f06c4114f84796d3b37ca2b7fd77",
+    "geist-ubuntu-agent-quality.json": "7a9d16a14af5a1fcee3115af2048c0cf736a0cbf5585fa7a44d7ef4953bfc403",
+    "macos-package-smoke.json": "44e1ebfb7b9d908fa3714382b77e7f931352efe31fa3763fbeb4384bebef020a",
+    "package-arm.json": "83fd443b7d1371e78e73e37239369320dfe522ef0a8f60b1bf7b5f9638efb6a0",
+    "package-macos.json": "0d24df6a261368e04078e07fddeab07721f7e08d88de983b49c33ee8855247e6",
+    "package-x64.json": "0d2fbf15997f56ad61a512a126c37847797a52e6badd0abd1d082e9460c32d19",
+    "ubuntu-beam-1-gates.json": "7684d342f5b1d41848aff55bd29cbf9948cd14de70ba9e29d4871dda27f1fe9c",
+    "ubuntu-beam-1.json": "aae0ff3bec689bd3989e2adf01632f8e5df6988385998e47801fa20d35d16438",
+    "ubuntu-beam-5-gates.json": "cd4290a0be311e799964df9a87bbf45e24b45c3c6c086468923ffc15573e013d",
+    "ubuntu-beam-5.json": "c5b2e59bf73c02f360b1b4751da66b0606735e5e5478df135811913117618bf8",
+    "ubuntu-package-smoke.json": "5b5134eb871d3e56e485472082a8c393ff748af253a96644dca5698215d8f990",
+    "ubuntu-session.json": "d84c25880587124af358b6f0757711d4e3b25531f316efc8c46883664ea7e8f9",
+    "ubuntu-stop.json": "b8e7fe7081acf66316e2a530c91b4b292658cbab12808c56a65033bdb6360a1f",
+    "x64-gtk-latency.json": "131f3d0b0ba23261e34f0f8567de6323442d8dc27034a0dfa3525078a5deec29",
+    "x64-qt-latency.json": "3a71a11796f738359a2598022fb40676f0856a21089f19c2dfeb5355616ad6b2"
+  }
+}

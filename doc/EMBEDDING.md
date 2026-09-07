@@ -34,6 +34,14 @@ nicht interpoliert werden. Das Kommando muss PCM16LE liefern, keine WAV-Header.
 `GEIST_DIKTAT_CORE`, `GEIST_DIKTAT_MODEL`, `GEIST_AUDIO_MODEL_PATH` und
 `GEIST_MEL_CONSTANTS_PATH` unterstützen explizite lokale Pfade.
 
+## Gemeinsame Modellwahl
+
+`geist-diktat profile use whisper-small` speichert die Auswahl für den nächsten
+Start des installierten Launchers. Voraussetzung ist das passende Decoderpaket.
+Vim, Neovim und IBus benötigen dann keine eigenen Modellpfade. `profile list`
+zeigt die vorhandenen Decoder, `doctor --verify --json` das wirksame Profil samt
+Parametern und Prüfsummenstatus. [Vollständige Bedienung](MODEL-PROFILES.md).
+
 ## Vim und Neovim
 
 Nach Paketinstallation:

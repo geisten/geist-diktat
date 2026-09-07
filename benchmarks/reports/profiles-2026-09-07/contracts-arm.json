@@ -1,0 +1,41 @@
+{
+  "cases": 134,
+  "seconds": 24.761,
+  "passed": true,
+  "scope": "controlled engine contracts plus isolated real IBus/GTK/Qt, not physical microphone or five-app beta acceptance",
+  "core_coverage": {
+    "branches": {
+      "count": 202,
+      "covered": 149,
+      "notcovered": 53,
+      "percent": 73.76237623762376
+    },
+    "functions": {
+      "count": 4,
+      "covered": 4,
+      "percent": 100
+    },
+    "instantiations": {
+      "count": 4,
+      "covered": 4,
+      "percent": 100
+    },
+    "lines": {
+      "count": 220,
+      "covered": 216,
+      "percent": 98.18181818181819
+    },
+    "mcdc": {
+      "count": 0,
+      "covered": 0,
+      "notcovered": 0,
+      "percent": 0
+    },
+    "regions": {
+      "count": 266,
+      "covered": 246,
+      "notcovered": 20,
+      "percent": 92.4812030075188
+    }
+  }
+}
