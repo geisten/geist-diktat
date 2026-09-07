@@ -1,5 +1,10 @@
 name: worker-duration-audit
 on:
+  workflow_call:
+    inputs:
+      minutes:
+        type: string
+        default: '30'
   workflow_dispatch:
     inputs:
       minutes:

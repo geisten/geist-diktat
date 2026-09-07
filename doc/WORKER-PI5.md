@@ -201,7 +201,7 @@ noch nicht möglich. Der Ubuntu-Beta-Pfad mit fünf Apps und externem Zeitgewinn
 Pilot bleibt unabhängig davon bestehen.
 
 Der ausschließlich manuell gestartete Workflow `worker-duration-audit` führt
-wahlweise 30 oder 60 Minuten auf dem eigenen Ubuntu-Agenten aus. Er wiederholt
+wahlweise 30 oder 60 Minuten auf dem eigenen Ubuntu-Agenten aus. Auf dem Entwicklungsbranch wird er über den bereits registrierten `quality-audit` mit `run_duration=30` bzw. `60` aufgerufen. Er wiederholt
 bekannte deutsche Lesesprache, nutzt den vollen Kontext/28 s/Beam 5 und
 veröffentlicht nur numerische Ergebnisse. Sein Dateilauf ersetzt keine
 Gesprächs-, Dialekt-, Mikrofon- oder Desktop-Abnahme. Externer PR-Code startet

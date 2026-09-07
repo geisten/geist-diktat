@@ -2,6 +2,11 @@ name: quality-audit
 on:
   workflow_dispatch:
     inputs:
+      run_duration:
+        description: Optional paced worker duration test on the CPU agent
+        type: choice
+        options: ['0', '30', '60']
+        default: '0'
       run_resident:
         description: Also compare the experimental resident candidates
         type: boolean
@@ -128,3 +133,10 @@ jobs:
   profile-packages:
     if: github.event_name == 'workflow_dispatch' && inputs.run_packages
     uses: ./.github/workflows/package-audit.yml
+
+  worker-duration:
+    # Manual-only; no PR code is dispatched to the persistent CPU agent.
+    if: github.event_name == 'workflow_dispatch' && inputs.run_duration && inputs.run_duration != '0'
+    uses: ./.github/workflows/worker-duration-audit.yml
+    with:
+      minutes: ${{ inputs.run_duration }}
