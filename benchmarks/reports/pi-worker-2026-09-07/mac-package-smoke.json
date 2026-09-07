@@ -1,0 +1,41 @@
+{
+  "source_commit": "dc2d3505c97766b4da149e946a546a901077fbc6",
+  "passed": true,
+  "scope": "one paced known clean German clip through installed profile/setup/doctor/run; no general WER or desktop acceptance",
+  "profile": "whisper-small",
+  "parameters": {
+    "threads": 4,
+    "beam_size": 5
+  },
+  "package_profile": {
+    "profile": "whisper-small",
+    "engine": "whisper-resident",
+    "binary": "diktat-whisper",
+    "model_files": [
+      {
+        "name": "model",
+        "filename": "ggml-small-q5_1.bin",
+        "sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb"
+      }
+    ],
+    "cpu_compatibility": "build-host native; development profile, not a portable release",
+    "source_sha256": "ae046a61948ca7947da7b4bdfb7bcdb04786c36bda500da2d9583217b14f4b60",
+    "binary_sha256": "72311219c6262869e30f6dbe1e542ad70a0f1841a81eb72b4f7eb50b93e5cb51"
+  },
+  "setup_exit": 0,
+  "doctor_exit": 0,
+  "run_exit": 0,
+  "wall_s": 19.20637162498315,
+  "score": {
+    "errors": 0,
+    "substitutions": 0,
+    "deletions": 0,
+    "insertions": 0,
+    "reference_words": 18,
+    "wer": 0.0
+  },
+  "fixture_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+  "model_sha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+  "installed_binary_sha256": "72311219c6262869e30f6dbe1e542ad70a0f1841a81eb72b4f7eb50b93e5cb51",
+  "physical_microphone": false
+}

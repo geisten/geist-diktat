@@ -1,0 +1,230 @@
+{
+  "scope": "Development evidence for issues #36/#37; no product release. Numerical reports and regression logs only.",
+  "runtime_commit": "dc2d3505c97766b4da149e946a546a901077fbc6",
+  "duration_commits": {
+    "Mac/Pi": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+    "Ubuntu": "8aafa6d"
+  },
+  "limitations": [
+    "Known development corpus; repeated audio is not independent long conversation.",
+    "Physical microphone and product-app insertion unqualified.",
+    "Mac resource gate unsupported; separate partial RSS only.",
+    "Pi 12-second duration profile fails noise WER; 28-second quality profile overloads.",
+    "Early dirty snapshots retain per-file hashes and exact reconstruction evidence in integrity.json.",
+    "Legacy WAV containers differ; decoded PCM identity is proven in pcm-equivalence.json."
+  ],
+  "files": {
+    "adaptive-full-pilot.json": {
+      "bytes": 43702,
+      "sha256": "183c0a14b0694873c62485311505696a29e54ab9c2dc1b1afe2f5eae1f1858c2"
+    },
+    "adaptive-screening.json": {
+      "bytes": 14966,
+      "sha256": "81e09409f6d088dd61f8681035526e254d291e4a152cddac9549d0f33dff54c3"
+    },
+    "adaptive-soak-overload.json": {
+      "bytes": 24945,
+      "sha256": "3a7919ba48343a3e4f84cac9a45284103d2bed90c970a8b33732ed5226e922da"
+    },
+    "beam3-full-pilot.json": {
+      "bytes": 40420,
+      "sha256": "edb27f7320bef80923ea115f38ca4591eccf792a7140ca144a23277f0f3d2704"
+    },
+    "blas-screening.json": {
+      "bytes": 20548,
+      "sha256": "0c58805216c2e45f1654bc5b1cad71e800aa02d301fce35977ceac0f82496cb7"
+    },
+    "chunk12-full-pilot.json": {
+      "bytes": 44354,
+      "sha256": "23f08d8c4338dd62a75ded7df44f079f4c3172c1b213c3b77573bae390c22ca9"
+    },
+    "chunk8-full-pilot.json": {
+      "bytes": 46049,
+      "sha256": "ddcd367c055a2ffdbf8700208b76f7f89e8aa9cbf28e448425f1cc524f17b536"
+    },
+    "github-duration-run.json": {
+      "bytes": 8538,
+      "sha256": "386e64ee3387fe2100bfbd4dbbdf9f79fb43f730840f44ab0e3e6bb7d2784a7a"
+    },
+    "github-run.json": {
+      "bytes": 12762,
+      "sha256": "d9fb2f0bb5c3ac6e40d517d7ef22ce22c18fa9f3c1ddba5bcf1e981afb0b9352"
+    },
+    "github-runtime-b1cd8a9.json": {
+      "bytes": 12762,
+      "sha256": "d9fb2f0bb5c3ac6e40d517d7ef22ce22c18fa9f3c1ddba5bcf1e981afb0b9352"
+    },
+    "github-runtime-dc2d350.json": {
+      "bytes": 13286,
+      "sha256": "c5eb4d6bc3cc5ba4618f96de0b04226bc208ddabd68483b593fce9b099c71e38"
+    },
+    "integrity.json": {
+      "bytes": 9844,
+      "sha256": "7873df693bb220f7fde8e34da85287b9c4dba332a59163102424aceba3adec91"
+    },
+    "mac-conversation30-rss.json": {
+      "bytes": 45299,
+      "sha256": "5787a688288fbc3ccc05b54c84e94a795960c67ec0a3591812bcadb2074d5733"
+    },
+    "mac-conversation30.json": {
+      "bytes": 673120,
+      "sha256": "188dd2eab7e15adc113de4e12e0618d9066cbb3c0b44fc1e57cd38d12bb00635"
+    },
+    "mac-environment.json": {
+      "bytes": 216,
+      "sha256": "9115f1134f79c7420de0a49140cb4e165bc607a7f313c89593f90dee90703ac4"
+    },
+    "mac-full-pilot.json": {
+      "bytes": 34166,
+      "sha256": "6aa3a738393825739ed49dfe07316cf2196107ec60ec6c441086646c3e181d34"
+    },
+    "mac-lifecycle.json": {
+      "bytes": 3535,
+      "sha256": "fd81663597435697688bfaa2bc7ab35bf8755712f8ab0e4cde3a2e333e8190e7"
+    },
+    "mac-paced.json": {
+      "bytes": 58493,
+      "sha256": "c6bd9c47774575d300c3334d24459539dfe172293dfb06b125fa76d188ade998"
+    },
+    "mac-package-smoke.json": {
+      "bytes": 1426,
+      "sha256": "e911f383a60c87a20314b7ada46f1ed43d3b9388998b4aba990bd7ed6842d017"
+    },
+    "native-full-pilot.json": {
+      "bytes": 79465,
+      "sha256": "2e69fbf44464bca1b83f510d1417189bcd1616c3aec8ab979759bee8d131e673"
+    },
+    "native-paced.json": {
+      "bytes": 21084,
+      "sha256": "c4869b2a826d30f6f3a6be9571038dcc310c693bdcc1fc1d7be9507ccef70e4d"
+    },
+    "native-screening.json": {
+      "bytes": 84065,
+      "sha256": "c480ad61d56321b09174d795920fb3f01c78257889cf890572d9a0428d30b422"
+    },
+    "native-soak-overload.json": {
+      "bytes": 15013,
+      "sha256": "7e0bc90f04955d18d41a1bc3b5c1c3cd178b81265ba1695e842769d43895c7e2"
+    },
+    "no-retry-benchmark-snapshot.patch": {
+      "bytes": 782,
+      "sha256": "e3222f9fd2fc3705f7720c779ca5fd899e20add8c8c806af0381dda769829142"
+    },
+    "no-retry-full-pilot.json": {
+      "bytes": 43727,
+      "sha256": "108d09e77076baf95f0505acc5da5f8ccb85fba96477b626f0bdeed37cfc5ff5"
+    },
+    "no-retry-soak-overload.json": {
+      "bytes": 25397,
+      "sha256": "07710f103fd1c7991392b2d571f3b19c7ac54105cf0b94caf7b9f6bf85cc8485"
+    },
+    "pcm-equivalence.json": {
+      "bytes": 8098,
+      "sha256": "3976e930c72c43b2613781bbf173aa397c5ed1b45cbbfce1e7e8ee9a00c388d1"
+    },
+    "pi-duration60-chunk12.json": {
+      "bytes": 1464109,
+      "sha256": "8ae3be314aea106cb43daf96c5b6fbfed961f27fc052303ed28bde31cf8b601e"
+    },
+    "pi-environment.json": {
+      "bytes": 1560,
+      "sha256": "182484dd59e356b6130577cabd585a48301031ab0bfe27d700e40dd5621aa2bc"
+    },
+    "pi-lifecycle.json": {
+      "bytes": 3538,
+      "sha256": "31964c4e1186526c27c034278155daefc4aea2bb67c4799e22f2d1a61601e20c"
+    },
+    "pi-paced.json": {
+      "bytes": 66608,
+      "sha256": "e425501630b120060f2ddca76c4dd381e45044b9373a19dffcf4d7e3c083bb82"
+    },
+    "pi-swiss-pilot.json": {
+      "bytes": 16411,
+      "sha256": "31febfe189bad6869b2c7807325a9e0982fd0f1320efe844c3060fb618cd7de3"
+    },
+    "regression-ascii-after.log": {
+      "bytes": 2293,
+      "sha256": "7fcb39708ed35f2cc8d6e48f0e0054c75eeecb97780656baf7d824b7081a3560"
+    },
+    "regression-ascii-before.log": {
+      "bytes": 2986,
+      "sha256": "2ff2a2b01c438d091d39e0b1b0bb6453dccb7c3658828deb841897ef4da71f30"
+    },
+    "regression-full-queue-after.log": {
+      "bytes": 2146,
+      "sha256": "f895e10fd3256aba9fbb11dd0b6d319722973d182973b4a2d1746897946c8311"
+    },
+    "regression-full-queue-before.log": {
+      "bytes": 1052,
+      "sha256": "dfb766657e542629e18a32a8dfd21d81acdd1f06029e4052f14df3134da78b02"
+    },
+    "test-summary-b1cd8a9.json": {
+      "bytes": 1020,
+      "sha256": "71982eb687b78233d8a975d185f5c699888b31b7b6da0b30f8ab76216ca942a7"
+    },
+    "test-summary.json": {
+      "bytes": 1000,
+      "sha256": "e856b856c16c5150babec4e0d0d16ed64b39ad46eb4ebe9e360bb37514d607c8"
+    },
+    "ubuntu-beam1-gates-b1cd8a9.json": {
+      "bytes": 1567,
+      "sha256": "7684d342f5b1d41848aff55bd29cbf9948cd14de70ba9e29d4871dda27f1fe9c"
+    },
+    "ubuntu-beam1-gates.json": {
+      "bytes": 1567,
+      "sha256": "7684d342f5b1d41848aff55bd29cbf9948cd14de70ba9e29d4871dda27f1fe9c"
+    },
+    "ubuntu-beam5-gates-b1cd8a9.json": {
+      "bytes": 1565,
+      "sha256": "cd4290a0be311e799964df9a87bbf45e24b45c3c6c086468923ffc15573e013d"
+    },
+    "ubuntu-beam5-gates.json": {
+      "bytes": 1565,
+      "sha256": "cd4290a0be311e799964df9a87bbf45e24b45c3c6c086468923ffc15573e013d"
+    },
+    "ubuntu-duration30.json": {
+      "bytes": 692733,
+      "sha256": "2bbf44e7f0cd83bbb6fd6fde8947779fcba815eb3daf4c072f700a6a427b06b5"
+    },
+    "ubuntu-full-pilot-b1cd8a9.json": {
+      "bytes": 27216,
+      "sha256": "5ae656c3043792bf55bab4320ce79db04ed8616141013c61d6617c9fa5f0d463"
+    },
+    "ubuntu-full-pilot.json": {
+      "bytes": 27241,
+      "sha256": "c743bf35cfa21c39e3173cb5f8f63cfb7de9bba70c694117e6472009aabacaa6"
+    },
+    "ubuntu-lifecycle-b1cd8a9.json": {
+      "bytes": 3547,
+      "sha256": "c3a054485a4847ef31d007bce9439e62edd0a034e7e63e2a5c645835730df692"
+    },
+    "ubuntu-lifecycle.json": {
+      "bytes": 3544,
+      "sha256": "67c57182879795a4d06a1147b671500ea84ecf367c981d0f69e13228abd5b15e"
+    },
+    "ubuntu-paced-b1cd8a9.json": {
+      "bytes": 15445,
+      "sha256": "b57f8cd1711a32975a9f6bc3fdbffe70404d10e8d93ad87dc99a1f1eb97c710a"
+    },
+    "ubuntu-paced.json": {
+      "bytes": 15449,
+      "sha256": "a396d6deae082b35ea89bde08041a93e5cfc2c98026ba36b57aa0e442b83f366"
+    },
+    "ubuntu-package-smoke-b1cd8a9.json": {
+      "bytes": 1427,
+      "sha256": "6fadcef5664d0ba375e81437852fcfbe5b8e9257e971da9330c50d0b752a7a39"
+    },
+    "ubuntu-package-smoke.json": {
+      "bytes": 1426,
+      "sha256": "e5491a1485a0f0034816a5d16ad2a12e87fe190b267c3e945980c16aaaf42809"
+    },
+    "ubuntu-worker-gates-b1cd8a9.json": {
+      "bytes": 498,
+      "sha256": "5cdd9396423ef362f0e39e2cd51fadda4f696787bbc43d1c6d11e24b95740792"
+    },
+    "ubuntu-worker-gates.json": {
+      "bytes": 498,
+      "sha256": "ffa194ba5c83896505eed79b2e38a73dbe72d637a90a900373465c8cb4796445"
+    }
+  }
+}

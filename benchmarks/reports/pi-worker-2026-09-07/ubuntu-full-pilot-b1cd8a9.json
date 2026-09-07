@@ -1,0 +1,865 @@
+{
+  "scope": "Pi worker screening with matched audio, WER, warm latency and Linux telemetry.\n\nNumeric output only. This is a development pilot, no physical microphone or\nheld-out quality certification. Fixture-end latency is not an annotated speech\nendpoint or app insertion latency. Configuration order is explicit, not randomized.\n",
+  "date_utc": "2026-09-07T09:48:09Z",
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "source_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+  "working_tree_dirty": false,
+  "files": {
+    "binary": "579db0b24d8a2302f792e1c261aa1afca7452c1f8ebf7adf057f4d3449847940",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "manifest": "ed177b7402ed34ff5189e3feca965babac6487c50cd41bdea2af01554f8857f6"
+  },
+  "implementation_sha256": {
+    "src/whisper_diktat.cpp": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+    "runtime/model_worker.py": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+    "runtime/pipe_limits.py": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+    "benchmarks/worker_bench.py": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183"
+  },
+  "temperature_fallback": true,
+  "audio_context": "full",
+  "chunk_seconds": 28,
+  "paced": false,
+  "configs": [
+    {
+      "threads": 4,
+      "beam_size": 5,
+      "wait_policy": "PASSIVE",
+      "runs": [
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.6783326289150864,
+          "ready_s": 0.0001633369829505682,
+          "warm": false,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 18.94,
+          "source": {
+            "sent_bytes": 606080,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 303040,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0,
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "audio_s": 17.94,
+          "wav_sha256": "3428505bfb8b7b65c67209ed44080c5197f556308641dfaa3b7140145373c6fa"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.5783002618700266,
+          "ready_s": 0.00012073502875864506,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 12.16,
+          "source": {
+            "sent_bytes": 389120,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 194560,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047,
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "audio_s": 11.16,
+          "wav_sha256": "fb036e2004442cc8421af13745e34b5cc862c457b3ca7b0fad24a82f9f5d05f8"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.8541906289756298,
+          "ready_s": 9.317416697740555e-05,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 13.42,
+          "source": {
+            "sent_bytes": 429440,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 214720,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216,
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "audio_s": 12.42,
+          "wav_sha256": "252116cecdef54101a145a3c860df1241937c34dbf77ebc798d43baccff24b90"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.859904051059857,
+          "ready_s": 0.00011523510329425335,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 11.68,
+          "source": {
+            "sent_bytes": 373760,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 186880,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 31,
+          "wer": 0.0967741935483871,
+          "id": "fleurs-10030056357041867775",
+          "group": "de-read-clean",
+          "audio_s": 10.68,
+          "wav_sha256": "1173d376945fd7a6ab43540b93b4560b4493b6ec32e015d31fe41b447b26c8fd"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.6644552040379494,
+          "ready_s": 0.00011771498247981071,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 10.9,
+          "source": {
+            "sent_bytes": 348800,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 174400,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.047619047619047616,
+          "id": "fleurs-10058186628567796965",
+          "group": "de-read-clean",
+          "audio_s": 9.9,
+          "wav_sha256": "eb032aee601f365430df5626d1f63bad49422e67edee5b347c67679297832596"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.694953982019797,
+          "ready_s": 0.00010249484330415726,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 9.4,
+          "source": {
+            "sent_bytes": 300800,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 150400,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.0625,
+          "id": "fleurs-10058299886985225661",
+          "group": "de-read-clean",
+          "audio_s": 8.4,
+          "wav_sha256": "8781c3f0ef4c972dce9462587f2c158fa0dc6905943543a9c7121f68b8bb86dd"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 2.031611575977877,
+          "ready_s": 0.0001094648614525795,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 13.96,
+          "source": {
+            "sent_bytes": 446720,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 223360,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 34,
+          "wer": 0.08823529411764706,
+          "id": "fleurs-10095057775426831514",
+          "group": "de-read-clean",
+          "audio_s": 12.96,
+          "wav_sha256": "b3c97211c9178a965699169eeee031a025301534e904126c8e2fbbe4f4ca4907"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 4.262152337934822,
+          "ready_s": 0.0001079849898815155,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 20.68,
+          "source": {
+            "sent_bytes": 661760,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 330880,
+          "output_lines": 3,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 1,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.16666666666666666,
+          "id": "fleurs-10159541282515887574",
+          "group": "de-read-clean",
+          "audio_s": 19.68,
+          "wav_sha256": "7b591a4ba322a0711d1e00f0c7022130a9b04dd5ad2638aaff7aa75fd4d4109b"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.691579480888322,
+          "ready_s": 9.350385516881943e-05,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 12.04,
+          "source": {
+            "sent_bytes": 385280,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 192640,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 2,
+          "substitutions": 1,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 19,
+          "wer": 0.10526315789473684,
+          "id": "fleurs-10166547362714956625",
+          "group": "de-read-clean",
+          "audio_s": 11.04,
+          "wav_sha256": "2c13c3be5f77b109bdbf7c8bd8d4298e8cd44d5552e7380dd77790b4a70b4ca3"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 8.66806959407404,
+          "ready_s": 0.00019531790167093277,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 44.38,
+          "source": {
+            "sent_bytes": 1420160,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 710080,
+          "output_lines": 6,
+          "last_output_after_fixture_end_s": null,
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 1,
+          "insertions": 1,
+          "reference_words": 44,
+          "wer": 0.09090909090909091,
+          "id": "fleurs-10171859810965764480",
+          "group": "de-read-clean",
+          "audio_s": 43.38,
+          "wav_sha256": "f9671b6a275bb3ea5ceb6a1fd91b0297195f5e1bce8dfca71ce2f13f99cc0af2"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.5795067558065057,
+          "ready_s": 0.00010979385115206242,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 8.14,
+          "source": {
+            "sent_bytes": 260480,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 130240,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 1,
+          "substitutions": 0,
+          "deletions": 1,
+          "insertions": 0,
+          "reference_words": 17,
+          "wer": 0.058823529411764705,
+          "id": "fleurs-10229344228128634115",
+          "group": "de-read-clean",
+          "audio_s": 7.14,
+          "wav_sha256": "7c1b55e72744e527479f24fd52cea5616d7d1b8cfcc65f5eff4de97a032c5833"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.9645449940580875,
+          "ready_s": 0.00011180387809872627,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 17.86,
+          "source": {
+            "sent_bytes": 571520,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 285760,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 32,
+          "wer": 0.09375,
+          "id": "fleurs-10240730312646485406",
+          "group": "de-read-clean",
+          "audio_s": 16.86,
+          "wav_sha256": "98bba6966de916ee33926db0c9f70b6da1e1c7456228120e43b7ca6bc8565cce"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.7125623188912868,
+          "ready_s": 0.00011911499314010143,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 18.94,
+          "source": {
+            "sent_bytes": 606080,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 303040,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 9,
+          "substitutions": 7,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 18,
+          "wer": 0.5,
+          "id": "fleurs-10004059102127011984-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 17.94,
+          "wav_sha256": "c42c094fb7006c3636c0e0768eea89dbd1c29c157f1f2ef507828f780fcd7a23"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.6530207020696253,
+          "ready_s": 9.199301712214947e-05,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 12.16,
+          "source": {
+            "sent_bytes": 389120,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 194560,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.14285714285714285,
+          "id": "fleurs-10009182821551087671-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 11.16,
+          "wav_sha256": "70848d54808259087b10c89ef0cfc6ae19817243cc15722f03b37bb246921d5d"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.833575732074678,
+          "ready_s": 0.00010827509686350822,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 13.42,
+          "source": {
+            "sent_bytes": 429440,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 214720,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 3,
+          "substitutions": 3,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.13043478260869565,
+          "id": "fleurs-10014044777125235464-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 12.42,
+          "wav_sha256": "229cac9fe127468c0bc1d658d65512ad9b61c4401a62f0ce94431856c5bdadeb"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.8837861639913172,
+          "ready_s": 0.00017599714919924736,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 11.68,
+          "source": {
+            "sent_bytes": 373760,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 186880,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 9,
+          "substitutions": 7,
+          "deletions": 0,
+          "insertions": 2,
+          "reference_words": 31,
+          "wer": 0.2903225806451613,
+          "id": "fleurs-10030056357041867775-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 10.68,
+          "wav_sha256": "6a62b8ecbc7754885099d2b16da9ca041e3e94350bc738a4ee4c4f02e5afefbc"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.6422269979957491,
+          "ready_s": 0.00015897699631750584,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 10.9,
+          "source": {
+            "sent_bytes": 348800,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 174400,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 4,
+          "substitutions": 4,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047,
+          "id": "fleurs-10058186628567796965-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 9.9,
+          "wav_sha256": "c2dc558fa6f9238c1f5f1d121f6ffcf6efb2cccfd59eea26613a268cf563be5b"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 1.6304470989853144,
+          "ready_s": 0.00011613499373197556,
+          "warm": true,
+          "worker_pid": 2212035,
+          "supplied_audio_s": 9.4,
+          "source": {
+            "sent_bytes": 300800,
+            "max_feed_lateness_s": 0
+          },
+          "core_samples": 150400,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": null,
+          "errors": 4,
+          "substitutions": 4,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 16,
+          "wer": 0.25,
+          "id": "fleurs-10058299886985225661-snr10",
+          "group": "de-noise-10db",
+          "audio_s": 8.4,
+          "wav_sha256": "611f2c88d2f8abd96fab00b88244b1cd07ef2b20315f48c55ae54e0ed08d2d8d"
+        }
+      ],
+      "model_startup_s": 0.07526679011061788,
+      "groups": {
+        "de-read-clean": {
+          "clips": 12,
+          "errors": 26,
+          "reference_words": 294,
+          "substitutions": 16,
+          "deletions": 8,
+          "insertions": 2,
+          "audio_s": 181.56,
+          "wall_s": 30.527601495618,
+          "failed": 0,
+          "wer": 0.08843537414965986,
+          "wall_rtf": 0.16814056783222076
+        },
+        "de-noise-10db": {
+          "clips": 6,
+          "errors": 32,
+          "reference_words": 130,
+          "substitutions": 28,
+          "deletions": 0,
+          "insertions": 4,
+          "audio_s": 70.5,
+          "wall_s": 10.35561901400797,
+          "failed": 0,
+          "wer": 0.24615384615384617,
+          "wall_rtf": 0.14688821296465207
+        }
+      },
+      "resources": [
+        {
+          "monotonic_s": 1280848.440686334,
+          "rss_mib": 299.1328125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280849.441218196,
+          "rss_mib": 360.7890625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280850.441726987,
+          "rss_mib": 485.2890625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280851.442184496,
+          "rss_mib": 485.2890625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280852.442532741,
+          "rss_mib": 485.59765625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280853.442915917,
+          "rss_mib": 486.39453125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280854.443411388,
+          "rss_mib": 488.90234375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280855.443726781,
+          "rss_mib": 488.94140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280856.44416746,
+          "rss_mib": 488.94140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280857.444673091,
+          "rss_mib": 488.94140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280858.445136921,
+          "rss_mib": 488.94140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280859.445479255,
+          "rss_mib": 489.1328125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280860.445945435,
+          "rss_mib": 489.1328125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280861.446448927,
+          "rss_mib": 489.16015625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280862.446829663,
+          "rss_mib": 489.16015625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280863.447180009,
+          "rss_mib": 489.16015625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280864.447454671,
+          "rss_mib": 489.16015625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280865.447794556,
+          "rss_mib": 489.1640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280866.448095679,
+          "rss_mib": 489.1640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280867.448404883,
+          "rss_mib": 489.1640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280868.448709477,
+          "rss_mib": 489.1640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280869.448972199,
+          "rss_mib": 489.1640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280870.449335775,
+          "rss_mib": 489.22265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280871.449712242,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280872.450189243,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280873.450535539,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280874.450921617,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280875.451269862,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280876.451663451,
+          "rss_mib": 489.2265625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280877.452037298,
+          "rss_mib": 489.5,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280878.452431006,
+          "rss_mib": 489.5,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280879.452815624,
+          "rss_mib": 489.5,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280880.453179511,
+          "rss_mib": 489.5,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280881.453634502,
+          "rss_mib": 489.515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280882.454091743,
+          "rss_mib": 489.515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280883.454610516,
+          "rss_mib": 489.515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280884.455035486,
+          "rss_mib": 489.515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280885.455400514,
+          "rss_mib": 489.515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280886.455786852,
+          "rss_mib": 489.53515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280887.456128289,
+          "rss_mib": 489.53515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280888.456550629,
+          "rss_mib": 489.53515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        }
+      ],
+      "fixture_end_latency_s": {
+        "count": 0,
+        "p50": null,
+        "p95": null
+      },
+      "all_audio_accounted": true
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "scope": "Real-model warm reuse, idle/decode cancellation and expiry; no microphone/GUI.\n\nUses the production worker CLI for cancellation. The saturated input is a stress\nfixture, not a paced recording. Exported reports contain no audio or transcripts.\n",
+  "source_commit": "dc2d3505c97766b4da149e946a546a901077fbc6",
+  "working_tree_dirty": true,
+  "implementation_sha256": {
+    "src/whisper_diktat.cpp": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+    "runtime/model_worker.py": "1e98da89762f2202068a48ccb3eed4e9c6c57064970afae35cecc4a6f46c6b88",
+    "runtime/pipe_limits.py": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+    "benchmarks/worker_lifecycle.py": "5a02160240f03c21a264a235e53329981abd292c58e56f3b03c32343140453c2",
+    "benchmarks/worker_bench.py": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183"
+  },
+  "files": {
+    "binary": "ae046a61948ca7947da7b4bdfb7bcdb04786c36bda500da2d9583217b14f4b60",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "manifest": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff"
+  },
+  "fixture_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+  "temperature_fallback": true,
+  "audio_context": "full",
+  "chunk_seconds": 28,
+  "threads": 4,
+  "beam_size": 5,
+  "wait_policy": "PASSIVE",
+  "physical_microphone": false,
+  "application_insertion": false,
+  "warm_sessions": [
+    {
+      "passed": true,
+      "exit_code": 0,
+      "wall_s": 3.1019292080018204,
+      "ready_s": 0.08433995800442062,
+      "warm": false,
+      "worker_pid": 48406,
+      "supplied_audio_s": 18.94,
+      "source": {
+        "sent_bytes": 606080,
+        "max_feed_lateness_s": 0
+      },
+      "core_samples": 303040,
+      "output_lines": 1,
+      "last_output_after_fixture_end_s": null,
+      "errors": 0,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "reference_words": 18,
+      "wer": 0.0
+    },
+    {
+      "passed": true,
+      "exit_code": 0,
+      "wall_s": 2.9903630829940084,
+      "ready_s": 0.00020520799444057047,
+      "warm": true,
+      "worker_pid": 48406,
+      "supplied_audio_s": 18.94,
+      "source": {
+        "sent_bytes": 606080,
+        "max_feed_lateness_s": 0
+      },
+      "core_samples": 303040,
+      "output_lines": 1,
+      "last_output_after_fixture_end_s": null,
+      "errors": 0,
+      "substitutions": 0,
+      "deletions": 0,
+      "insertions": 0,
+      "reference_words": 18,
+      "wer": 0.0
+    }
+  ],
+  "idle_cancel": {
+    "stop_s": 0.008759958000155166,
+    "exit_code": 143,
+    "output_bytes": 0,
+    "loaded": true,
+    "pid": 48406
+  },
+  "decode_cancel": {
+    "stop_s": 0.011214833008125424,
+    "exit_code": 143,
+    "observed_saturated_decode": true,
+    "output_bytes_after_stop": 0,
+    "loaded": false
+  },
+  "restart": {
+    "passed": true,
+    "exit_code": 0,
+    "wall_s": 3.1080540840048343,
+    "ready_s": 0.08485808401019312,
+    "warm": false,
+    "worker_pid": 48427,
+    "supplied_audio_s": 18.94,
+    "source": {
+      "sent_bytes": 606080,
+      "max_feed_lateness_s": 0
+    },
+    "core_samples": 303040,
+    "output_lines": 1,
+    "last_output_after_fixture_end_s": null,
+    "errors": 0,
+    "substitutions": 0,
+    "deletions": 0,
+    "insertions": 0,
+    "reference_words": 18,
+    "wer": 0.0
+  },
+  "idle_expiry": {
+    "elapsed_s": 3.0854862089909147,
+    "exit_code": 0,
+    "socket_removed": true
+  },
+  "model_loads": 2,
+  "passed": true
+}

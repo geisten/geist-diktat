@@ -1,6 +1,6 @@
 # Produktfreigabe: Stand und Reihenfolge
 
-Stand: **7. September 2026**. Aktuell integrierter Code: `e9aeed9` (CI-Prüfung), Laufzeit/Pakete `fd01781` (Modellprofile `ad58011`, M2-Decoder `46a2845`, Stabilitätsbasis `5e27010`), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
+Stand: **7. September 2026**. Aktuelle Supervisor-/Worker-Laufzeit und finale Vier-Plattform-Prüfung: `dc2d350`, Dauerläufe auf `b1cd8a9` (Mac/Pi) und `8aafa6d` (Ubuntu), Branch `codex/product-readiness`. Dieser Plan enthält die nach dem Grilling-Interview ausdrücklich bestätigten Produktentscheidungen und ersetzt die zuvor vorgeschlagene Freigabereihenfolge.
 
 **Ziel ist die erste öffentliche Ubuntu-GNOME-Beta.** Ihre Blocker sind zuverlässiges Desktop-Diktat, deutsche Qualität für Alltags- und technische Texte, die fünf verbindlichen Anwendungen, geführter Erststart und der externe Zeitgewinn-Nachweis. Die Stabilitätsbasis ist umgesetzt; die Beta ist noch nicht freigegeben. Pi5, macOS und zusätzliche Desktop-Profile liegen außerhalb des kritischen Pfads. Breite DACH-Tests bleiben im Plan, Dialektunterstützung wird zunächst ausdrücklich experimentell ausgewiesen.
 
@@ -50,8 +50,8 @@ für Überlegenheit gegenüber anderen Diktatprodukten.
 | ✅ | Vim/Neovim #19, #20, #24, #27–29 | Asynchrone Adapter, UTF-8-Framing, Sitzungswechsel, begrenzte Ausgabequeue, native Paketinstallation | Breite interaktive Modus-/Fokusmatrix unter M4 |
 | ✅ | IBus-Lifecycle #23 | Reaping, Stop/Neustart, EOF/HUP, 100 Wechsel | Weitere Desktop-Sitzungen unter M4 |
 | ✅ | Pipeline #33 | Wörtliche zeilenweise UTF-8-Übergabe ohne Shell-Auswertung | Verfügbarkeit der Senke pro Desktop |
-| ✅ | Tests / GitHub-Ubuntu-Agent | macOS 134 Fälle auf `ad58011`; Ubuntu x64/ARM64 je 134 und frische Paketinstallation auf `e9aeed9`; Pi-Ubuntu-Container historisch 77; echter x64-ASR-Pilot | GTK-/Qt-Testfelder geprüft; fünf Produkt-Apps, physische Mikrofone und Dauer-ASR offen |
-| 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, 6 s Queue/Exit 75, begrenzte Kernelpipes, privater Modellworker über Toggles mit Idle-Freigabe; volle-Queue-Stop auf Mac/Pi geprüft | Pi-Qualität und Dauerlast getrennt messen; physische Aufnahme und Einfügelatenz offen. [Details](WORKER-PI5.md) |
+| ✅ | Tests / GitHub-Ubuntu-Agent | Je 168 Tests auf Mac/Pi/Ubuntu x64/ARM64 (`dc2d350`), 1/3/0/0 Skips; reale Worker-/Paketprüfung und numerisches WER-Tor | GTK-/Qt-Testfelder geprüft; Dateidauerläufe separat bestanden; fünf Produkt-Apps, physische Mikrofone und 60-min-Ubuntu-Abnahme offen |
+| 🟡 | Supervisor / Pi5 #36, #37 | Capture entkoppelt, 6 s Queue/Exit 75, begrenzte Kernelpipes, privater Modellworker über Toggles mit Idle-Freigabe; volle-Queue-Stop auf Mac/Pi geprüft | Pi-Qualität und 61-min-Dauerlast getrennt gemessen; kein Profil besteht beides. Physische Aufnahme und Einfügelatenz offen. [Details](WORKER-PI5.md) |
 | 🟡 | Sprache #38, #39 | 47 Pilot-Fixtures; WER-, Rausch-, Schweizer Dialekt- und Gesprächsmessungen; lokaler Gate-Checker | Unabhängiges DACH-Set und bestandene Qualitätsgates fehlen |
 | 🟡 | Vertrag / Status #34, #35 | PCM16/UTF-8/Exitcode-Vertrag v1; IBus-Fokus-/Schutzfeldregeln | Zustandsereignisse, Teil-/Endergebnisse und globale Stop-Abnahme |
 | 🟡 | Ubuntu-Apps #31 | Echte IBus-/GTK3-/Qt5-Prüfungen unter privatem D-Bus/Xvfb | GNOME Wayland/Xorg, KDE, moderne Toolkits und Sandbox-Apps |
@@ -84,7 +84,7 @@ und des Beam-1-Diagnosevergleichs rot. [Profilbedienung und Grenzen](MODEL-PROFI
 | Befund | Konsequenz |
 |---|---|
 | Pi5 Geist: 20,75 % WER, RTF 1,53, 2.894 MiB Spitzen-RSS | Standardpfad verfehlt Qualitäts- und Durchsatzziel |
-| Pi5 Whisper small Q5_1: Beam 5 mit 8,84 % WER / RTF 1,10; Beam 1 mit 9,52 % / RTF 0,95 / 348 MiB | Bester bisher gemessener Pi-Kandidat; noch ohne Zeitreserve |
+| Pi5 OpenBLAS/adaptiv/Beam 5: 6,80 % sauber / 21,54 % Rausch-WER, RTF 0,433; 28-s-Fenster | Bester Qualitätspilot; Gespräch überlastet nach 58,8 s. Stabile 12-s-Variante verfehlt Rauschziel mit 27,69 % |
 | Zeitgetreues Gespräch: Geist nach 34,18 s, Whisper nach ca. 31,9 s mit Exit 75 | Überlastbehandlung besteht; kontinuierliches Diktat fällt durch |
 | Ubuntu-x64-Agent Geist: 15,99 % WER, RTF 0,388, ca. 6,09 GiB RSS | Durchsatz im Dateipilot gut; sauberes WER-Ziel verfehlt |
 | Ubuntu residenter Whisper Beam 5: 8,84 % sauber / 24,62 % bei 10 dB, RTF 0,173, 466 MiB RSS | Besteht beide Entwicklungsgates; Kandidat für die Produktintegration |
@@ -117,7 +117,8 @@ Issues: [#34](https://github.com/geisten/geist-diktat/issues/34), [#36](https://
 - [x] Numerische Traces für Modellladen/-bereitschaft, Decode-Phasen, Ausgabe, IBus-Übergabe und beobachtete GTK-/Qt-Textfeldänderung implementiert. Latenzanalyse verlangt unabhängige Sprachendpunkte; v1-Textausgabe bleibt unverändert.
 - [ ] Aufzeichnung auf die fünf Beta-Anwendungen und echte Mikrofone erweitern; Engine-interne Encoder-/Decoderanteile, kalte/warme Starts und ausreichend viele Äußerungen prüfen.
 - [x] Byte-/Samplebilanz von Quelle, Supervisor und Core sowie Queue-Spitze/-Alter und blockierte Schreibzeit ergänzt; unvollständige/abgebrochene Audiozufuhr besteht die Latenzprüfung nicht.
-- [ ] Prozessbaum-RSS, Stop-Zeit und langfristigen Rückstand im realen Dauerbetrieb vollständig erfassen. Trace-Probes mit kontrollierter Engine sind keine Dauer-ASR-Abnahme.
+- [x] Reale Worker-Stopzeiten und Linux-Dateidauerläufe samt Prozessbaum-RSS und vollständiger Audiobilanz erfasst (Ubuntu 30 min, Pi 61 min experimentell). Mac-Transport 30 min bestanden, Ressourcen nur teilweise erfasst.
+- [ ] Globale Stop-Zeit, Rückstand und Ressourcen im physischen Ubuntu-60-Minuten-Betrieb abnehmen; Dateiprobes ersetzen dies nicht.
 
 **Tor:** Ein absichtlich schlechter oder unvollständiger Report blockiert den Release-Job. Latenz ist bis zur Texteingabe messbar. Hosting-CI bleibt für Verträge zuständig, der eigene Ubuntu-Agent für reale CPU-ASR. Pi5 sowie physische Desktop-/Mikrofonprüfungen bleiben eigene Abnahmen.
 
@@ -134,11 +135,13 @@ Issues: [#36](https://github.com/geisten/geist-diktat/issues/36), [#37](https://
 - [ ] VAD-Endpunkte, kürzere Fenster und begrenzte Überlappung einzeln vergleichen. Kontext-Neuberechnung kann mehr Zeit kosten; doppelte Wörter und verlorene Satzanfänge erhalten Regressionen.
 - [ ] Ubuntu x64: residenten CPU-Pfad gegen faster-whisper INT8 vergleichen; den Standard anhand Qualität, Einfügelatenz, Speicher und Stabilität wählen. Den ersten Kandidaten mit bestandenen Toren produktisieren; eine vollständige Modellrangliste ist keine Release-Voraussetzung.
 - [ ] Parakeet v3 und Qwen3-ASR als weitere Kandidaten prüfen, wenn die ersten Pfade die Tore verfehlen oder eine konkrete verbleibende Qualitätslücke besteht; vorher Sprach-/Runtime-/Speicherprüfung.
+- [x] Ubuntu-Dateidauerlauf mit Standardprofil full/28 s/Beam 5 bestanden: 30:09 Minuten wiederholte Lesesprache, ein Modell, vollständige Bilanz, 8,88 % WER, 538,39 MiB Spitzen-RSS, 0,18 MiB Mediananstieg und kein Prozess-Swap. Mac: 30:53 Minuten Gesprächsaudio vollständig, 22,92 % WER; Ressourcen nur teilweise qualifiziert. [Dauerlaufdetails](WORKER-PI5.md).
+- [x] Pi-Stabilitätsversuch mit OpenBLAS/adaptive/12 s über 61:47 Minuten bestanden: vollständige 118.620.456 Byte, ein Modell, 516,19 MiB Spitze und 0,16 MiB Mediananstieg. Dieser Pfad verfehlt das Rauschziel; der qualitativ bessere 28-s-Pfad überlastet. Das Pi-Folgeprofil bleibt experimentell.
 - [ ] 30/60 Minuten zeitgetreue Dateien **und physische Aufnahme** auf dem Ubuntu-Zielprofil mit dokumentierter Last und Geräteprofil. Das ist ein Belastungstest des Diktats, kein Versprechen einer eigenständigen Gesprächstranskriptionsfunktion.
 - [x] Beam-5-Dateisitzung mit 193,56 s menschlicher Lesesprache auf Ubuntu und macOS bestanden: jeweils ein Modellladevorgang, vollständige Byte-/Samplebilanz, 8,84 % WER. Reales Decoder-Stop-Einzelexperiment unter 1 s auf beiden Plattformen. Das schließt weder 30/60 Minuten noch physische Geräte ein.
 - [ ] Die dokumentierte Prozessschnittstelle mit einem minimalen externen Referenzclient abnehmen: Audiozufuhr, finale Texte, Zustandsereignisse, Start/Stop und Fehler. Eigene Editor-/IBus-Adapter müssen denselben Vertrag nutzen.
 
-**Nächste Umsetzung:** Additiven Zustands-/Sitzungsvertrag samt externem Referenzclient implementieren; anschließend den installierten Beam-5-Pfad in den fünf Anwendungen abnehmen. Distributionsprofil vor diesen Abnahmen einfrieren. Den bisherigen Drei-Minuten-Nachweis auf 30/60 Minuten und physische Aufnahme erweitern. Die grundlegende Modell-/Paketintegration ist erledigt; sie ersetzt diese Tore nicht.
+**Nächste Umsetzung:** Additiven Zustands-/Sitzungsvertrag samt externem Referenzclient implementieren; anschließend den installierten Beam-5-Pfad in den fünf Anwendungen abnehmen. Distributionsprofil vor diesen Abnahmen einfrieren. Den bestandenen 30-Minuten-Dateinachweis des Ubuntu-Profils auf 60 Minuten und physische Aufnahme erweitern. Die separate Pi-Stabilitätsprüfung ist keine Ubuntu-Abnahme. Die grundlegende Modell-/Paketintegration ist erledigt; sie ersetzt diese Tore nicht.
 
 **Technische Abnahmekriterien für das Ubuntu-Profil:** Durchsatz-RTF ≤0,8; p95 vom annotierten Sprachende bis zur Einfügung ≤3 s im Live-Test; kein wachsender Audio-Rückstand, kein stiller Frameverlust und kein Überlastabbruch im normalen 60-Minuten-Test. Überlast muss weiterhin kontrolliert abbrechen. Globaler Stop beendet Aufnahme und unterbindet weitere Einfügungen innerhalb 1 s. Diese vollständige Abnahme steht noch aus; die erreichten Pilot-Teilwerte sind oben separat ausgewiesen. Die bisherigen Pi5-Zielwerte werden im separaten Folgeprofil weitergeführt.
 
@@ -209,7 +212,7 @@ Issues: [#21](https://github.com/geisten/geist-diktat/issues/21), [#29](https://
 
 ## Folgeprofile außerhalb des ersten Beta-Startpfads
 
-- **Pi5 (#36/#37):** Modellworker und begrenzte Capture-/Transportpuffer sind umgesetzt. Vier Threads/PASSIVE, OpenBLAS und adaptiven Audiokontext gemessen; kurze feste Fenster verlieren Qualität. Beam- und Dauerlastabnahme anhand der [neuen Messungen](WORKER-PI5.md) entscheiden. Weitere Modell-/VAD-Versuche nur für belegte Restlücken. Weiterhin RTF ≤0,8, p95 ≤3 s, 30/60-Minuten-Dauerabnahme; für 4 GiB als Entwicklungsziel Prozessbaum-RSS ≤1,5 GiB ohne fortschreitenden Swap-I/O/Drosselung. Bis zum Nachweis experimentell.
+- **Pi5 (#36/#37):** Modellworker und begrenzte Capture-/Transportpuffer sind umgesetzt. Vier Threads/PASSIVE, OpenBLAS und adaptiven Audiokontext gemessen; kurze feste Fenster verlieren Qualität. 12-s-Dateistabilität über 61 Minuten bestanden, aber 27,69 % Rausch-WER; 28-s-Dateiende-p95 6,99 s. Schweizer Pilot 62,5 % WER gegen Hochdeutschreferenz. Beam- und Dauerlastabnahme anhand der [neuen Messungen](WORKER-PI5.md) entscheiden. Weitere Modell-/VAD-Versuche nur für belegte Restlücken. Weiterhin RTF ≤0,8, p95 ≤3 s, 30/60-Minuten-Dauerabnahme; für 4 GiB als Entwicklungsziel Prozessbaum-RSS ≤1,5 GiB ohne fortschreitenden Swap-I/O/Drosselung. Bis zum Nachweis experimentell.
 - **macOS (#32):** native Capture-/Gerätepfade, App-/TCC-Abnahme, gebündelte Abhängigkeiten, Developer-ID/Hardened Runtime/Notarisierung/Stapling und Gatekeeper-Prüfung. Fehlende Signieridentitäten blockieren diese Plattform, nicht die Ubuntu-Beta.
 - **Weitere Linux-Profile (#31):** Xorg/KDE, zusätzliche Apps sowie zusätzliche Flatpak-/Snap-Varianten mit eigener Matrix qualifizieren.
 - **Reguläre DACH-Unterstützung (#38/#39):** breite Tests weiterführen, unabhängige Sprecher und regionale Referenzen erweitern; erst nach eigener Abnahme das experimentelle Kennzeichen entfernen.

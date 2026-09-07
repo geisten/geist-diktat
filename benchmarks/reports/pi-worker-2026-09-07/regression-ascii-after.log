@@ -1,0 +1,20 @@
+test_autostart_and_status (test_model_worker.ModelWorker.test_autostart_and_status) ... ok
+test_busy_and_mismatched_configuration_fail_without_stealing_session (test_model_worker.ModelWorker.test_busy_and_mismatched_configuration_fail_without_stealing_session) ... ok
+test_cancel_during_decode_kills_model_and_next_session_is_clean (test_model_worker.ModelWorker.test_cancel_during_decode_kills_model_and_next_session_is_clean) ... ok
+test_cancel_with_full_queue_stops_decode_before_draining_audio (test_model_worker.ModelWorker.test_cancel_with_full_queue_stops_decode_before_draining_audio) ... ok
+test_explicit_stop_terminates_active_client_and_service (test_model_worker.ModelWorker.test_explicit_stop_terminates_active_client_and_service) ... ok
+test_idle_cancel_reuses_model_and_discards_partial_audio (test_model_worker.ModelWorker.test_idle_cancel_reuses_model_and_discards_partial_audio) ... ok
+test_idle_expiry_releases_model_and_service (test_model_worker.ModelWorker.test_idle_expiry_releases_model_and_service) ... ok
+test_installed_launcher_reuses_worker_and_waits_before_capture (test_model_worker.ModelWorker.test_installed_launcher_reuses_worker_and_waits_before_capture) ... ok
+test_malformed_packet_is_not_success_and_does_not_poison_restart (test_model_worker.ModelWorker.test_malformed_packet_is_not_success_and_does_not_poison_restart) ... ok
+test_model_load_failure_is_reported_before_capture (test_model_worker.ModelWorker.test_model_load_failure_is_reported_before_capture) ... ok
+test_private_directory_required (test_model_worker.ModelWorker.test_private_directory_required) ... ok
+test_public_text_stays_utf8_with_ascii_process_locale (test_model_worker.ModelWorker.test_public_text_stays_utf8_with_ascii_process_locale) ... ok
+test_regular_file_at_socket_path_is_preserved (test_model_worker.ModelWorker.test_regular_file_at_socket_path_is_preserved) ... ok
+test_supervisor_overload_cancels_worker_without_hiding_failure (test_model_worker.ModelWorker.test_supervisor_overload_cancels_worker_without_hiding_failure) ... ok
+test_twenty_sessions_load_once_and_have_unique_ids (test_model_worker.ModelWorker.test_twenty_sessions_load_once_and_have_unique_ids) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 14.859s
+
+OK

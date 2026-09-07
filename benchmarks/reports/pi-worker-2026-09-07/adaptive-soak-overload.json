@@ -1,0 +1,949 @@
+{
+  "scope": "Timed real-ASR worker/supervisor soak using repeated licensed local fixtures.\n\nNo microphone, no desktop, no corpus redistribution. A 60-minute run includes a\n30-minute checkpoint; that checkpoint is not a separately completed 30-minute run.\nOnly a full run receives WER. All model memory is released on exit.\n",
+  "passed": false,
+  "transport_passed": false,
+  "transport_complete": false,
+  "full_product_approval": false,
+  "source_commit": "a31fd13f34a3b78d70e94a603a58e16c20b57923",
+  "working_tree_dirty": false,
+  "implementation_sha256": {
+    "src/whisper_diktat.cpp": "69729b56eb9dd6673565cc06b1086d59fea9388bec5e9fe25e91f6783fbbf84b",
+    "runtime/model_worker.py": "c9a9a9e8f08d800534e0f39860bcb1c976d3d33c967c6575199f30f5a3ac9a92",
+    "runtime/diktat_runtime.py": "b2d131d9d66861633764d30885d909957cc0e16fd72803aec5a39ec4f7889950",
+    "runtime/pipe_limits.py": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+    "benchmarks/worker_soak.py": "7c0717eb54209195e93eb38d8797a94de96837774403f4158e09e1ab1b024ff3"
+  },
+  "files": {
+    "binary": "6802082854ca61351eb107ebcf604e1a485d0cb290d36fceb6729dd68c49c1be",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "manifest": "ab67368327d0a57f303abda12f1f39b35c48ac0d8ef0e984a7c9736fdca63cff"
+  },
+  "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+  "machine": "aarch64",
+  "input_sha256": "9babc88f280974789b74dd20bb1631f2bd8d6746187975aebfaa6640e43690db",
+  "source_occurrences": [
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 9885038
+    },
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 19770076
+    },
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 29655114
+    },
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 39540152
+    },
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 49425190
+    },
+    {
+      "id": "oocc-1-free-conversation",
+      "sha256": "e9a9651bb7104b1e49c2523e520db57f6c05d1c99e539d7c06deb2ebadb8afb8",
+      "end_sample": 59310228
+    }
+  ],
+  "requested_minutes": 60.0,
+  "audio_s": 3706.88925,
+  "wall_s": 58.81054775998928,
+  "model_startup_s": 0.2374690140131861,
+  "model_loads": 1,
+  "audio_context": "adaptive",
+  "threads": 4,
+  "beam_size": 5,
+  "wait_policy": "PASSIVE",
+  "exit_code": 75,
+  "timeout": false,
+  "runtime": {
+    "schema": 1,
+    "component": "runtime",
+    "event": "input_summary",
+    "pid": 297836,
+    "monotonic_ns": 1873867356565085,
+    "received_bytes": 1857280,
+    "delivered_bytes": 1664000,
+    "peak_queue_bytes": 192000,
+    "max_write_block_ns": 6020529305,
+    "max_queue_age_ns": 2558467292,
+    "queued_bytes": 192000,
+    "oldest_queued_age_ns": 6500383761,
+    "unconfirmed_bytes": 193280,
+    "failed": true
+  },
+  "core": {},
+  "capture": {},
+  "decode_events": [
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "model_load_start",
+      "pid": 297832,
+      "monotonic_ns": 1873808572590949,
+      "utterance": 0,
+      "output_seq": 0,
+      "audio_end_sample": 0
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "model_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873808691318780,
+      "utterance": 0,
+      "output_seq": 0,
+      "audio_end_sample": 0
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873823956275918,
+      "utterance": 1,
+      "output_seq": 0,
+      "audio_end_sample": 229440
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_end",
+      "pid": 297832,
+      "monotonic_ns": 1873829253987282,
+      "utterance": 1,
+      "output_seq": 0,
+      "audio_end_sample": 229440
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873829254030615,
+      "utterance": 1,
+      "output_seq": 1,
+      "audio_end_sample": 229440
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_emitted",
+      "pid": 297832,
+      "monotonic_ns": 1873829254038430,
+      "utterance": 1,
+      "output_seq": 1,
+      "audio_end_sample": 229440
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873829254520557,
+      "utterance": 2,
+      "output_seq": 1,
+      "audio_end_sample": 257600
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_end",
+      "pid": 297832,
+      "monotonic_ns": 1873830768819735,
+      "utterance": 2,
+      "output_seq": 1,
+      "audio_end_sample": 257600
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873830768860772,
+      "utterance": 2,
+      "output_seq": 2,
+      "audio_end_sample": 257600
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_emitted",
+      "pid": 297832,
+      "monotonic_ns": 1873830768868457,
+      "utterance": 2,
+      "output_seq": 2,
+      "audio_end_sample": 257600
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873830770141896,
+      "utterance": 3,
+      "output_seq": 2,
+      "audio_end_sample": 304960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_end",
+      "pid": 297832,
+      "monotonic_ns": 1873832358290456,
+      "utterance": 3,
+      "output_seq": 2,
+      "audio_end_sample": 304960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873832358342437,
+      "utterance": 3,
+      "output_seq": 3,
+      "audio_end_sample": 304960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_emitted",
+      "pid": 297832,
+      "monotonic_ns": 1873832358350511,
+      "utterance": 3,
+      "output_seq": 3,
+      "audio_end_sample": 304960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873832358947657,
+      "utterance": 4,
+      "output_seq": 3,
+      "audio_end_sample": 337920
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_end",
+      "pid": 297832,
+      "monotonic_ns": 1873833753392245,
+      "utterance": 4,
+      "output_seq": 3,
+      "audio_end_sample": 337920
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873833753434412,
+      "utterance": 4,
+      "output_seq": 4,
+      "audio_end_sample": 337920
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_emitted",
+      "pid": 297832,
+      "monotonic_ns": 1873833753441541,
+      "utterance": 4,
+      "output_seq": 4,
+      "audio_end_sample": 337920
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873841676281368,
+      "utterance": 5,
+      "output_seq": 4,
+      "audio_end_sample": 512960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_end",
+      "pid": 297832,
+      "monotonic_ns": 1873846648734649,
+      "utterance": 5,
+      "output_seq": 4,
+      "audio_end_sample": 512960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_ready",
+      "pid": 297832,
+      "monotonic_ns": 1873846648784186,
+      "utterance": 5,
+      "output_seq": 5,
+      "audio_end_sample": 512960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "output_emitted",
+      "pid": 297832,
+      "monotonic_ns": 1873846648792760,
+      "utterance": 5,
+      "output_seq": 5,
+      "audio_end_sample": 512960
+    },
+    {
+      "schema": 1,
+      "component": "core",
+      "event": "decode_start",
+      "pid": 297832,
+      "monotonic_ns": 1873858116256073,
+      "utterance": 6,
+      "output_seq": 5,
+      "audio_end_sample": 776000
+    }
+  ],
+  "buffer_observations": [
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873813801812125,
+      "received_bytes": 159360,
+      "delivered_bytes": 159360,
+      "peak_queue_bytes": 640,
+      "max_write_block_ns": 74185,
+      "max_queue_age_ns": 244703,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873818816849699,
+      "received_bytes": 320000,
+      "delivered_bytes": 320000,
+      "peak_queue_bytes": 640,
+      "max_write_block_ns": 74185,
+      "max_queue_age_ns": 332980,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873823832147596,
+      "received_bytes": 480000,
+      "delivered_bytes": 480000,
+      "peak_queue_bytes": 640,
+      "max_write_block_ns": 74185,
+      "max_queue_age_ns": 332980,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873828836949808,
+      "received_bytes": 640640,
+      "delivered_bytes": 570880,
+      "peak_queue_bytes": 69120,
+      "max_write_block_ns": 2160436033,
+      "max_queue_age_ns": 4332759,
+      "queued_bytes": 69120,
+      "oldest_queued_age_ns": 2140560248
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873833854691754,
+      "received_bytes": 800640,
+      "delivered_bytes": 800640,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873838867950898,
+      "received_bytes": 961280,
+      "delivered_bytes": 961280,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873843878520993,
+      "received_bytes": 1121920,
+      "delivered_bytes": 1121920,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873848886418982,
+      "received_bytes": 1281920,
+      "delivered_bytes": 1281920,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873853899682703,
+      "received_bytes": 1442560,
+      "delivered_bytes": 1442560,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873858921319309,
+      "received_bytes": 1603200,
+      "delivered_bytes": 1603200,
+      "peak_queue_bytes": 81920,
+      "max_write_block_ns": 2578343113,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 0,
+      "oldest_queued_age_ns": 0
+    },
+    {
+      "schema": 1,
+      "component": "runtime",
+      "event": "buffer_state",
+      "pid": 297836,
+      "monotonic_ns": 1873863932466735,
+      "received_bytes": 1763200,
+      "delivered_bytes": 1664000,
+      "peak_queue_bytes": 98560,
+      "max_write_block_ns": 3096099955,
+      "max_queue_age_ns": 2558467292,
+      "queued_bytes": 98560,
+      "oldest_queued_age_ns": 3076282245
+    }
+  ],
+  "resources": [
+    {
+      "monotonic_s": 1873808.702825898,
+      "rss_mib": 306.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 51.8,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873809.71221833,
+      "rss_mib": 344.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 49.05,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873810.720883225,
+      "rss_mib": 344.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 48.5,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873811.733991562,
+      "rss_mib": 344.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 48.5,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873812.746538787,
+      "rss_mib": 344.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 49.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873813.759218658,
+      "rss_mib": 344.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 48.5,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873814.771811452,
+      "rss_mib": 344.6875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 48.5,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873815.784973407,
+      "rss_mib": 344.75,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.95,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873816.79753827,
+      "rss_mib": 344.8125,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873817.81014776,
+      "rss_mib": 344.875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873818.82318269,
+      "rss_mib": 344.921875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.95,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873819.835797953,
+      "rss_mib": 344.984375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 46.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873820.848332102,
+      "rss_mib": 345.046875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.95,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873821.860802637,
+      "rss_mib": 345.109375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.125,
+      "temperature_c": 47.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873822.873266744,
+      "rss_mib": 345.171875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 47.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873823.885747441,
+      "rss_mib": 345.234375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 47.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873824.898294469,
+      "rss_mib": 393.640625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 53.45,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873825.925855837,
+      "rss_mib": 393.671875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 55.1,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873826.945423181,
+      "rss_mib": 395.9375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873827.973487042,
+      "rss_mib": 512.984375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 56.75,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873828.984849601,
+      "rss_mib": 513.03125,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873829.996164417,
+      "rss_mib": 513.0625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873831.012619449,
+      "rss_mib": 514.984375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873832.032462298,
+      "rss_mib": 514.984375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873833.047885848,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873834.057758753,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 56.2,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873835.066235365,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 52.35,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873836.074657178,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 53.45,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873837.083042211,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.7,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873838.091424779,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.7,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873839.099855807,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 49.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873840.108264759,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 51.25,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873841.120577358,
+      "rss_mib": 515.0,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.15,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873842.233240114,
+      "rss_mib": 515.390625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 55.1,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873843.260047923,
+      "rss_mib": 515.390625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 55.65,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873844.280315072,
+      "rss_mib": 515.390625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873845.314273123,
+      "rss_mib": 515.390625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.3,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873846.324385515,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873847.343318366,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 53.45,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873848.351781705,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 52.35,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873849.360278782,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 51.8,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873850.368628227,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 52.35,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873851.377039614,
+      "rss_mib": 515.40625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.7,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873852.385476313,
+      "rss_mib": 515.4375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.15,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873853.397860715,
+      "rss_mib": 515.5,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 50.15,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873854.410234393,
+      "rss_mib": 515.5625,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 49.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873855.422555494,
+      "rss_mib": 515.609375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 49.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873856.434962148,
+      "rss_mib": 515.671875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 49.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873857.447423947,
+      "rss_mib": 515.734375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 49.05,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873858.459947003,
+      "rss_mib": 524.21875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 54.0,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873859.494714737,
+      "rss_mib": 524.21875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 56.2,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873860.520551564,
+      "rss_mib": 524.21875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873861.539723935,
+      "rss_mib": 524.21875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 57.85,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873862.557925253,
+      "rss_mib": 524.96875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 58.4,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873863.567914419,
+      "rss_mib": 524.984375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 59.5,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873864.584298332,
+      "rss_mib": 525.03125,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 60.05,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873865.594153957,
+      "rss_mib": 525.09375,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 60.6,
+      "throttled": 917504
+    },
+    {
+      "monotonic_s": 1873866.605966627,
+      "rss_mib": 525.171875,
+      "process_swap_mib": 0.0,
+      "system_swap_mib": 871.09375,
+      "temperature_c": 58.95,
+      "throttled": 917504
+    }
+  ],
+  "checkpoints": [],
+  "rss_median_growth_mib": null,
+  "memory_plateau_passed": false,
+  "peak_tree_rss_mib": 525.171875,
+  "peak_process_swap_mib": 0.0,
+  "temperature_peak_c": 60.6,
+  "active_throttling_observed": false,
+  "physical_microphone": false,
+  "application_insertion": false,
+  "source_files_unchanged": true
+}

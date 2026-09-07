@@ -1,0 +1,31 @@
+{
+  "runtime_commit": "dc2d3505c97766b4da149e946a546a901077fbc6",
+  "ci_run": "https://github.com/geisten/geist-diktat/actions/runs/34112478184",
+  "platforms": {
+    "macOS": {
+      "tests": 168,
+      "skipped": 1,
+      "failed": 0,
+      "log_sha256": "23f49b687bebe20004b0dea05fbfa7fa769595d2a06046c612fd0b95fc02b407"
+    },
+    "Pi5": {
+      "tests": 168,
+      "skipped": 3,
+      "failed": 0,
+      "log_sha256": "da77052e09659d7e56b4974af09885abc61f0f105dd8e750966df4af21e57958"
+    },
+    "Ubuntu x64": {
+      "tests": 168,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "bc4ff40c5cde237cd6662570e01107a51cae2f2c28043d328bc083829fd0d0c5"
+    },
+    "Ubuntu ARM64": {
+      "tests": 168,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "8ef7e2f92090c97354f3e5e5b779e1847cf1b22a1da4fe1716e16168f7da4dfc"
+    }
+  },
+  "scope": "Controlled frontend/editor/runtime and evidence-gate contracts; no full neural kernel, physical microphone or target-app qualification."
+}

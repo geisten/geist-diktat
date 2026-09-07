@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "scope": "Validate the selected worker's complete German development pilot.\n\nThis is not an independent speech, microphone, latency or product-release gate.\n",
+  "expected_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+  "failures": [],
+  "groups": {
+    "de-read-clean": {
+      "wer": 0.08843537414965986,
+      "limit": 0.1,
+      "passed": true
+    },
+    "de-noise-10db": {
+      "wer": 0.24615384615384617,
+      "limit": 0.25,
+      "passed": true
+    }
+  }
+}

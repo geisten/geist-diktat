@@ -1,0 +1,225 @@
+{
+  "scope": "Numeric report consistency and matching decoded PCM/model; WAV container equivalence is documented separately; not a quality, latency, hardware, or product acceptance gate. Dirty experiments retain their original source metadata; matching committed files are supplied individually.",
+  "passed": true,
+  "reports": [
+    {
+      "report": "native-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "e60c96fe45c0f7504d0c6347f66da419d6545d2e",
+      "reported_dirty": true,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "6f2867a9ddce1f03e8bfe7072bd5e53927d130f957f8fa5254593950d11fc135",
+          "matching_committed_file": "e60c96fe45c0f7504d0c6347f66da419d6545d2e"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "93a443e46a4dbc7595b89e0072724ab41ec8428967cfb17065f67d3187d45711",
+          "matching_committed_file": "e60c96fe45c0f7504d0c6347f66da419d6545d2e"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "ff9c5be953665bfca6bde33fe21aa993d07a2e9108232762a4804dde2fead35e",
+          "matching_committed_file": "e60c96fe45c0f7504d0c6347f66da419d6545d2e"
+        }
+      }
+    },
+    {
+      "report": "adaptive-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "8bcd93312e766862e1bd7a4de0a1273498bdaf6e",
+      "reported_dirty": true,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "69729b56eb9dd6673565cc06b1086d59fea9388bec5e9fe25e91f6783fbbf84b",
+          "matching_committed_file": "8bcd93312e766862e1bd7a4de0a1273498bdaf6e"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "3b9189ab67a726c78a8b888b703920b9f75ed94e965fd1f08afa390bc24454d4",
+          "matching_committed_file": "8bcd93312e766862e1bd7a4de0a1273498bdaf6e"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "5bbac184faf54a9a528f8cd7c0586733164a387f7f9b9aa73157b4279e954f35",
+          "matching_committed_file": "8bcd93312e766862e1bd7a4de0a1273498bdaf6e"
+        }
+      }
+    },
+    {
+      "report": "chunk12-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "a31fd13f34a3b78d70e94a603a58e16c20b57923",
+      "reported_dirty": true,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "5b4563e49ae0c8f25213f74b51fe6ad7869ead309402ff4f071fde0dd9624d70",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "0c824e32ffa59b688dc65602ee45e44409d2103e046e7a16811f13e4e1fe2b93",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "b7f2717a04f93362b9f0cc8f1735ec92f91826e23c99401aa910d1e085f31564",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        }
+      }
+    },
+    {
+      "report": "chunk8-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "89048dc52b3ece00b51b81874d8ca94b10d3a262",
+      "reported_dirty": false,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "5b4563e49ae0c8f25213f74b51fe6ad7869ead309402ff4f071fde0dd9624d70",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "0c824e32ffa59b688dc65602ee45e44409d2103e046e7a16811f13e4e1fe2b93",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "b7f2717a04f93362b9f0cc8f1735ec92f91826e23c99401aa910d1e085f31564",
+          "matching_committed_file": "54815005c8da93e77d4daa51c0c3e6dcc28cbd61"
+        }
+      }
+    },
+    {
+      "report": "no-retry-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "89048dc52b3ece00b51b81874d8ca94b10d3a262",
+      "reported_dirty": true,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "0b059b39edb10b8043b7618f25ab48147e61c2e013fb0fe5759a0e7a638416b5",
+          "matching_committed_file": null,
+          "base_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+          "reconstruction_patch": "no-retry-benchmark-snapshot.patch",
+          "patch_reconstruction_matches_recorded_sha256": true
+        }
+      }
+    },
+    {
+      "report": "beam3-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+      "reported_dirty": false,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        }
+      }
+    },
+    {
+      "report": "mac-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+      "reported_dirty": true,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        }
+      }
+    },
+    {
+      "report": "ubuntu-full-pilot.json",
+      "matched_18_fixtures": true,
+      "matched_model": true,
+      "complete_audio": true,
+      "one_model_pid": true,
+      "consistent_scores": true,
+      "reported_source_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+      "reported_dirty": false,
+      "implementation_files": {
+        "src/whisper_diktat.cpp": {
+          "sha256": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/model_worker.py": {
+          "sha256": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        },
+        "runtime/pipe_limits.py": {
+          "sha256": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+          "matching_committed_file": "a31fd13f34a3b78d70e94a603a58e16c20b57923"
+        },
+        "benchmarks/worker_bench.py": {
+          "sha256": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183",
+          "matching_committed_file": "b1cd8a97f6915115672e42b88c179d2ca8de054b"
+        }
+      }
+    }
+  ]
+}

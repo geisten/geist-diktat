@@ -1,0 +1,502 @@
+{
+  "scope": "Pi worker screening with matched audio, WER, warm latency and Linux telemetry.\n\nNumeric output only. This is a development pilot, no physical microphone or\nheld-out quality certification. Fixture-end latency is not an annotated speech\nendpoint or app insertion latency. Configuration order is explicit, not randomized.\n",
+  "date_utc": "2026-09-07T09:48:50Z",
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "source_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+  "working_tree_dirty": false,
+  "files": {
+    "binary": "579db0b24d8a2302f792e1c261aa1afca7452c1f8ebf7adf057f4d3449847940",
+    "model": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+    "manifest": "ed177b7402ed34ff5189e3feca965babac6487c50cd41bdea2af01554f8857f6"
+  },
+  "implementation_sha256": {
+    "src/whisper_diktat.cpp": "d40ae88809735cead71a7175638cfded89f410e93a0e43ca82b0b0c9106e6d9f",
+    "runtime/model_worker.py": "5f55139839a9415be31a6060ed9ca002c1e9ee658f8613321b27a5b1c89e525b",
+    "runtime/pipe_limits.py": "6394af34c6fc9ee416076e590f193f4cbf8db67433930d87933048db67fec087",
+    "benchmarks/worker_bench.py": "93d238a91ae0b67d836d34ceb120c40348cbf03f2505d4f3cc7abc5cdfaaf183"
+  },
+  "temperature_fallback": true,
+  "audio_context": "full",
+  "chunk_seconds": 28,
+  "paced": true,
+  "configs": [
+    {
+      "threads": 4,
+      "beam_size": 5,
+      "wait_policy": "PASSIVE",
+      "runs": [
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 18.94075736310333,
+          "ready_s": 0.00017510703764855862,
+          "warm": false,
+          "worker_pid": 2216930,
+          "supplied_audio_s": 18.94,
+          "source": {
+            "sent_bytes": 606080,
+            "max_feed_lateness_s": 0.000935930125415485
+          },
+          "core_samples": 303040,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": -1.687971775941552,
+          "errors": 0,
+          "substitutions": 0,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 18,
+          "wer": 0.0,
+          "id": "fleurs-10004059102127011984",
+          "group": "de-read-clean",
+          "audio_s": 17.94,
+          "wav_sha256": "3428505bfb8b7b65c67209ed44080c5197f556308641dfaa3b7140145373c6fa"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 12.161004307912663,
+          "ready_s": 0.0001744469627737999,
+          "warm": true,
+          "worker_pid": 2216930,
+          "supplied_audio_s": 12.16,
+          "source": {
+            "sent_bytes": 389120,
+            "max_feed_lateness_s": 0.0009379199054091458
+          },
+          "core_samples": 194560,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": 0.0584982320759444,
+          "errors": 4,
+          "substitutions": 2,
+          "deletions": 2,
+          "insertions": 0,
+          "reference_words": 21,
+          "wer": 0.19047619047619047,
+          "id": "fleurs-10009182821551087671",
+          "group": "de-read-clean",
+          "audio_s": 11.16,
+          "wav_sha256": "fb036e2004442cc8421af13745e34b5cc862c457b3ca7b0fad24a82f9f5d05f8"
+        },
+        {
+          "passed": true,
+          "exit_code": 0,
+          "wall_s": 14.447238472057506,
+          "ready_s": 0.00017644790932536125,
+          "warm": true,
+          "worker_pid": 2216930,
+          "supplied_audio_s": 13.42,
+          "source": {
+            "sent_bytes": 429440,
+            "max_feed_lateness_s": 0.000785203026607631
+          },
+          "core_samples": 214720,
+          "output_lines": 1,
+          "last_output_after_fixture_end_s": 2.0270397629775108,
+          "errors": 1,
+          "substitutions": 1,
+          "deletions": 0,
+          "insertions": 0,
+          "reference_words": 23,
+          "wer": 0.043478260869565216,
+          "id": "fleurs-10014044777125235464",
+          "group": "de-read-clean",
+          "audio_s": 12.42,
+          "wav_sha256": "252116cecdef54101a145a3c860df1241937c34dbf77ebc798d43baccff24b90"
+        }
+      ],
+      "model_startup_s": 0.07583726407028735,
+      "groups": {
+        "de-read-clean": {
+          "clips": 3,
+          "errors": 5,
+          "reference_words": 62,
+          "substitutions": 3,
+          "deletions": 2,
+          "insertions": 0,
+          "audio_s": 41.52,
+          "wall_s": 45.5490001430735,
+          "failed": 0,
+          "wer": 0.08064516129032258,
+          "wall_rtf": 1.0970375757002286
+        }
+      },
+      "resources": [
+        {
+          "monotonic_s": 1280889.667280695,
+          "rss_mib": 299.109375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280890.668156584,
+          "rss_mib": 299.140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280891.668815944,
+          "rss_mib": 299.140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280892.669466537,
+          "rss_mib": 299.140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280893.670392508,
+          "rss_mib": 299.140625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280894.671030136,
+          "rss_mib": 299.1796875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280895.671791681,
+          "rss_mib": 299.2421875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280896.672678024,
+          "rss_mib": 299.3046875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280897.673768692,
+          "rss_mib": 299.36328125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280898.674795717,
+          "rss_mib": 299.42578125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280899.675892356,
+          "rss_mib": 299.48828125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280900.677061887,
+          "rss_mib": 299.546875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280901.678093224,
+          "rss_mib": 299.609375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280902.67913661,
+          "rss_mib": 299.66796875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280903.680221359,
+          "rss_mib": 299.73046875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280904.6808731,
+          "rss_mib": 360.703125,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280905.681472409,
+          "rss_mib": 483.41015625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280906.682458584,
+          "rss_mib": 483.58984375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280907.683343948,
+          "rss_mib": 483.58984375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280908.684044359,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280909.685021372,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280910.686064783,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280911.687048457,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280912.688036256,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280913.68904322,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280914.690119967,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280915.691112313,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280916.692101658,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280917.692753071,
+          "rss_mib": 482.96484375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280918.693328708,
+          "rss_mib": 485.24609375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280919.693896266,
+          "rss_mib": 485.24609375,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280920.694748647,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280921.695783375,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280922.696820092,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280923.697489416,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280924.698176459,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280925.699076721,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280926.700117209,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280927.700769411,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280928.701728347,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280929.702390839,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280930.703447198,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280931.70452656,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280932.70559332,
+          "rss_mib": 485.26171875,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280933.706290143,
+          "rss_mib": 485.53515625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        },
+        {
+          "monotonic_s": 1280934.706900944,
+          "rss_mib": 486.31640625,
+          "process_swap_mib": 0.0,
+          "system_swap_mib": 0.3125,
+          "temperature_c": null,
+          "throttled": null
+        }
+      ],
+      "fixture_end_latency_s": {
+        "count": 3,
+        "p50": 0.0584982320759444,
+        "p95": 2.0270397629775108
+      },
+      "all_audio_accounted": true
+    }
+  ]
+}

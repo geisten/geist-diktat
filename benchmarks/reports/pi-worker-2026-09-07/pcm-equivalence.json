@@ -1,0 +1,168 @@
+{
+  "passed": true,
+  "scope": "Canonical FLEURS conversion reconstructed locally from cached pinned sources; resulting WAV hashes equal Ubuntu reports. All 18 decoded PCM streams match the Pi/Mac inputs exactly. Clean WAV container hashes differ; noise WAV hashes already match.",
+  "fixtures": [
+    {
+      "id": "fleurs-10004059102127011984",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "c326c2b91395bd55287e38ae9de0b52ff8fed6ea3ebb4861e2607b6640ee2085",
+      "ubuntu_wav_sha256": "3428505bfb8b7b65c67209ed44080c5197f556308641dfaa3b7140145373c6fa",
+      "pcm_sha256": "f37289793d13cf31e9885441cc968c6944b1d616c78d42b2f854716f5280421c",
+      "pcm_bytes": 574080,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10009182821551087671",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "fbce11e9fc1b20fd958f0d9310e1e241eb1f65d1c65c3cdd3e3a484ff82724f8",
+      "ubuntu_wav_sha256": "fb036e2004442cc8421af13745e34b5cc862c457b3ca7b0fad24a82f9f5d05f8",
+      "pcm_sha256": "32b57bcf176307cfdd69e4a4c9f14f86ca625099a3aa11db19d81647422ade38",
+      "pcm_bytes": 357120,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10014044777125235464",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "0264e67117409e7e9d66691abb486f88296ee093fba05dbc191cef0183bf147f",
+      "ubuntu_wav_sha256": "252116cecdef54101a145a3c860df1241937c34dbf77ebc798d43baccff24b90",
+      "pcm_sha256": "4d4af08ced2b063923679a6988b4d82b915bc515155b32c630e575939ddc2991",
+      "pcm_bytes": 397440,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10030056357041867775",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "e1d0653dca9802302bfd9b48af9d5669aa79cdf6d67b3e7398c2fc5ab59e2946",
+      "ubuntu_wav_sha256": "1173d376945fd7a6ab43540b93b4560b4493b6ec32e015d31fe41b447b26c8fd",
+      "pcm_sha256": "6e1bc1d2f8efa902ace7e929c201c403b89c3be15034e15a5a8a11ba20be2f4e",
+      "pcm_bytes": 341760,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10058186628567796965",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "121c1a1fa082579b0521481ce17d27e0ae6a17b4ab3c0e4bd33e1c51df68cae2",
+      "ubuntu_wav_sha256": "eb032aee601f365430df5626d1f63bad49422e67edee5b347c67679297832596",
+      "pcm_sha256": "f1039c21fbb5f019bbb9a8fb8031c4ec3657013bfa27c5308d2552087088bb39",
+      "pcm_bytes": 316800,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10058299886985225661",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "12e377a3ffa702297235cf545a2d61bab26b99a8c0069830b92f37cfcc4666cf",
+      "ubuntu_wav_sha256": "8781c3f0ef4c972dce9462587f2c158fa0dc6905943543a9c7121f68b8bb86dd",
+      "pcm_sha256": "1ff192b97848b0a3f8132e49f11742efbaf40e33b5ecf7547044ce3487c28528",
+      "pcm_bytes": 268800,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10095057775426831514",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "ab2d03f2c11a89f251a268eaff105b971dc119167bdeb4080e992433ff9f20be",
+      "ubuntu_wav_sha256": "b3c97211c9178a965699169eeee031a025301534e904126c8e2fbbe4f4ca4907",
+      "pcm_sha256": "ab1f6c08539dc80588034c1d4352385618652cca2d9b317045e26bac08098279",
+      "pcm_bytes": 414720,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10159541282515887574",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "b3bd881890882fe70b233578e775e28271cd6c0f546c619dd64fbfc2af87a7e6",
+      "ubuntu_wav_sha256": "7b591a4ba322a0711d1e00f0c7022130a9b04dd5ad2638aaff7aa75fd4d4109b",
+      "pcm_sha256": "2615a9dfc90e75813b71b1f7a87eb0009001cb56d9544c76f3c56a7dcd665ab9",
+      "pcm_bytes": 629760,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10166547362714956625",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "6b2b778c044c4e774f0b6385c3151904adf2cd985d4b90c8910f93758e1cc82e",
+      "ubuntu_wav_sha256": "2c13c3be5f77b109bdbf7c8bd8d4298e8cd44d5552e7380dd77790b4a70b4ca3",
+      "pcm_sha256": "548176d329ccc008fc41cd1c972add41a5d51dca2ececfd8a00bfa2882c3d1a0",
+      "pcm_bytes": 353280,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10171859810965764480",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "a23263b8b9de2f2a8909c03e2797fe71833f2a765787ae38704047933d6a4e74",
+      "ubuntu_wav_sha256": "f9671b6a275bb3ea5ceb6a1fd91b0297195f5e1bce8dfca71ce2f13f99cc0af2",
+      "pcm_sha256": "28887b859ad215612525e4b518ba92ee40fe3cd89d3c27e313e8fb95917c3e53",
+      "pcm_bytes": 1388160,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10229344228128634115",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "cd3e609e2d377b3e9ec56730a4e6979f7b8e4a77d1a69e22b788cb706f601889",
+      "ubuntu_wav_sha256": "7c1b55e72744e527479f24fd52cea5616d7d1b8cfcc65f5eff4de97a032c5833",
+      "pcm_sha256": "6451ce0fd70ff69e6e1d8ef5ddda918ff845686b4fb9df5c0b071c73d7ff9624",
+      "pcm_bytes": 228480,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10240730312646485406",
+      "group": "de-read-clean",
+      "local_pi_mac_wav_sha256": "d78dd9f8467dd4f8a2cc3a6fa27be5f6fe3263ef5d949fe76cfb3fd90b72f075",
+      "ubuntu_wav_sha256": "98bba6966de916ee33926db0c9f70b6da1e1c7456228120e43b7ca6bc8565cce",
+      "pcm_sha256": "c7596f205581ea4f32f3518f097f3af1a69b9f58d4cef7ab8d5208497321fe30",
+      "pcm_bytes": 539520,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10004059102127011984-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "c42c094fb7006c3636c0e0768eea89dbd1c29c157f1f2ef507828f780fcd7a23",
+      "ubuntu_wav_sha256": "c42c094fb7006c3636c0e0768eea89dbd1c29c157f1f2ef507828f780fcd7a23",
+      "pcm_sha256": "d12fb2eefdc1501b8416fb649fbf0e05be3642339bcb6a7d6e35d45e9509dc6b",
+      "pcm_bytes": 574080,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10009182821551087671-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "70848d54808259087b10c89ef0cfc6ae19817243cc15722f03b37bb246921d5d",
+      "ubuntu_wav_sha256": "70848d54808259087b10c89ef0cfc6ae19817243cc15722f03b37bb246921d5d",
+      "pcm_sha256": "7e33eacd499817b88e348331c6c3da3b55e0add8f5d549156df71621586f8be6",
+      "pcm_bytes": 357120,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10014044777125235464-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "229cac9fe127468c0bc1d658d65512ad9b61c4401a62f0ce94431856c5bdadeb",
+      "ubuntu_wav_sha256": "229cac9fe127468c0bc1d658d65512ad9b61c4401a62f0ce94431856c5bdadeb",
+      "pcm_sha256": "185a2de4bfb516a780ae2e745ba951c66ae5c9a3b720aad37de535d66aa61bba",
+      "pcm_bytes": 397440,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10030056357041867775-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "6a62b8ecbc7754885099d2b16da9ca041e3e94350bc738a4ee4c4f02e5afefbc",
+      "ubuntu_wav_sha256": "6a62b8ecbc7754885099d2b16da9ca041e3e94350bc738a4ee4c4f02e5afefbc",
+      "pcm_sha256": "66e55608ac78daf3aa728da0033034708a0933bae74e7edbefd8e3b2ec548465",
+      "pcm_bytes": 341760,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10058186628567796965-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "c2dc558fa6f9238c1f5f1d121f6ffcf6efb2cccfd59eea26613a268cf563be5b",
+      "ubuntu_wav_sha256": "c2dc558fa6f9238c1f5f1d121f6ffcf6efb2cccfd59eea26613a268cf563be5b",
+      "pcm_sha256": "e78cbe5ef79a9d652b142856bd1e73162d658e759cb8e3e540391b7047b573fd",
+      "pcm_bytes": 316800,
+      "bit_identical_pcm": true
+    },
+    {
+      "id": "fleurs-10058299886985225661-snr10",
+      "group": "de-noise-10db",
+      "local_pi_mac_wav_sha256": "611f2c88d2f8abd96fab00b88244b1cd07ef2b20315f48c55ae54e0ed08d2d8d",
+      "ubuntu_wav_sha256": "611f2c88d2f8abd96fab00b88244b1cd07ef2b20315f48c55ae54e0ed08d2d8d",
+      "pcm_sha256": "89c67411d8e443f6d6bb9f51456d365021bb2c6844095783981c23a9d06af56d",
+      "pcm_bytes": 268800,
+      "bit_identical_pcm": true
+    }
+  ]
+}

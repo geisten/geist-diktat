@@ -1,0 +1,17 @@
+test_cancel_with_full_queue_stops_decode_before_draining_audio (test_model_worker.ModelWorker.test_cancel_with_full_queue_stops_decode_before_draining_audio) ... FAIL
+
+======================================================================
+FAIL: test_cancel_with_full_queue_stops_decode_before_draining_audio (test_model_worker.ModelWorker.test_cancel_with_full_queue_stops_decode_before_draining_audio)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/geist-product/tests/test_model_worker.py", line 118, in test_cancel_with_full_queue_stops_decode_before_draining_audio
+    status=self.wait_idle();self.assertLess(time.monotonic()-started,1)
+  File "/private/tmp/geist-product/tests/test_model_worker.py", line 80, in wait_idle
+    self.fail('worker did not become idle')
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: worker did not become idle
+
+----------------------------------------------------------------------
+Ran 1 test in 3.941s
+
+FAILED (failures=1)

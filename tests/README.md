@@ -122,3 +122,22 @@ Native Pi-Systeme mit Neovim als `vim`-Alternative melden weiterhin drei
 Vim-Skips. Der Linux-Pipe-Test ist auf macOS erwartungsgemäß nicht anwendbar.
 Reale Modellhaltung, Stop und Leerlauffreigabe misst zusätzlich
 `benchmarks/worker_lifecycle.py`; Dauer-ASR misst `worker_soak.py`.
+
+| Anforderung | Kontrollierter Nachweis | Reale Abnahme / Restlücke |
+|---|---|---|
+| Ein Modell für mehrere Starts | 20 Sitzungen, eindeutige IDs; installierter Launcher | `worker_lifecycle.py`, vollständige Worker-WER-Piloten |
+| Capture erst bei Bereitschaft | Erfolg, Ladefehler, Timeout, ungültige Bestätigung | Paket-Smoke mit echtem Modell; physische Aufnahme offen |
+| Begrenzte Aufnahme/Transport | Queue-Überlast, Linux-Pipe-Größen, gesättigter Socket | Pi-Dateiläufe; echte ALSA-Treiber noch offen |
+| Stop und sauberer Neustart | Leerlauf, aktiver Decode, volle Queue, alte Sitzung | Realer Mac-/Ubuntu-Lebenszyklusbenchmark; App-Fokusmatrix offen |
+| Speicherfreigabe | Idle-TTL und explizites Stoppen | Prozessende real geprüft; Speicherplateau in gesonderten Dauertests |
+| Modell-/Parameterkonsistenz | Busy/Mismatch, ungültige Optionen, manipulierte Dateien | Doctor/Cache/Paket-Smoke; portables Pi-Paket noch offen |
+| Keine falsche Vollständigkeit | Teilframes, EOF, Prozessfehler, unbestätigte Bytes | Quelle-/Supervisor-/Core-Bilanz in jedem erfolgreichen Dateilauf |
+
+Diese Tabelle beschreibt Anforderungsabdeckung. Die hohe LLVM-Abdeckung des
+historischen C-Cores darf nicht als Zeilenabdeckung des neuen Python-Workers,
+der Whisper-Kernels oder des vollständigen Produkts interpretiert werden.
+
+`test_worker_gates.py` ergänzt zehn negative/positive Nachweise für den eigenen
+Worker-WER-Check, einschließlich vollständiger Provenienz, unveränderter
+Grenzwerte, korrekter Summen und vollständiger Audiobilanz. Der reale Worker
+muss auch unter erzwungener ASCII-Prozesslocale gültige UTF-8-Bytes ausgeben.

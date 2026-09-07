@@ -1,0 +1,31 @@
+{
+  "runtime_commit": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+  "ci_run": "https://github.com/geisten/geist-diktat/actions/runs/34107359392",
+  "platforms": {
+    "macOS": {
+      "tests": 157,
+      "skipped": 1,
+      "failed": 0,
+      "log_sha256": "566e578e583f9548afbf7055985b6613a609d61d3d81193d5e6cef3544be5a3f"
+    },
+    "Pi5": {
+      "tests": 157,
+      "skipped": 3,
+      "failed": 0,
+      "log_sha256": "482769b31743ee26d8afcec5c0e7485613566255b52f199cf2d8073ad026421a"
+    },
+    "Ubuntu x64": {
+      "tests": 157,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "d67bf5041542a185a235d3e1fed159690eb656df3be6b104536e85783c69227a"
+    },
+    "Ubuntu ARM64": {
+      "tests": 157,
+      "skipped": 0,
+      "failed": 0,
+      "log_sha256": "09134f5e178fe42a261e46eda741b3ff8e2101d9636a6dbe16203d855eeb5a40"
+    }
+  },
+  "scope": "Controlled engine, native CLI/editor/runtime contracts. Does not certify neural model kernels, physical audio, all target apps, or held-out speech quality."
+}

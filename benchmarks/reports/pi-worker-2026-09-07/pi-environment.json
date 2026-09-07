@@ -1,0 +1,23 @@
+{
+  "hardware": "Raspberry Pi 5 Model B Rev 1.1",
+  "platform": "Linux-6.18.33+rpt-rpi-2712-aarch64-with-glibc2.41",
+  "machine": "aarch64",
+  "page_size": 16384,
+  "cpu_governor": "ondemand",
+  "decoder_source": "b1cd8a97f6915115672e42b88c179d2ca8de054b",
+  "whisper_commit": "52a939a2a762224e255d366c1182b2af4dd1a032",
+  "cmake_options": [
+    "CMAKE_BUILD_TYPE:STRING=Release",
+    "CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++",
+    "GEIST_WHISPER_BLAS:BOOL=ON",
+    "GGML_BLAS:BOOL=ON",
+    "GGML_BLAS_VENDOR:STRING=OpenBLAS",
+    "GGML_CPU_ARM_ARCH:STRING=",
+    "GGML_NATIVE:BOOL=ON"
+  ],
+  "libraries": "linux-vdso.so.1 (0x00007fff83f38000)\n\tlibgomp.so.1 => /lib/aarch64-linux-gnu/libgomp.so.1 (0x00007fff83c40000)\n\tlibopenblas.so.0 => /lib/aarch64-linux-gnu/libopenblas.so.0 (0x00007fff829e0000)\n\tlibstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x00007fff82770000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x00007fff826c0000)\n\tlibgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x00007fff82680000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x00007fff824b0000)\n\tlibgfortran.so.5 => /lib/aarch64-linux-gnu/libgfortran.so.5 (0x00007fff82320000)\n\t/lib/ld-linux-aarch64.so.1 (0x00007fff83f00000)",
+  "openblas": "libopenblas0-pthread 0.3.29+ds-3",
+  "capture_devices": "**** List of CAPTURE Hardware Devices ****",
+  "physical_microphone_available": false,
+  "notes": "Runtime RSS/Swap/temperature/throttling are sampled separately in each report. System swap and historic throttle flags existed before these runs."
+}

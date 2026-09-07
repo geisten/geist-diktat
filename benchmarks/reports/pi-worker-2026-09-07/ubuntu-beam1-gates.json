@@ -1,0 +1,56 @@
+{
+  "passed": false,
+  "scope": "speech-quality prerequisite, not full beta approval",
+  "checks": [
+    {
+      "check": "commit",
+      "passed": true,
+      "reason": "evidence must match the exact candidate commit"
+    },
+    {
+      "check": "provenance",
+      "passed": true,
+      "reason": "binary/model/corpus hashes, source commit, platform and thread count required"
+    },
+    {
+      "check": "engine",
+      "passed": true,
+      "reason": "known engine and all engine-specific artifact hashes required"
+    },
+    {
+      "check": "runs",
+      "passed": true,
+      "reason": "unique complete per-clip evidence with consistent edit counts required"
+    },
+    {
+      "check": "aggregate:de-read-clean",
+      "passed": true,
+      "reason": "reported totals must match per-clip evidence"
+    },
+    {
+      "check": "aggregate:de-noise-10db",
+      "passed": true,
+      "reason": "reported totals must match per-clip evidence"
+    },
+    {
+      "check": "policy:de-read-clean",
+      "passed": true,
+      "reason": "positive sample minima and finite nonnegative WER limit required"
+    },
+    {
+      "check": "quality:de-read-clean",
+      "passed": true,
+      "reason": "complete successful corpus group within its WER limit"
+    },
+    {
+      "check": "policy:de-noise-10db",
+      "passed": true,
+      "reason": "positive sample minima and finite nonnegative WER limit required"
+    },
+    {
+      "check": "quality:de-noise-10db",
+      "passed": false,
+      "reason": "complete successful corpus group within its WER limit"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+--- a/benchmarks/worker_bench.py
++++ b/benchmarks/worker_bench.py
+@@ -136,7 +136,7 @@
+     for threads in map(int,a.threads.split(',')):
+       for beam in map(int,a.beams.split(',')):
+        for wait in a.waits.split(','):
+-        if threads not in (1,2,4) or beam not in (1,3,5) or wait not in ('PASSIVE','ACTIVE'):p.error('invalid sweep values')
++        if threads not in (1,2,4) or beam not in (1,5) or wait not in ('PASSIVE','ACTIVE'):p.error('invalid sweep values')
+         env=dict(OMP_NUM_THREADS=str(threads),GEIST_WHISPER_BEAM_SIZE=str(beam),OMP_WAIT_POLICY=wait)
+         with tempfile.TemporaryDirectory(prefix='gp-',dir='/tmp') as d:
+             path=Path(d)/'w.sock';opts=['--socket',str(path),'--core',str(a.binary),'--model',str(a.model),'--idle-seconds','60']

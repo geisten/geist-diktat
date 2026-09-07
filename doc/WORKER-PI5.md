@@ -21,7 +21,7 @@ geist-diktat worker stop    # Modell und gegebenenfalls Sitzung beenden
 ```
 
 Ein reguläres Audioende finalisiert den letzten Abschnitt und erhält das Modell.
-Stop während des Wartens auf neue Sprache verwirft die unvollständige Sitzung;
+Die finale Textausgabe ist ausdrücklich als UTF-8 codiert, auch bei einer ASCII-Prozesslocale. Stop während des Wartens auf neue Sprache verwirft die unvollständige Sitzung;
 VAD, Audio und Ausgaben werden für die nächste Sitzung zurückgesetzt. Jede Sitzung
 hat eine neue Kennung. Stop während Decode verwirft den Modellprozess, weil die
 Engine einen Abbruch nicht in jeder Rechenphase zeitnah quittiert. Der nächste
@@ -65,6 +65,26 @@ Der Worker beschleunigt eine laufende Inferenz nicht beliebig. Ein ausreichend
 schneller Decoder, geprüfte Sprachqualität und brauchbare Endlatenz bleiben nötig.
 Insbesondere ist ein RTF unter 1 noch kein Nachweis von höchstens drei Sekunden
 bis zur Einfügung.
+
+## Datenpfad
+
+```mermaid
+flowchart LR
+    A[Aufnahmeprozess] -->|PCM-Pipe| B[Supervisor: 6 s Queue]
+    B -->|PCM-Pipe| C[Workerclient]
+    C -->|privater Unix-Socket| D[Modelldienst: 1 s Queue]
+    D -->|begrenzte Pipe| E[Core-Leser: 1 s Queue]
+    E --> F[Residenter Whisper-Decoder]
+    F -->|finale Sitzungsergebnisse| D
+    D --> C
+    C -->|UTF-8-Zeilen| G[Vim / Neovim / IBus / Aufrufer]
+```
+
+Die Aufnahme startet nach der Bereitschaftsbestätigung. Bei Überlast stoppt
+der Supervisor seine eigenen Prozesse mit einem sichtbaren Fehler. Bei Cancel
+schließt der Client; der Dienst verwirft die Sitzung und unterbindet ihre
+weiteren Ausgaben. Die unabhängigen internen Sitzungskennungen ersetzen noch
+nicht den geplanten öffentlichen Zustands-/Ereignisvertrag aus #34/#35.
 
 ## Reproduzierbare Messungen
 
@@ -154,6 +174,86 @@ ersetzt kein unabhängiges DACH-/Alltags-/Technik-Testset. Insbesondere wird die
 Qualitätsgrenze von 25 % bei 10 dB nicht zugunsten von Beam 3 oder kurzen
 Fenstern angehoben.
 
+## Abgeschlossene Dauerläufe
+
+| Umgebung / Konfiguration | Audio / Gesamtzeit | Vollständige Audio-/Samplebilanz | WER | Speicher |
+|---|---|---|---|---|
+| Ubuntu, Standardprofil full/28 s/Beam 5 | 1809,14 / 1809,80 s | 57.892.480 Byte, ein Modellladen; Gesamttor bestanden | 245/2760 = 8,88 % | 538,39 MiB gesampeltes Spitzen-RSS; Mediananstieg 0,18 MiB; Prozess-Swap 0 |
+| Mac M1 Max, full/28 s/Beam 5 | 1853,44 / 1857,20 s | 59.310.228 Byte, ein Modellladen; Transport bestanden | 1014/4425 = 22,92 % | Gesonderte Teilzeit-RSS-Probe: 606,03 MiB Spitze, Mediananstieg 0,89 MiB |
+| Pi5, OpenBLAS/adaptive/12 s/Beam 5 | 3706,89 / 3713,55 s | 118.620.456 Byte, ein Modellladen; Transport-/Speichertor bestanden | 2240/8850 = 25,31 % | 516,19 MiB Spitze; Mediananstieg 0,16 MiB; Prozess-Swap 0 |
+
+Auf dem Pi blieb kein unbestätigtes Byte übrig. Die Queue erreichte beobachtete
+141.440 Byte, der maximale Schreibblock 4,43 s. Maximal wurden 71,6 °C und keine
+aktiven Drosselungsbits beobachtet. Die Stundenstabilität besteht damit im
+definierten Dateitest; die Einfügelatenz bis 3 s ist dadurch nicht abgenommen.
+Der qualitätsbeste 28-s-Pfad besteht diesen Gesprächslauf nicht. Der stabile
+12-s-Pfad verfehlt seinerseits mit 27,69 % 10-dB-WER das Rauschziel. Es gibt
+weiterhin kein Pi-Profil, das beide Anforderungen gleichzeitig erfüllt.
+
+Ubuntu wiederholt bekannte Lesesprache. Mac und Pi verwenden dasselbe lokale
+616,815-s-Gespräch aus OOCC drei- bzw. sechsmal, jeweils mit einer Sekunde Pause.
+Die Wortzahlen der Wiederholungen sind keine ebenso große unabhängige
+Sprachstichprobe. Die Gesprächsreferenz stammt aus dem offiziellen korrigierten
+Transkript; überlappende Sprecher können gewöhnliche WER erhöhen. Audio und
+Transkripte werden nicht mit dem Repository oder den GitHub-Artefakten verteilt.
+
+Das Linux-orientierte Ressourcen-Gesamttor des Mac-Berichts bleibt ausdrücklich
+`passed=false`: die eingebauten Prozess-RSS-/Swapfelder sind dort nicht verfügbar.
+`transport_passed=true` bestätigt unabhängig davon die vollständige Audiozufuhr.
+Die ergänzende `ps`-Probe begann erst während des Laufs, umfasst 232 Proben im
+5-s-Abstand über rund 19 Minuten und schließt den Benchmark-Elternprozess ein.
+Sie bestätigt keine vollständige Startphase, keinen Prozess-Swap und keine
+Temperaturabnahme. Sie ist daher nicht direkt mit der Pi-/Ubuntu-Prozessauswahl
+und deren Einsekunden-Abtastung gleichzusetzen.
+
+Die langen Mac-/Pi-Läufe nutzen den archivierten Runtime-Stand `b1cd8a9`, der
+Ubuntu-Dauerworkflow `8aafa6d`. Die späte Locale-Korrektur `dc2d350` ändert nur
+die finale Python-Clientausgabe auf explizite UTF-8-Bytes; Decoder, Eingabequeues
+und die hier verwendeten UTF-8-Textbytes bleiben gleich. Sie erhält eigene
+Regressionen, Paket-/Workerprüfungen und eine anschließende Pi-Prüfung. Es wird
+kein neuer Stundenlauf auf einem späteren Commit behauptet.
+
+## Abschlussprüfung auf `dc2d350`
+
+168 kontrollierte Tests je Umgebung bestehen: macOS mit einem Linux-spezifischen
+Skip, Pi5 mit drei echten Vim-Skips, Ubuntu x64 und ARM64 ohne Skips. Auf dem Pi
+ist `vim` ein Neovim-Alias; das ersetzt keinen Test des echten Vim. Die finale
+Ubuntu-Prüfung einschließlich ausgewähltem Worker-WER-Tor und realem Pakettest
+ist [Lauf 34112478184](https://github.com/geisten/geist-diktat/actions/runs/34112478184).
+Der Gesamtworkflow bleibt wegen des bisherigen Geist-Profils und des diagnostischen
+Beam-1-Vergleichs rot. Der ausgewählte Beam-5-Worker besteht mit 8,84 % sauberer
+und 24,62 % 10-dB-WER; Durchsatz-RTF 0,169 bzw. 0,147.
+
+| Reale Workerprüfung | Mac M1 Max | Ubuntu x64 | Pi5 OpenBLAS/adaptive/28 s |
+|---|---:|---:|---:|
+| Stop außerhalb Decode | 8,76 ms | 0,68 ms | 5,95 ms |
+| Stop bei gesättigtem Decode | 11,21 ms | 32,49 ms | 16,89 ms |
+| Ausgabe nach Decode-Stop | 0 Byte | 0 Byte | 0 Byte |
+| Dateiende bis letzter Ausgabe, p50 | 2,267 s | 0,049 s | 3,766 s |
+| Dateiende bis letzter Ausgabe, p95 | 3,763 s | 2,025 s | 6,986 s |
+| Anzahl Latenzclips | 12 | 3 | 12 |
+
+Alle drei Lifecycle-Prüfungen bestätigen Modellwiederverwendung, sauberen Neustart
+nach Decode-Abbruch und Idle-Freigabe. Diese Stop-Zeiten messen den Worker-Client,
+nicht den globalen Desktop-Shortcut oder Treiberstopp. Die Mac-Latenzmessung stammt
+vom unveränderten Decoderpfad auf `b1cd8a9`; finale Lifecycle-/Pakettests von `dc2d350`.
+Dateiende ist kein annotiertes Sprachende. Einfügelatenz und ausreichend große
+Endpoint-Stichproben fehlen weiterhin; der Pi-Wert zeigt bereits eine deutliche Lücke.
+
+Zusätzlich wurden auf dem Pi 16 menschlich gesprochene Schweizer Clips aus acht
+Dialekten mit adaptivem Kontext/Beam 5 geprüft (79,35 s Audio). Gegen die
+Hochdeutschreferenz: **140/224 = 62,50 % WER**. Gegen die gesonderte dialektale
+Schreibreferenz: **189/237 = 79,75 % WER**. Dialektverschriftlichung und Übertragung
+ins Hochdeutsche sind verschiedene Ziele; die Zahlen werden nicht vermischt.
+Der Test startet den Decoder je Clip neu und qualifiziert weder den dauerhaften
+Worker noch den gesamten DACH-Raum. Dialektunterstützung bleibt experimentell.
+
+Die [dauerhafte Evidenz mit SHA-256-Index](../benchmarks/reports/pi-worker-2026-09-07/index.json)
+enthält numerische Einzelmessungen, auch fehlgeschlagene Versuche, Quellenstände,
+PCM-Gleichheitsnachweis und klar getrennte Testumfänge. Audio und Transkripte sind
+nicht enthalten. Der [Code-Review](WORKER-REVIEW.xml) dokumentiert die behobenen
+Transport-/Locale-Fehler und offenen P2-Abnahmen.
+
 ## Opt-in-Parameter und Reproduktion der Versuche
 
 ```sh
@@ -206,3 +306,21 @@ bekannte deutsche Lesesprache, nutzt den vollen Kontext/28 s/Beam 5 und
 veröffentlicht nur numerische Ergebnisse. Sein Dateilauf ersetzt keine
 Gesprächs-, Dialekt-, Mikrofon- oder Desktop-Abnahme. Externer PR-Code startet
 diesen Self-hosted-Job nicht automatisch.
+
+## Quellenintegrität und zusätzliche Gates
+
+Die sauberen WAV-Dateien aus älteren Mac/Pi-Vorbereitungen und der Ubuntu-
+Vorbereitung unterscheiden sich in ihren Containerbytes. Eine Rekonstruktion
+der kanonischen Konvertierung bestätigt für alle zwölf sauberen Fälle exakt
+identische PCM-Bytes; die sechs Rauschdateien haben bereits identische WAV-
+Hashes. Der Nachweis `pcm-equivalence.json` und die Score-/Sampleprüfung
+`integrity.json` im Zahlenarchiv trennen Container- von Audioidentität.
+Frühe schmutzige Arbeitssnapshots behalten ihren originalen Provenienzstatus;
+ihre Quelldateien sind über einzeln zugeordnete Commit-Hashes bzw. einen
+SHA-geprüften kleinen Rekonstruktionspatch wiederherstellbar.
+
+`check_worker_gates.py` prüft jetzt zusätzlich die tatsächlich wiederverwendete
+Worker-Pipeline: vollständige 18 Fälle, Profil/Commit/Hashes, ein Modellprozess,
+korrekte Audio-/Samplebilanz, konsistente Summen und beide Pilot-WER-Grenzen.
+Der manuelle residente Ubuntu-Audit ruft diesen Check verpflichtend auf.
+Ein bestandenes Tor ist weiterhin keine unabhängige Sprach- oder Produktfreigabe.
