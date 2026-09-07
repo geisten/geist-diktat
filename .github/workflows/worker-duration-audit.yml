@@ -1,0 +1,51 @@
+name: worker-duration-audit
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: Paced duration using repeated German development fixtures
+        type: choice
+        options: ['30', '60']
+        default: '30'
+permissions:
+  contents: read
+concurrency:
+  group: geist-diktat-worker-duration
+  cancel-in-progress: false
+jobs:
+  worker-duration:
+    runs-on: [self-hosted, amd-desktop]
+    timeout-minutes: 85
+    env:
+      GEIST_WHISPER_AUDIO_CONTEXT: full
+      GEIST_WHISPER_CHUNK_SECONDS: '28'
+      GEIST_WHISPER_TEMPERATURE_FALLBACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Build pinned resident CPU profile
+        run: sh scripts/build-whisper.sh
+      - name: Verify pinned small Q5_1 model
+        run: python3 scripts/fetch-whisper-model.py
+      - name: Prepare German development fixtures
+        run: python3 benchmarks/prepare_quality.py --fleurs-only
+      - name: Clear only this duration audit's previous numeric results
+        run: python3 -c "import shutil; shutil.rmtree('build/worker-duration', ignore_errors=True)"
+      - name: Paced supervisor and reused-model duration test
+        env:
+          SOAK_MINUTES: ${{ inputs.minutes }}
+        run: |
+          case "$SOAK_MINUTES" in 30|60) ;; *) exit 2;; esac
+          python3 benchmarks/worker_soak.py \
+            --binary build/whisper-resident/diktat-whisper \
+            --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+            --group de-read-clean --minutes "$SOAK_MINUTES" --threads 4 --beam 5 \
+            --output build/worker-duration/soak.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: worker-duration-numeric
+          path: build/worker-duration/*.json
+          if-no-files-found: error
+          retention-days: 30

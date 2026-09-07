@@ -112,3 +112,20 @@ Modelle aus dem Netz und startet kein Mikrofon. Er exportiert nur numerische
 Ergebnisse und Hashes. 0 Wortfehler auf diesem einzelnen bekannten Clip sind
 keine neue Korpus-WER oder Desktop-Abnahme. Der manuelle Ubuntu-Agent-Lauf mit
 `run_resident=true` führt ihn zusätzlich zu WER, Sitzung und Stop aus.
+
+## Supervisor / Pi5 und Modellhaltung
+
+- `worker_bench.py`: getrennte Ladezeit, mehrere Diktate je Modellprozess,
+  WER, RTF, optional zeitgetreue Dateiende-Latenz sowie Pi-RSS/Swap/Temperatur.
+  Threads 1/2/4, Beam 1/3/5, Wait ACTIVE/PASSIVE; unvollständige Audiozufuhr
+  führt zu einem fehlgeschlagenen Lauf.
+- `worker_lifecycle.py`: echtes Modell, wiederverwendete Sitzungen, Abbruch des
+  Produktionsclients während vollem Transport und Decode, sauberer Neustart,
+  automatische Leerlauffreigabe. Keine Mikrofon-/Desktop-Stop-Abnahme.
+- `worker_soak.py`: zeitgetreue Gesprächsdatei durch echten Supervisor und
+  Workerclient. Modellladen, Audio-/Samplebilanz, Queue-/Schreib-Rückstand,
+  Prozessbaum-RSS/-Swap, Temperatur und Drosselung werden numerisch erfasst.
+  Wiederholte Gesprächsdateien werden als solche gekennzeichnet. Ein
+  30-Minuten-Zwischenstand ist kein separat abgeschlossener Test.
+
+Befunde, Parameter, Abnahmegrenzen und Reproduktion: [WORKER-PI5.md](../doc/WORKER-PI5.md).

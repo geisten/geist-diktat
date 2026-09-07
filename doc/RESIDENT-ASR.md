@@ -2,7 +2,7 @@
 
 Der experimentelle `diktat-whisper`-Prozess nutzt die öffentliche whisper.cpp-API
 auf Revision `52a939a2a762224e255d366c1182b2af4dd1a032`. Er lädt Modell und Kontext
-**einmal je Sitzung**. Der bisherige Vergleichsadapter
+**einmal je direktem Prozessaufruf**. Das installierte Whisper-Profil verwendet zusätzlich den [privaten Modellworker](WORKER-PI5.md), der mehrere Diktatsitzungen mit demselben Kontext bedient und ihn nach Leerlauf freigibt. Der bisherige Vergleichsadapter
 `benchmarks/whisper_stream.py` bleibt zur historischen Reproduktion erhalten und
 startet weiterhin ein eigenes CLI pro VAD-Segment. Der ausgelieferte Standard
 bleibt Geist, bis Auswahl und Produktabnahme abgeschlossen sind.
@@ -49,9 +49,7 @@ OMP_NUM_THREADS=4 GEIST_WHISPER_BEAM_SIZE=1 \
 
 Der Modell-Download prüft SHA-256
 `ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb`.
-Ein abweichender vorhandener Cache wird mit Fehler erhalten. CPU-Bibliotheken
-werden statisch mitgebaut; BLAS und GPU-Backends sind für diesen Kandidaten
-abgeschaltet. Dies ist noch keine geprüfte Distributions-/ABI-Kompatibilität.
+Ein abweichender vorhandener Cache wird mit Fehler erhalten. CPU-Bibliotheken werden statisch mitgebaut; BLAS ist standardmäßig aus und kann für einen gesondert gemessenen Pi-Build aktiviert werden. GPU-Backends bleiben aus. Ein OpenBLAS-Build kann eine zusätzliche dynamische Laufzeitbibliothek benötigen. Dies ist noch keine geprüfte Distributions-/ABI-Kompatibilität.
 
 Der Prozess lässt sich hinter denselben Supervisor setzen:
 
@@ -92,7 +90,7 @@ Stop-Abnahme ist davon getrennt und bleibt offen.
 python3 -m unittest discover -s tests -p 'test_whisper_resident.py' -v
 ```
 
-16 Tests kompilieren den tatsächlichen Frontend-Code mit ASan/UBSan gegen eine
+20 Tests kompilieren den tatsächlichen Frontend-Code mit ASan/UBSan gegen eine
 kontrollierte Engine-API. Geprüft werden 20 Segmente bei einem Modellladevorgang,
 Puffergrenzen, 28-s-Fenster, Unicode-Zeilen, fragmentiertes PCM, Teilframes,
 Eingabe-/Ausgabefehler, ungültige Parameter sowie Stop während Leerlauf/Decode.

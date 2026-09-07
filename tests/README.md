@@ -105,3 +105,20 @@ Whisper-`.deb` auf Ubuntu 24.04 x64 und ARM64 und installiert sie in einem frisc
 muss bei vorhandenem gcc/g++/CMake/Git scheitern. Profil, fehlendes Modell,
 tatsächlicher Decoderstart und vollständiger Lizenztext werden geprüft.
 [Bedienung und Nachweisgrenzen](../doc/MODEL-PROFILES.md).
+
+## Modellworker und Pi-Puffer
+
+`test_model_worker.py` prüft den echten C++-Frontend-/Python-Service-Verbund
+mit kontrollierter ASR-API: 20 Sitzungen mit einem Modell, eindeutige Sitzungs-IDs,
+Warmstart, Cancel in Ruhe/Decode/bei voller Queue, sauberen Neustart, TTL,
+Busy-/Konfigurationsfehler, Socket-Dateischutz und den installierten Launcher.
+`test_runtime.py` prüft Bereitschaft vor Capture, Fehler und Überlast sowie
+unter Linux die tatsächlichen Pipe-Größen vor dem Start der Kindprozesse.
+Der Trace-Test erfasst auch den beim Abbruch noch blockierten Schreibaufruf.
+`test_whisper_resident.py` prüft optionale Fenster/Kontext-/Fallbackparameter und
+vollständige Samplebilanz; diese Tests ersetzen keine reale WER-Messung.
+
+Native Pi-Systeme mit Neovim als `vim`-Alternative melden weiterhin drei
+Vim-Skips. Der Linux-Pipe-Test ist auf macOS erwartungsgemäß nicht anwendbar.
+Reale Modellhaltung, Stop und Leerlauffreigabe misst zusätzlich
+`benchmarks/worker_lifecycle.py`; Dauer-ASR misst `worker_soak.py`.

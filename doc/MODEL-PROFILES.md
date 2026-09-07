@@ -41,6 +41,22 @@ Decoderpfad können wie bisher per Umgebung überschrieben werden. Bei
 `doctor --verify` muss ein überschriebenes Binary dennoch zur Prüfsumme im
 Paket passen. Der geprüfte Kandidat verwendet vier Threads und Beam 5.
 
+## Modellhaltung und Pi-Experimente
+
+Das Whisper-Profil startet Capture erst nach bestätigter Modellbereitschaft.
+Abgeschlossene Diktate verwenden denselben Worker; nach 60 Sekunden Leerlauf
+wird dessen Speicher freigegeben. `worker start`, `worker status` und
+`worker stop` erlauben Vorladen, Diagnose und ausdrückliche Freigabe.
+[Stop-Regeln und Grenzen](WORKER-PI5.md).
+
+Doctor berichtet auch `GEIST_DIKTAT_REUSE_MODEL`, `GEIST_DIKTAT_IDLE_SECONDS`,
+`OMP_WAIT_POLICY`, `GEIST_WHISPER_AUDIO_CONTEXT=full|adaptive`,
+`GEIST_WHISPER_CHUNK_SECONDS=4..28` und
+`GEIST_WHISPER_TEMPERATURE_FALLBACK=0|1`. Standard bleiben voller Audiokontext,
+28 Sekunden, Temperatur-Wiederholungen und Beam 5. Ungültige Werte scheitern
+vor der Aufnahme. Nach Änderungen an Modell oder Decoderparametern den alten
+Worker stoppen. Die experimentellen Pi-Parameter sind keine Freigabevorgabe.
+
 ## Setup und Fehlerbehandlung
 
 Whisper lädt ausschließlich `ggml-small-q5_1.bin`; Gemma-Modell, Audio-Tower und
