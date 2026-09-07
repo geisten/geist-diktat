@@ -5,6 +5,7 @@ struct whisper_context_params { bool use_gpu=true,flash_attn=false; };
 struct whisper_full_params {
     whisper_sampling_strategy strategy;
     int n_threads=0;
+    int audio_ctx=0;
     struct { int beam_size=0; } beam_search;
     const char *language=nullptr;
     bool translate=true,detect_language=true,no_context=false,no_timestamps=false;
@@ -19,3 +20,5 @@ whisper_full_params whisper_full_default_params(whisper_sampling_strategy);
 int whisper_full(whisper_context *,whisper_full_params,const float *,int);
 int whisper_full_n_segments(whisper_context *);
 const char *whisper_full_get_segment_text(whisper_context *,int);
+
+int whisper_n_audio_ctx(whisper_context *);

@@ -26,8 +26,17 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
     stopped=threading.Event(); eof=threading.Event(); fault=[]
     children=[]
     metrics=dict(received_bytes=0,delivered_bytes=0,peak_queue_bytes=0,
-                 max_write_block_ns=0,max_queue_age_ns=0)
+                 max_write_block_ns=0,max_queue_age_ns=0,inflight_write_ns=0)
     metric_lock=threading.Lock()
+    def snapshot():
+        now=time.monotonic_ns()
+        with metric_lock:
+            result=dict(metrics);inflight=result.pop('inflight_write_ns')
+        if inflight:result['max_write_block_ns']=max(result['max_write_block_ns'],now-inflight)
+        with chunks.mutex:
+            result['queued_bytes']=sum(len(data) for data,_ in chunks.queue)
+            result['oldest_queued_age_ns']=now-chunks.queue[0][1] if chunks.queue else 0
+        return result
     def fail(code,message):
         if not stopped.is_set():
             fault.append(code);print('geist-diktat: '+message,file=sys.stderr,flush=True)
@@ -83,14 +92,20 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
                     before=time.monotonic_ns()
                     with metric_lock:
                         metrics['max_queue_age_ns']=max(metrics['max_queue_age_ns'],before-arrived)
+                        metrics['inflight_write_ns']=before
                     rec.stdin.write(data);rec.stdin.flush()
                     with metric_lock:
                         metrics['delivered_bytes']+=len(data)
                         metrics['max_write_block_ns']=max(metrics['max_write_block_ns'],time.monotonic_ns()-before)
+                        metrics['inflight_write_ns']=0
             except (BrokenPipeError,OSError):
                 # The main thread reports the recognizer's actual exit code.
                 pass
             finally:
+                with metric_lock:
+                    if metrics['inflight_write_ns']:
+                        metrics['max_write_block_ns']=max(metrics['max_write_block_ns'],time.monotonic_ns()-metrics['inflight_write_ns'])
+                        metrics['inflight_write_ns']=0
                 try:rec.stdin.close()
                 except (OSError,BrokenPipeError):pass
         readers=[threading.Thread(target=f,daemon=True) for f in (read_audio,write_audio)]
@@ -99,7 +114,7 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
         next_progress=time.monotonic()+5
         while not stopped.wait(.025):
             if time.monotonic()>=next_progress:
-                with metric_lock:emit('runtime','buffer_state',**metrics,queued_bytes=chunks.qsize()*640)
+                emit('runtime','buffer_state',**snapshot())
                 next_progress=time.monotonic()+5
             capture_status=mic.poll();decode_status=rec.poll()
             if capture_status not in (None,0):
@@ -142,10 +157,10 @@ def supervise(capture, decoder, buffer_seconds=6, ready_timeout=None):
             p.wait()
         for thread in locals().get('readers',[]):thread.join(timeout=.2)
         try:
-            with metric_lock:
-                emit("runtime","input_summary",**metrics,
-                     unconfirmed_bytes=metrics['received_bytes']-metrics['delivered_bytes'],
-                     failed=bool(fault))
+            summary=snapshot()
+            emit("runtime","input_summary",**summary,
+                 unconfirmed_bytes=summary['received_bytes']-summary['delivered_bytes'],
+                 failed=bool(fault))
         except (OSError,ValueError) as error:
             print('geist-diktat: trace failed: '+str(error),file=sys.stderr)
         for s,handler in previous.items():signal.signal(s,handler)

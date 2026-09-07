@@ -24,6 +24,7 @@ static_assert(std::atomic<bool>::is_always_lock_free,"signal cancellation requir
 std::atomic<bool> session_cancelled{false};
 void cancel_session(int) { session_cancelled=1; }
 bool worker_mode=false;
+bool adaptive_context=false;
 size_t worker_session=0;
 void worker_event(const char *type, const std::string &fields="") {
     if (!worker_mode) return;
@@ -182,6 +183,10 @@ int session(whisper_context *ctx, whisper_full_params params, double threshold) 
         if (pcm.size()<8000 || input.aborted()) return;
         worker_event("state",",\"state\":\"decoding\"");
         ++utterance; diktat_trace("core","decode_start",utterance,output,last_loud);
+        // Cover every supplied sample plus >=2 seconds of padding, rounded up
+        // to an attention-friendly boundary. Experimental: measure WER separately.
+        params.audio_ctx=adaptive_context?std::min(whisper_n_audio_ctx(ctx),
+            static_cast<int>(((pcm.size()+319)/320+100+255)/256*256)):0;
         int rc=whisper_full(ctx,params,pcm.data(),static_cast<int>(pcm.size()));
         diktat_trace("core","decode_end",utterance,output,last_loud);
         worker_event("state",",\"state\":\"listening\"");
@@ -229,6 +234,9 @@ int main(int argc,char **argv) {
         if (errno || (argc==3 && (end==argv[2] || *end)) || !std::isfinite(rms) || rms<=0 || rms>32768)
             throw std::runtime_error("invalid RMS");
         int threads=integer_env("OMP_NUM_THREADS",4,256), beam=integer_env("GEIST_WHISPER_BEAM_SIZE",5,8);
+        const char *context=getenv("GEIST_WHISPER_AUDIO_CONTEXT");
+        if (context && std::string(context)!="full" && std::string(context)!="adaptive") throw std::runtime_error("invalid GEIST_WHISPER_AUDIO_CONTEXT");
+        adaptive_context=context && std::string(context)=="adaptive";
         struct sigaction action{}; action.sa_handler=cancel; sigemptyset(&action.sa_mask);
         sigaction(SIGTERM,&action,nullptr); sigaction(SIGINT,&action,nullptr); signal(SIGPIPE,SIG_IGN);
         if (worker_mode) { action.sa_handler=cancel_session; sigaction(SIGUSR1,&action,nullptr); }

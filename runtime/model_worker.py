@@ -52,7 +52,7 @@ def identity(a):
     for path in (a.core,a.model):
         p=path.resolve(strict=True);s=p.stat();files.append([str(p),s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns])
     return hashlib.sha256(encoded(dict(files=files,rms=float(a.rms),threads=os.getenv('OMP_NUM_THREADS','4'),
-        beam=os.getenv('GEIST_WHISPER_BEAM_SIZE','5'),wait=os.getenv('OMP_WAIT_POLICY',''),trace=os.getenv('GEIST_DIKTAT_TRACE','')))).hexdigest()
+        beam=os.getenv('GEIST_WHISPER_BEAM_SIZE','5'),audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),wait=os.getenv('OMP_WAIT_POLICY',''),trace=os.getenv('GEIST_DIKTAT_TRACE','')))).hexdigest()
 
 class Service:
     def __init__(self,a):

@@ -49,6 +49,19 @@ class Runtime(unittest.TestCase):
             self.assertTrue(summary['failed']);self.assertGreater(summary['unconfirmed_bytes'],0)
             self.assertLessEqual(summary['peak_queue_bytes'],3200)
 
+    def test_trace_includes_write_still_blocked_at_cancellation(self):
+        import shlex
+        with tempfile.TemporaryDirectory() as d:
+            trace=Path(d)/'trace.jsonl'
+            code="import sys,time;sys.stdout.buffer.write(bytes(200000));sys.stdout.buffer.flush();time.sleep(.25);raise SystemExit(17)"
+            capture=shlex.join([sys.executable,'-c',code])
+            p=subprocess.run(self.command(capture,'import time;time.sleep(10)',8),env=dict(os.environ,GEIST_DIKTAT_TRACE=str(trace)),capture_output=True,timeout=4)
+            self.assertEqual(p.returncode,17,p.stderr)
+            summary=json.loads(trace.read_text().splitlines()[-1])
+            self.assertGreater(summary['max_write_block_ns'],150000000)
+            self.assertGreater(summary['oldest_queued_age_ns'],150000000)
+            self.assertGreater(summary['queued_bytes'],0)
+
     def test_capture_error(self):
         p=self.run_pipeline('exit 17','import sys; sys.stdin.buffer.read()')
         self.assertEqual(p.returncode,17,p.stderr)

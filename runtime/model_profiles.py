@@ -50,7 +50,9 @@ def resolve(prefix,explicit=None):
         if enabled not in ('0','1') or not math.isfinite(idle) or not 1<=idle<=3600:raise ValueError('invalid model worker policy')
         wait=os.getenv('OMP_WAIT_POLICY','PASSIVE').upper()
         if wait not in ('PASSIVE','ACTIVE'):raise ValueError('invalid OMP_WAIT_POLICY')
-        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait)
+        context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full')
+        if context not in ('full','adaptive'):raise ValueError('invalid GEIST_WHISPER_AUDIO_CONTEXT')
+        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait,audio_context=context)
     return dict(name=name,source=source,label=p['label'],engine=p['engine'],core=core,files=files,parameters=parameters,worker=worker)
 
 def save(prefix,name):

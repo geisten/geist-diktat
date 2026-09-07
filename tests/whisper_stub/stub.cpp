@@ -23,7 +23,7 @@ int whisper_full(whisper_context *ctx,whisper_full_params p,const float *audio,i
     if (strcmp(p.language,"de") || !p.no_context || !p.no_timestamps || p.translate || p.detect_language ||
         p.print_realtime || p.print_progress || p.print_timestamps || p.print_special || !p.abort_callback || p.n_threads<1) abort();
     for (int i=0;i<n;++i) if (audio[i]<-1 || audio[i]>=1) abort();
-    record("first_sample",int(audio[0]*32768)); record("beam",p.beam_search.beam_size);
+    record("first_sample",int(audio[0]*32768)); record("beam",p.beam_search.beam_size); record("audio_ctx",p.audio_ctx);
     if (getenv("STUB_BLOCK")) {
         fprintf(stderr,"stub: decoding\n"); fflush(stderr);
         for (int i=0;i<200;++i) {
@@ -39,3 +39,5 @@ const char *whisper_full_get_segment_text(whisper_context *,int index) {
     if (getenv("STUB_LARGE")) return large.c_str();
     return index?" Welt\r\nGrüße!\t ":" Hallo";
 }
+
+int whisper_n_audio_ctx(whisper_context *) { return 1500; }

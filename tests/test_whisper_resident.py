@@ -60,6 +60,15 @@ class ResidentWhisper(unittest.TestCase):
                 p,log,_=self.run_audio(b'',args,**env);self.assertNotEqual(p.returncode,0);self.assertEqual(log,[])
     def test_beam_configuration_reaches_decoder(self):
         p,log,_=self.run_audio(audio(8000),GEIST_WHISPER_BEAM_SIZE='1');self.assertEqual(p.returncode,0);self.assertIn('beam 1',log)
+    def test_adaptive_context_keeps_all_samples_and_remains_opt_in(self):
+        p,log,_=self.run_audio(audio(8000));self.assertEqual(p.returncode,0);self.assertIn('audio_ctx 0',log)
+        p,log,_=self.run_audio(audio(8000),GEIST_WHISPER_AUDIO_CONTEXT='adaptive')
+        self.assertEqual(p.returncode,0);self.assertIn('audio_ctx 256',log);self.assertIn('decode 8000',log)
+        p,log,_=self.run_audio(audio(28*16000),GEIST_WHISPER_AUDIO_CONTEXT='adaptive')
+        self.assertEqual(p.returncode,0);self.assertIn('audio_ctx 1500',log);self.assertIn('decode 448000',log)
+        p,log,_=self.run_audio(b'',GEIST_WHISPER_AUDIO_CONTEXT='invalid')
+        self.assertNotEqual(p.returncode,0);self.assertEqual(log,[])
+
     def test_load_failure_never_announces_ready(self):
         p,_,_=self.run_audio(b'',STUB_LOAD_FAIL='1');self.assertNotEqual(p.returncode,0);self.assertNotIn(b'listening',p.stderr)
     def test_decode_failure_is_nonzero_without_text(self):
