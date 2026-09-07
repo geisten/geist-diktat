@@ -33,7 +33,7 @@ class ProfileSetup(unittest.TestCase):
             policy=profiles.resolve(self.prefix,'whisper-small')['worker']
             self.assertEqual(policy['audio_context'],'adaptive');self.assertEqual(policy['chunk_seconds'],12)
         for key,values in {'GEIST_WHISPER_CHUNK_SECONDS':['0','3','29','8.5','８'],
-                           'GEIST_WHISPER_AUDIO_CONTEXT':['typo'],
+                           'GEIST_WHISPER_AUDIO_CONTEXT':['typo'],'GEIST_WHISPER_TEMPERATURE_FALLBACK':['no','2'],
                            'GEIST_DIKTAT_IDLE_SECONDS':['nan','0','3601']}.items():
             for value in values:
                 with self.subTest(key=key,value=value),patch.dict(os.environ,{key:value}),self.assertRaises(ValueError):

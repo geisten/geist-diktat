@@ -23,7 +23,7 @@ int whisper_full(whisper_context *ctx,whisper_full_params p,const float *audio,i
     if (strcmp(p.language,"de") || !p.no_context || !p.no_timestamps || p.translate || p.detect_language ||
         p.print_realtime || p.print_progress || p.print_timestamps || p.print_special || !p.abort_callback || p.n_threads<1) abort();
     for (int i=0;i<n;++i) if (audio[i]<-1 || audio[i]>=1) abort();
-    record("first_sample",int(audio[0]*32768)); record("beam",p.beam_search.beam_size); record("audio_ctx",p.audio_ctx);
+    record("first_sample",int(audio[0]*32768)); record("beam",p.beam_search.beam_size); record("audio_ctx",p.audio_ctx); record("temperature_fallback",p.temperature_inc>0);
     if (getenv("STUB_BLOCK")) {
         fprintf(stderr,"stub: decoding\n"); fflush(stderr);
         for (int i=0;i<(getenv("STUB_LONG_BLOCK")?1000:200);++i) {

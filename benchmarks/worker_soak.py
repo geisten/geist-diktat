@@ -29,13 +29,13 @@ def main():
     p.add_argument('--group',choices=['de-read-clean','de-conversation-long'],default='de-conversation-long')
     p.add_argument('--minutes',type=float,default=60);p.add_argument('--threads',type=int,default=4);p.add_argument('--beam',type=int,default=5)
     a=p.parse_args()
-    if not .01<=a.minutes<=120 or a.threads not in (1,2,4) or a.beam not in (1,5):p.error('invalid soak parameters')
+    if not .01<=a.minutes<=120 or a.threads not in (1,2,4) or a.beam not in (1,3,5):p.error('invalid soak parameters')
     if digest(a.model)!='ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb':p.error('model SHA mismatch')
     rows=[r for r in json.loads(a.manifest.read_text()) if r['group']==a.group]
     if not rows:p.error('no fixtures')
     provenance=dict(source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
-        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','runtime/pipe_limits.py','benchmarks/worker_soak.py')},
+        implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/diktat_runtime.py','runtime/pipe_limits.py','runtime/trace_metrics.py','benchmarks/worker_soak.py','benchmarks/worker_bench.py','benchmarks/trace_capture.py')},
         files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},platform=platform.platform(),machine=platform.machine())
     a.output.parent.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='gs-',dir='/tmp') as temp:
@@ -105,7 +105,7 @@ def main():
             result=dict(scope=__doc__,passed=soak_pass,transport_passed=transport_pass,transport_complete=complete,full_product_approval=False,
                 **provenance,input_sha256=digest(wav),source_occurrences=occurrences,
                 requested_minutes=a.minutes,audio_s=samples/16000,wall_s=wall_s,model_startup_s=model_startup_s,model_loads=loads,
-                audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),threads=a.threads,beam_size=a.beam,wait_policy='PASSIVE',exit_code=proc.returncode,timeout=timeout,
+                temperature_fallback=os.getenv('GEIST_WHISPER_TEMPERATURE_FALLBACK','1')=='1',audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),threads=a.threads,beam_size=a.beam,wait_policy='PASSIVE',exit_code=proc.returncode,timeout=timeout,
                 runtime=runtime,core=core,capture=capture_summary,decode_events=[e for e in events if e['component']=='core'],buffer_observations=[e for e in events if e['event']=='buffer_state'],
                 resources=resource_samples,checkpoints=checkpoints,rss_median_growth_mib=growth,
                 memory_plateau_passed=memory_pass,peak_tree_rss_mib=peak_rss,peak_process_swap_mib=peak_swap,

@@ -62,6 +62,11 @@ jobs:
             --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
             --threads 4 --beams 5 --paced --groups de-read-clean --per-group 3 \
             --output build/resident-results/worker-paced.json
+      - name: Real model warm reuse, saturated cancellation and idle expiry
+        run: |
+          python3 benchmarks/worker_lifecycle.py --binary build/whisper-resident/diktat-whisper \
+            --model build/ggml-small-q5_1.bin --manifest build/speech-corpus/manifest.json \
+            --output build/resident-results/worker-lifecycle.json
       - name: Evaluate candidate quality without changing the release default
         if: always()
         env:

@@ -78,6 +78,14 @@ class ResidentWhisper(unittest.TestCase):
         p,log,_=self.run_audio(b'',GEIST_WHISPER_AUDIO_CONTEXT='invalid')
         self.assertNotEqual(p.returncode,0);self.assertEqual(log,[])
 
+    def test_temperature_fallback_remains_default_and_can_be_disabled(self):
+        p,log,_=self.run_audio(audio(8000));self.assertEqual(p.returncode,0);self.assertIn('temperature_fallback 1',log)
+        p,log,_=self.run_audio(audio(8000),GEIST_WHISPER_TEMPERATURE_FALLBACK='0')
+        self.assertEqual(p.returncode,0);self.assertIn('temperature_fallback 0',log)
+        for value in ('no','2',''):
+            p,log,_=self.run_audio(b'',GEIST_WHISPER_TEMPERATURE_FALLBACK=value)
+            self.assertNotEqual(p.returncode,0);self.assertEqual(log,[])
+
     def test_load_failure_never_announces_ready(self):
         p,_,_=self.run_audio(b'',STUB_LOAD_FAIL='1');self.assertNotEqual(p.returncode,0);self.assertNotIn(b'listening',p.stderr)
     def test_decode_failure_is_nonzero_without_text(self):

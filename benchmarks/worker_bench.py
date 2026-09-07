@@ -103,7 +103,9 @@ def session(a,path,pcm,reference,env,paced=False):
                 elif event['type']=='done':done=event;break
                 else:raise ValueError(str(event))
         finally:
-            sock.shutdown(socket.SHUT_RDWR);thread.join(timeout=2)
+            try:sock.shutdown(socket.SHUT_RDWR)
+            except OSError:pass  # macOS may already observe the peer's normal close.
+            thread.join(timeout=2)
         complete=not thread.is_alive() and not source.get('failed') and source['sent_bytes']==len(pcm)==done['samples']*2
     elapsed=time.monotonic()-start
     return dict(passed=complete,exit_code=0 if complete else 74,wall_s=elapsed,ready_s=ready_s,warm=ready['warm'],worker_pid=ready['pid'],
@@ -129,12 +131,12 @@ def main():
         working_tree_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)),
         files={name:digest(getattr(a,name)) for name in ('binary','model','manifest')},
         implementation_sha256={name:digest(ROOT/name) for name in ('src/whisper_diktat.cpp','runtime/model_worker.py','runtime/pipe_limits.py','benchmarks/worker_bench.py')},
-        audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),paced=a.paced,configs=[])
+        temperature_fallback=os.getenv('GEIST_WHISPER_TEMPERATURE_FALLBACK','1')=='1',audio_context=os.getenv('GEIST_WHISPER_AUDIO_CONTEXT','full'),chunk_seconds=int(os.getenv('GEIST_WHISPER_CHUNK_SECONDS','28')),paced=a.paced,configs=[])
     a.output.parent.mkdir(parents=True,exist_ok=True)
     for threads in map(int,a.threads.split(',')):
       for beam in map(int,a.beams.split(',')):
        for wait in a.waits.split(','):
-        if threads not in (1,2,4) or beam not in (1,5) or wait not in ('PASSIVE','ACTIVE'):p.error('invalid sweep values')
+        if threads not in (1,2,4) or beam not in (1,3,5) or wait not in ('PASSIVE','ACTIVE'):p.error('invalid sweep values')
         env=dict(OMP_NUM_THREADS=str(threads),GEIST_WHISPER_BEAM_SIZE=str(beam),OMP_WAIT_POLICY=wait)
         with tempfile.TemporaryDirectory(prefix='gp-',dir='/tmp') as d:
             path=Path(d)/'w.sock';opts=['--socket',str(path),'--core',str(a.binary),'--model',str(a.model),'--idle-seconds','60']

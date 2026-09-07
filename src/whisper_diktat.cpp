@@ -241,6 +241,8 @@ int main(int argc,char **argv) {
         const char *context=getenv("GEIST_WHISPER_AUDIO_CONTEXT");
         if (context && std::string(context)!="full" && std::string(context)!="adaptive") throw std::runtime_error("invalid GEIST_WHISPER_AUDIO_CONTEXT");
         adaptive_context=context && std::string(context)=="adaptive";
+        const char *fallback=getenv("GEIST_WHISPER_TEMPERATURE_FALLBACK");
+        if (fallback && std::string(fallback)!="0" && std::string(fallback)!="1") throw std::runtime_error("invalid GEIST_WHISPER_TEMPERATURE_FALLBACK");
         struct sigaction action{}; action.sa_handler=cancel; sigemptyset(&action.sa_mask);
         sigaction(SIGTERM,&action,nullptr); sigaction(SIGINT,&action,nullptr); signal(SIGPIPE,SIG_IGN);
         if (worker_mode) { action.sa_handler=cancel_session; sigaction(SIGUSR1,&action,nullptr); }
@@ -251,6 +253,7 @@ int main(int argc,char **argv) {
         auto params=whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
         params.strategy=beam>1?WHISPER_SAMPLING_BEAM_SEARCH:WHISPER_SAMPLING_GREEDY;
         params.beam_search.beam_size=beam; params.n_threads=threads;
+        if (fallback && std::string(fallback)=="0") params.temperature_inc=0;
         params.language="de"; params.translate=false; params.detect_language=false;
         params.no_context=true; params.no_timestamps=true;
         params.print_realtime=false; params.print_progress=false; params.print_timestamps=false; params.print_special=false;

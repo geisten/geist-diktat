@@ -6,6 +6,7 @@ struct whisper_full_params {
     whisper_sampling_strategy strategy;
     int n_threads=0;
     int audio_ctx=0;
+    float temperature_inc=0.2f;
     struct { int beam_size=0; } beam_search;
     const char *language=nullptr;
     bool translate=true,detect_language=true,no_context=false,no_timestamps=false;

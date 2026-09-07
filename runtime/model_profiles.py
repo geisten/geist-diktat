@@ -54,7 +54,9 @@ def resolve(prefix,explicit=None):
         if context not in ('full','adaptive'):raise ValueError('invalid GEIST_WHISPER_AUDIO_CONTEXT')
         chunk=integer('GEIST_WHISPER_CHUNK_SECONDS',28,28)
         if not 4<=chunk<=28:raise ValueError('GEIST_WHISPER_CHUNK_SECONDS must be 4..28')
-        worker=dict(enabled=enabled=='1',idle_seconds=idle,wait_policy=wait,audio_context=context,chunk_seconds=chunk)
+        fallback=os.getenv('GEIST_WHISPER_TEMPERATURE_FALLBACK','1')
+        if fallback not in ('0','1'):raise ValueError('invalid GEIST_WHISPER_TEMPERATURE_FALLBACK')
+        worker=dict(temperature_fallback=fallback=='1',enabled=enabled=='1',idle_seconds=idle,wait_policy=wait,audio_context=context,chunk_seconds=chunk)
     return dict(name=name,source=source,label=p['label'],engine=p['engine'],core=core,files=files,parameters=parameters,worker=worker)
 
 def save(prefix,name):
