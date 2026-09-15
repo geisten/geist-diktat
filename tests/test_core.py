@@ -22,7 +22,7 @@ class Core(unittest.TestCase):
         if coverage:
             Path(coverage).mkdir(parents=True, exist_ok=True)
             cls.binary = str(Path(coverage).resolve() / 'core-stub')
-        cmd = shlex.split(os.getenv('CC', 'cc')) + ['-std=c2x', '-O1', '-g',
+        cmd = shlex.split(os.getenv('CC', 'cc')) + ['-std=c2x', '-D_GNU_SOURCE', '-O1', '-g',
             '-fsanitize=address,undefined', '-fno-omit-frame-pointer',
             '-I' + str(ROOT / 'geistlib/include'), str(ROOT / 'tests/core_stub.c'),
             '-lm', '-o', cls.binary]
