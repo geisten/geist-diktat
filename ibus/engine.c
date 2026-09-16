@@ -29,8 +29,10 @@
 
 #include <glib-unix.h>
 
+#include <errno.h>
 #include <signal.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define ENGINE_NAME "geist-diktat"
@@ -55,8 +57,9 @@ struct _GeistEngineClass {
 
 struct _GeistEngine {
     IBusEngine    parent;
-    GPid          pid;   /* pipeline process group leader; 0 = not running */
-    guint         watch; /* GIOChannel source id */
+    GPid          pid;         /* pipeline process group leader; 0 = not running */
+    guint         child_watch; /* g_child_watch source id; reaps the group leader */
+    guint         watch;       /* GIOChannel source id */
     GIOChannel   *out;
     IBusPropList *props;
     IBusProperty *state_prop;
@@ -159,6 +162,48 @@ static void child_setpgid(gpointer user_data) {
     setpgid(0, 0);
 }
 
+/* How long stop waits for the group to die before escalating, and after. */
+#define PIPELINE_TERM_GRACE_US 500000
+#define PIPELINE_KILL_GRACE_US 200000
+
+/* Reap `pid` until it is gone or the grace period expires. TRUE = reaped.
+ * Stop cannot leave this to the child watch: the next enable() may arrive
+ * before the main loop iterates again, and a zombie per dictation session
+ * accumulates for the life of the engine process. */
+static gboolean pipeline_reap(GPid pid, gulong grace_us) {
+    const gulong step = 5000;
+    for (gulong waited = 0;; waited += step) {
+        const pid_t r = waitpid(pid, NULL, WNOHANG);
+        if (r == pid || (r == -1 && errno == ECHILD)) {
+            return TRUE;
+        }
+        if (waited >= grace_us) {
+            return FALSE;
+        }
+        g_usleep(step);
+    }
+}
+
+/* The pipeline ended on its own — EOF, a crash, or the user killing it.
+ * G_SPAWN_DO_NOT_REAP_CHILD means nobody reaps it otherwise, and e->pid
+ * would keep a dead pid, so pipeline_start() returns early and dictation
+ * never comes back until the engine process restarts (#23).
+ *
+ * The IO channel is deliberately left alone: on_pipeline_line still has
+ * the last buffered transcript line to commit on G_IO_HUP. pipeline_stop
+ * owns that cleanup. */
+static void on_pipeline_exit(GPid pid, gint status, gpointer data) {
+    GeistEngine *e = data;
+    (void) status;
+    g_spawn_close_pid(pid);
+    if (e->pid != pid) {
+        return; /* a newer pipeline already owns the engine */
+    }
+    e->pid         = 0;
+    e->child_watch = 0;
+    update_state(e, "diktat: pipeline ended");
+}
+
 static void pipeline_start(GeistEngine *e) {
     if (e->pid != 0) {
         return;
@@ -185,19 +230,33 @@ static void pipeline_start(GeistEngine *e) {
         return;
     }
     g_free(cmd);
-    e->out = g_io_channel_unix_new(out_fd);
+    e->child_watch = g_child_watch_add(e->pid, on_pipeline_exit, e);
+    e->out         = g_io_channel_unix_new(out_fd);
     g_io_channel_set_close_on_unref(e->out, TRUE);
     e->watch = g_io_add_watch(e->out, G_IO_IN | G_IO_HUP | G_IO_ERR, on_pipeline_line, e);
     update_state(e, "diktat: hört zu");
 }
 
+/* Idempotent, and it leaves nothing behind: the process group gets
+ * SIGTERM, the child watch is dropped, and the child is reaped here
+ * rather than whenever the main loop next runs. SIGKILL covers a group
+ * that ignores SIGTERM. */
 static void pipeline_stop(GeistEngine *e) {
     if (e->pid == 0) {
         return;
     }
-    kill(-e->pid, SIGTERM); /* whole process group */
-    g_spawn_close_pid(e->pid);
-    e->pid = 0;
+    const GPid pid = e->pid;
+    e->pid         = 0;
+    if (e->child_watch != 0) {
+        g_source_remove(e->child_watch);
+        e->child_watch = 0;
+    }
+    kill(-pid, SIGTERM); /* whole process group */
+    if (!pipeline_reap(pid, PIPELINE_TERM_GRACE_US)) {
+        kill(-pid, SIGKILL);
+        (void) pipeline_reap(pid, PIPELINE_KILL_GRACE_US);
+    }
+    g_spawn_close_pid(pid);
     if (e->watch != 0) {
         g_source_remove(e->watch);
         e->watch = 0;
@@ -240,6 +299,7 @@ static void geist_engine_destroy(IBusObject *object) {
 static void geist_engine_init(GeistEngine *e) {
     g_active_engine = e;
     e->pid          = 0;
+    e->child_watch  = 0;
     e->watch        = 0;
     e->out          = NULL;
     e->state_prop   = ibus_property_new("diktat-state",
