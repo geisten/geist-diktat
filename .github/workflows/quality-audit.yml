@@ -1,6 +1,10 @@
 name: quality-audit
 on:
   workflow_dispatch:
+  # main too, not just PRs: the contracts leg was red on main for weeks
+  # without a single run to show it (#19, #20, #23, #24 all reproduce there).
+  push:
+    branches: [main]
   pull_request:
     paths:
       - 'src/**'
